@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OnlineScene.unity
     guid: 6e03cd2f26dbe704c91bda35ea4311cd
+  - enabled: 1
+    path: Assets/Scenes/Admin_UI.unity
+    guid: 1cd4f00813202fe40b3db49545278930
+  - enabled: 1
+    path: Assets/Scenes/Task_Interface.unity
+    guid: 530381aa6806018448135c53524092de
   m_configObjects: {}
