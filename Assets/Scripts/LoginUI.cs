@@ -10,15 +10,17 @@ public class LoginUI : NetworkBehaviour
     public string Port;
     public string IpAddress;
     public Text username;
+    public Player player;
+    public NetCore net;
     bool isStart;
-    //public GameObject warningPanel;
+
 
     //TODO: MORE PORT NUMBERS
     public void LoginOnClick()
     {
-        NetworkManager.singleton.networkPort = 9878;
-        NetworkManager.singleton.StartClient();
+        //net.SetupClient();
         SceneManager.LoadScene(2);
+        player.isPlayer = true;
         /*
         if (username.text != "")
         {
@@ -35,10 +37,10 @@ public class LoginUI : NetworkBehaviour
     //WE ARE USING IT AS A HOST NOW
     public void AdminOnClick()
     {
-        NetworkManager.singleton.networkAddress = "localhost";
-        NetworkManager.singleton.networkPort = 9877;
-        NetworkManager.singleton.StartHost();
+        //net.SetupServer();
         SceneManager.LoadScene(2);
+        player.isPlayer = false;
+
     }
 
     private void Start()
