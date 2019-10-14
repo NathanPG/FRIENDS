@@ -18,7 +18,7 @@ public class LoginUI : NetworkBehaviour
     //TODO: MORE PORT NUMBERS
     public void LoginOnClick()
     {
-        //net.SetupClient();
+        net.SetupClient();
         SceneManager.LoadScene(2);
         player.isPlayer = true;
         /*
@@ -37,7 +37,7 @@ public class LoginUI : NetworkBehaviour
     //WE ARE USING IT AS A HOST NOW
     public void AdminOnClick()
     {
-        //net.SetupServer();
+        net.SetupServer();
         SceneManager.LoadScene(2);
         player.isPlayer = false;
 

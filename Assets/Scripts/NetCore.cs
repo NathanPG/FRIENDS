@@ -7,12 +7,26 @@ public class NetCore : NetworkBehaviour
 {
     NetworkClient myClient;
 
+    void OnConnected(NetworkMessage message)
+    {
+        /*
+        // Do stuff when connected to the server
+
+        MyNetworkMessage messageContainer = new MyNetworkMessage();
+        messageContainer.message = "Hello server!";
+
+        // Say hi to the server when connected
+        myClient.Send(1000, messageContainer);
+        */
+        Debug.Log("CLIENT CONNECTED!");
+    }
+
     // Register the handlers for the different message types
     void RegisterClientHandlers()
     {
         // Unity have different Messages types defined in MsgType
         //client.RegisterHandler(messageID, OnMessageReceived);
-        //client.RegisterHandler(MsgType.Connect, OnConnected);
+        myClient.RegisterHandler(MsgType.Connect, OnConnected);
         //client.RegisterHandler(MsgType.Disconnect, OnDisconnected);
     }
     // Create a client and connect to the server port
@@ -42,24 +56,15 @@ public class NetCore : NetworkBehaviour
         // Connect to the server
         client.Connect(ip, port);
         /*
-        void OnConnected(NetworkMessage message)
-        {
-            // Do stuff when connected to the server
-
-            MyNetworkMessage messageContainer = new MyNetworkMessage();
-            messageContainer.message = "Hello server!";
-
-            // Say hi to the server when connected
-            client.Send(messageID, messageContainer);
-        }
-        */
+        
+        
 
         void OnDisconnected(NetworkMessage message)
         {
             // Do stuff when disconnected to the server
         }
 
-        /*
+        
         // Message received from the server
         void OnMessageReceived(NetworkMessage netMessage)
         {
@@ -73,6 +78,10 @@ public class NetCore : NetworkBehaviour
         */
 
     }
+    public void OnServerReceive(NetworkMessage netMsg)
+    {
+        Debug.Log("Server Received MSG!!!!!!!!!!!!!");
+    }
 
     private void RegisterServerHandlers()
     {
@@ -82,7 +91,9 @@ public class NetCore : NetworkBehaviour
 
         // Our message use his own message type.
         //NetworkServer.RegisterHandler(messageID, OnMessageReceived);
+        NetworkServer.RegisterHandler(1000, OnServerReceive);
     }
+    
 
     public void SetupServer()
     {
