@@ -7,20 +7,16 @@ using UnityEngine.Networking;
 
 public class LoginUI : MonoBehaviour
 {
+    public PlayerIndicator playerIndicator;
     public Text username;
-    public GameObject player_pre;
-    GameObject spawned_player;
     bool isStart;
 
 
     //TODO: MORE PORT NUMBERS
     public void LoginOnClick()
     {
+        playerIndicator.isPlayer = true;
         SceneManager.LoadScene(2);
-        spawned_player = Instantiate(player_pre);
-        spawned_player.GetComponent<Player>().isPlayer = true;
-        NetworkServer.Spawn(spawned_player);
-        
         /*
         if (username.text != "")
         {
@@ -37,10 +33,8 @@ public class LoginUI : MonoBehaviour
     //WE ARE USING IT AS A HOST NOW
     public void AdminOnClick()
     {
+        playerIndicator.isPlayer = false;
         SceneManager.LoadScene(2);
-        spawned_player = Instantiate(player_pre);
-        spawned_player.GetComponent<Player>().isPlayer = false;
-        NetworkServer.Spawn(spawned_player);
     }
 
     private void Start()

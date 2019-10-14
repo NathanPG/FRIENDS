@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class NetCore : NetworkBehaviour
+public class NetCore : MonoBehaviour
 {
+    public GameObject player_pre;
+    GameObject spawned_player;
     NetworkClient myClient;
+    public bool isPlayer;
 
-    void OnConnected(NetworkMessage message)
+    void OnConnected(NetworkMessage netMsg)
     {
         /*
         // Do stuff when connected to the server
@@ -93,7 +96,11 @@ public class NetCore : NetworkBehaviour
         //NetworkServer.RegisterHandler(messageID, OnMessageReceived);
         NetworkServer.RegisterHandler(1000, OnServerReceive);
     }
-    
+    void OnApplicationQuit()
+    {
+        NetworkServer.Shutdown();
+
+    }
 
     public void SetupServer()
     {
@@ -114,7 +121,6 @@ public class NetCore : NetworkBehaviour
         config.AddChannel(QosType.UnreliableFragmented);
 
         var ht = new HostTopology(config, maxConnections);
-
         if (!NetworkServer.Configure(ht))
         {
             Debug.Log("No server created, error on the configuration definition");
@@ -128,12 +134,7 @@ public class NetCore : NetworkBehaviour
             else
                 Debug.Log("No server created, could not listen to the port: " + port);
         }
-        void OnApplicationQuit()
-        {
-            NetworkServer.Shutdown();
-            
-        }
-
+        
         /*
         void OnClientConnected(NetworkMessage netMessage)
         {
@@ -172,8 +173,29 @@ public class NetCore : NetworkBehaviour
 
     }
 
+    /*
     void OnApplicationQuit()
     {
         NetworkServer.Shutdown();
+    }
+    */
+
+    private void Start()
+    {
+        
+        if (GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>().isPlayer)
+        {
+            SetupClient();
+            spawned_player = Instantiate(player_pre);
+            spawned_player.GetComponent<Player>().isPlayer = true;
+            NetworkServer.Spawn(spawned_player);
+        }
+        else
+        {
+            SetupServer();
+            spawned_player = Instantiate(player_pre);
+            spawned_player.GetComponent<Player>().isPlayer = false;
+            NetworkServer.Spawn(spawned_player);
+        }
     }
 }

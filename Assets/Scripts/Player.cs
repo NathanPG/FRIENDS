@@ -8,7 +8,6 @@ public class Player : NetworkBehaviour
     public bool isPlayer;
     public float movespeed = 1f;
     Vector2 direction = new Vector2();
-    public NetCore net;
 
     public void MOVE()
     {
@@ -36,12 +35,12 @@ public class Player : NetworkBehaviour
         //If this is a player
         if (isPlayer)
         {
-            net.SetupClient();
+            Debug.Log("This is a player object");
         }
         //If this is a host
         else
         {
-            net.SetupServer();
+            Debug.Log("This is a server object");
         }
     }
 
