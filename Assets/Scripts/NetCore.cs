@@ -176,5 +176,4 @@ public class NetCore : NetworkBehaviour
     {
         NetworkServer.Shutdown();
     }
-
 }

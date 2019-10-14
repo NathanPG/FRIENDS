@@ -5,22 +5,22 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
-public class LoginUI : NetworkBehaviour
+public class LoginUI : MonoBehaviour
 {
-    public string Port;
-    public string IpAddress;
     public Text username;
-    public Player player;
-    public NetCore net;
+    public GameObject player_pre;
+    GameObject spawned_player;
     bool isStart;
 
 
     //TODO: MORE PORT NUMBERS
     public void LoginOnClick()
     {
-        net.SetupClient();
         SceneManager.LoadScene(2);
-        player.isPlayer = true;
+        spawned_player = Instantiate(player_pre);
+        spawned_player.GetComponent<Player>().isPlayer = true;
+        NetworkServer.Spawn(spawned_player);
+        
         /*
         if (username.text != "")
         {
@@ -37,10 +37,10 @@ public class LoginUI : NetworkBehaviour
     //WE ARE USING IT AS A HOST NOW
     public void AdminOnClick()
     {
-        net.SetupServer();
         SceneManager.LoadScene(2);
-        player.isPlayer = false;
-
+        spawned_player = Instantiate(player_pre);
+        spawned_player.GetComponent<Player>().isPlayer = false;
+        NetworkServer.Spawn(spawned_player);
     }
 
     private void Start()

@@ -8,6 +8,8 @@ public class Player : NetworkBehaviour
     public bool isPlayer;
     public float movespeed = 1f;
     Vector2 direction = new Vector2();
+    public NetCore net;
+
     public void MOVE()
     {
         if (Input.GetKey(KeyCode.A))
@@ -34,12 +36,12 @@ public class Player : NetworkBehaviour
         //If this is a player
         if (isPlayer)
         {
-
+            net.SetupClient();
         }
         //If this is a host
         else
         {
-
+            net.SetupServer();
         }
     }
 
