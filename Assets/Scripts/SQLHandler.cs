@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 
-public class SQLtest : MonoBehaviour
+public class SQLHandler : MonoBehaviour
 {
     /// <summary>
     /// 建立数据库连接
