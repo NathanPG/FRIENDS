@@ -268,7 +268,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1613899268}
+      - m_Target: {fileID: 0}
         m_MethodName: DisconnectOnClick
         m_Mode: 1
         m_Arguments:
@@ -487,9 +487,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1613899267}
-  - component: {fileID: 1613899268}
+  - component: {fileID: 1613899269}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: NetCore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -509,7 +509,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1613899268
+--- !u!114 &1613899269
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -518,9 +518,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1613899266}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50f483039f1c50b46ba021263ad2c53e, type: 3}
+  m_Script: {fileID: 11500000, guid: 1337d6aefeb35b242b0fcf44f572b22b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player_pre: {fileID: 8438458219294261470, guid: 119eb3ce68da86b4fa7780e562a7b48f,
+    type: 3}
+  isPlayer: 0
 --- !u!1 &1738016406
 GameObject:
   m_ObjectHideFlags: 0

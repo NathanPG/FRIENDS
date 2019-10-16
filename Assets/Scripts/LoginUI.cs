@@ -5,19 +5,17 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
-public class LoginUI : NetworkBehaviour
+public class LoginUI : MonoBehaviour
 {
-    public string Port;
-    public string IpAddress;
+    public PlayerIndicator playerIndicator;
     public Text username;
     bool isStart;
-    //public GameObject warningPanel;
+
 
     //TODO: MORE PORT NUMBERS
     public void LoginOnClick()
     {
-        NetworkManager.singleton.networkPort = 9878;
-        NetworkManager.singleton.StartClient();
+        playerIndicator.isPlayer = true;
         SceneManager.LoadScene(2);
         /*
         if (username.text != "")
@@ -35,9 +33,7 @@ public class LoginUI : NetworkBehaviour
     //WE ARE USING IT AS A HOST NOW
     public void AdminOnClick()
     {
-        NetworkManager.singleton.networkAddress = "localhost";
-        NetworkManager.singleton.networkPort = 9877;
-        NetworkManager.singleton.StartHost();
+        playerIndicator.isPlayer = false;
         SceneManager.LoadScene(2);
     }
 
