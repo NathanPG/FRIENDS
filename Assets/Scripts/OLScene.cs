@@ -8,15 +8,7 @@ public class OLScene : NetworkBehaviour
 {
     public void DisconnectOnClick()
     {
-        if (isClient)
-        {
-            NetworkManager.singleton.StopClient();
-        }
-        else
-        {
-            NetworkManager.singleton.StopHost();
-        }
-        SceneManager.LoadScene(0);
+      
     }
     // Start is called before the first frame update
     void Start()

@@ -60,13 +60,13 @@ public class SQLtest : MonoBehaviour
     ///  user
     ///  task
     ///  (X) addUsr(String name, String pwd)
-    ///  () searchUsr(String name, String pwd)
+    ///  (X) searchUsr(String name, String pwd)
     ///  () addCoin(String name, int coin)
     ///  () addExp(Strig name, int exp)
     ///  () losCoin(String name, int coin)
     /// 
-    ///  () getTask()
-    ///  () addTask(String title, String content, int coin)
+    ///  (X) getTsk()
+    ///  () addTsk(String title, String content, int coin)
     ///  () deleteTask(String title)
     ///  
     /// </summary>
@@ -90,8 +90,8 @@ public class SQLtest : MonoBehaviour
         {
 
             Debug.Log("Start run");
-            String SetUsr = " CREATE TABLE usr ( name CHAR(32) PRIMARY KEY , pwd CHAR(32) NOT NULL , coin int DEFAULT 100, exp int DEFAULT 0 );";
-            String SetTsk = " CREATE TABLE tsk ( id int, content CHAR(32), coin int, exp int);";
+            String SetUsr = "CREATE TABLE usr ( name CHAR(32) PRIMARY KEY , pwd CHAR(32) NOT NULL , coin int DEFAULT 100, exp int DEFAULT 0 );";
+            String SetTsk = "CREATE TABLE tsk ( id int AUTO_INCREMENT, title CHAR(32) , content CHAR(320), coin int, exp int, owner CHAR(32) NOT NULL, taker CHAR(32) );";
             Debug.Log("unable to run");
             MySqlCommand setBaseUsr = new MySqlCommand(SetUsr);
             setBaseUsr.Connection = sqlConn;
@@ -143,7 +143,6 @@ public class SQLtest : MonoBehaviour
             Console.Write(ex.Message);
             return false;
         }
-
         return true;
     }
 
@@ -198,11 +197,96 @@ public class SQLtest : MonoBehaviour
         {
             sqlConn.Close();
 
+            Console.Write("searchUsr Usr may can not work");
+            Console.Write(ex.Message);
+
             result["Error"] = "have problem in finding Usr";
         }
         return result;
     }
 
+
+    public Dictionary<string, string> getTsk()
+    {
+        Dictionary<string, string> result = new Dictionary<string, string>();
+        MySqlConnection sqlConn = GetSqlConn();
+        try
+        {
+            sqlConn.Open();
+
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.Message);
+            result["Error"] = "Unable to Connect to DB";
+            return result;
+        }
+
+        try
+        {
+            String strsql = "SELECT * FROM tsk;";
+            MySqlCommand sqlComm = new MySqlCommand(strsql, sqlConn);
+            MySqlDataReader sqlRes = sqlComm.ExecuteReader();
+            
+            while(sqlRes.Read())
+            {
+                int id = sqlRes[0]; 
+                string content = sqlRes["content"];
+                int coin = sqlRes["coin"];
+                int exp  = sqlRes["exp"];
+                string owner = sqlRes["owner"];
+
+                string row = content+"|"+coin.ToString()+"|"+exp.ToString()+"|"+owner;
+                reuslt.Add(id.ToString(), row);
+            }            
+        }
+        catch (Exception ex)
+        {
+            sqlConn.Close();
+
+            Console.Write("getTsk  may can not work");
+            Console.Write(ex.Message);
+
+            result["Error"] = "have problem in finding Tsk" + ex.Message ;
+        }
+        return result;
+    }
+
+
+    public Boolean addTsk(String title, String content, int coin, String owner)
+    {
+        MySqlConnection sqlConn = GetSqlConn();
+        try
+        {
+            sqlConn.Open();
+
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.Message);
+            return true; 
+        }
+
+        try
+        {
+            String strUsr = "INSERT tsk(title , content, coin, owner) VALUES (@title, @content, @coin, @owner);";
+            MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
+            instUsr.Parameters.AddWithValue("@title", title);
+            instUsr.Parameters.AddWithValue("@contnet", content);
+            instUsr.Parameters.AddWithValue("@coin", coin);
+            instUsr.Parameters.AddWithValue("owner",owner);
+            instUsr.ExecuteNonQuery();
+            sqlConn.Close();
+        }
+        catch (Exception ex)
+        {
+            sqlConn.Close();
+            Console.Write("INSERT INTO Tsk may can not work");
+            Console.Write(ex.Message);
+            return false;
+        }
+        return true;
+    }
 
     private void Start()
     {
