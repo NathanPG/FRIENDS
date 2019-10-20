@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Networking.NetworkSystem;
 
 public class NetCore : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class NetCore : MonoBehaviour
     NetworkClient myClient;
     public bool isPlayer;
 
-    void OnConnected(NetworkMessage netMsg)
+    void OnClinetConnected(NetworkMessage netMsg)
     {
         /*
         // Do stuff when connected to the server
@@ -29,9 +30,10 @@ public class NetCore : MonoBehaviour
     {
         // Unity have different Messages types defined in MsgType
         //client.RegisterHandler(messageID, OnMessageReceived);
-        myClient.RegisterHandler(MsgType.Connect, OnConnected);
+        myClient.RegisterHandler(MsgType.Connect, OnClinetConnected);
         //client.RegisterHandler(MsgType.Disconnect, OnDisconnected);
     }
+
     // Create a client and connect to the server port
     public void SetupClient()
     {
@@ -39,10 +41,8 @@ public class NetCore : MonoBehaviour
         string ip = "localhost";
 
         // The id we use to identify our messages and register the handler
-        short messageID = 1000;
+        short TESTID = 1000;
 
-        // The network client
-        NetworkClient client;
         var config = new ConnectionConfig();
 
         // Config the Channels we will use
@@ -50,18 +50,18 @@ public class NetCore : MonoBehaviour
         config.AddChannel(QosType.UnreliableFragmented);
 
         // Create the client ant attach the configuration
-        client = new NetworkClient();
-        client.Configure(config, 1);
+        myClient = new NetworkClient();
+        myClient.Configure(config, 1);
 
         // Register the handlers for the different network messages
         RegisterClientHandlers();
 
         // Connect to the server
-        client.Connect(ip, port);
-        /*
-        
-        
+        myClient.Connect(ip, port);
 
+        var TESTMSG = new StringMessage("CLIENT MIAO IS HERE!");
+        //myClient.Send(TESTID, TESTMSG);
+        /*
         void OnDisconnected(NetworkMessage message)
         {
             // Do stuff when disconnected to the server
@@ -79,23 +79,10 @@ public class NetCore : MonoBehaviour
             Debug.Log("Message received: " + objectMessage.message);
         }
         */
-
-    }
-    public void OnServerReceive(NetworkMessage netMsg)
-    {
-        Debug.Log("Server Received MSG!!!!!!!!!!!!!");
     }
 
-    private void RegisterServerHandlers()
-    {
-        // Unity have different Messages types defined in MsgType
-        //NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
-        //NetworkServer.RegisterHandler(MsgType.Disconnect, OnClientDisconnected);
+    
 
-        // Our message use his own message type.
-        //NetworkServer.RegisterHandler(messageID, OnMessageReceived);
-        NetworkServer.RegisterHandler(1000, OnServerReceive);
-    }
     void OnApplicationQuit()
     {
         NetworkServer.Shutdown();
@@ -113,7 +100,7 @@ public class NetCore : MonoBehaviour
         Application.runInBackground = true;
         // Use this for initialization
         // Register handlers for the types of messages we can receive
-        RegisterServerHandlers();
+        //RegisterServerHandlers();
 
         var config = new ConnectionConfig();
         // There are different types of channels you can use, check the official documentation
@@ -180,22 +167,74 @@ public class NetCore : MonoBehaviour
     }
     */
 
+    const short MESSAGE_ID = 1002;
+    const short MESSAGE_ID0 = 1003;
+
+    public void OnClientConnected(NetworkMessage netMsg)
+    {
+        Debug.Log("CLINET CONNECTED!");
+        NetworkManager.singleton.client.Send(MESSAGE_ID, new StringMessage("MIAO"));
+    }
+
+    public void OnServerReceive(NetworkMessage netMsg)
+    {
+        Debug.Log("Server Received MSG!" + netMsg);
+        NetworkServer.SendToAll(MESSAGE_ID0, new StringMessage("I HEARED YOUR MIAO"));
+    }
+    public void OnClientReceive(NetworkMessage netMsg)
+    {
+        Debug.Log("Client Received MSG!" + netMsg);
+    }
+    bool msg_sent = false;
+    private void Update()
+    {
+        if (NetworkServer.active)
+        {
+            //Debug.Log("Server Active!");
+        }
+        if(GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>().isPlayer && 
+            NetworkServer.active && !msg_sent && NetworkManager.singleton.client.isConnected)
+        {
+            Debug.Log("CLIENT MSG SENT");
+            msg_sent = true;
+            NetworkManager.singleton.client.Send(MESSAGE_ID, new StringMessage("MIAO"));
+        }
+    }
     private void Start()
     {
         
         if (GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>().isPlayer)
         {
-            SetupClient();
-            spawned_player = Instantiate(player_pre);
-            spawned_player.GetComponent<Player>().isPlayer = true;
-            NetworkServer.Spawn(spawned_player);
+            Debug.Log("This is client");
+            //SetupClient();
+            NetworkManager.singleton.networkPort = 9999;
+            //NetworkManager.singleton.networkAddress = "localhost";
+            NetworkManager.singleton.StartClient();
+            NetworkManager.singleton.client.Connect("localhost", 9999);
+            NetworkManager.singleton.client.RegisterHandler(MESSAGE_ID0, OnClientReceive);
         }
         else
         {
-            SetupServer();
-            spawned_player = Instantiate(player_pre);
-            spawned_player.GetComponent<Player>().isPlayer = false;
-            NetworkServer.Spawn(spawned_player);
+            //SetupServer();
+            NetworkManager.singleton.networkPort = 9999;
+
+            //NetworkManager.singleton.networkPort = 10000;
+            //var config = new ConnectionConfig();
+            // There are different types of channels you can use, check the official documentation
+            //config.AddChannel(QosType.ReliableFragmented);
+            //config.AddChannel(QosType.UnreliableFragmented);
+
+            //THIS START A NetworkServer
+            NetworkManager.singleton.StartHost();
+            //NetworkServer.Listen(9999);
+            NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
+            NetworkServer.RegisterHandler(MESSAGE_ID, OnServerReceive);
+
+            
+            //spawned_player = Instantiate(player_pre);
+            //spawned_player.GetComponent<Player>().isPlayer = false;
+            //NetworkServer.Spawn(spawned_player);
+            
         }
     }
 }

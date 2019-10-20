@@ -16,7 +16,7 @@ public class LoginUI : MonoBehaviour
     public void LoginOnClick()
     {
         playerIndicator.isPlayer = true;
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(1);
         /*
         if (username.text != "")
         {
@@ -34,7 +34,7 @@ public class LoginUI : MonoBehaviour
     public void AdminOnClick()
     {
         playerIndicator.isPlayer = false;
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(1);
     }
 
     private void Start()

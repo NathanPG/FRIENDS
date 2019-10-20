@@ -5,32 +5,55 @@ using UnityEngine.Networking;
 
 public class Player : NetworkBehaviour
 {
-    public bool isPlayer;
     public float movespeed = 1f;
-    Vector2 direction = new Vector2();
 
     public void MOVE()
     {
-        Debug.Log("fk my self");
+        if (Input.GetKey(KeyCode.W))
+
+        {
+
+            this.gameObject.transform.Translate(Vector3.forward * Time.deltaTime);
+
+        }
+
+        if (Input.GetKey(KeyCode.S))
+
+        {
+
+            this.gameObject.transform.Translate(Vector3.back * Time.deltaTime);
+
+        }
+
+        if (Input.GetKey(KeyCode.A))
+
+        {
+
+            this.gameObject.transform.Translate(Vector3.left * Time.deltaTime);
+
+        }
+
+        if (Input.GetKey(KeyCode.D))
+
+        {
+
+            this.gameObject.transform.Translate(Vector3.right * Time.deltaTime);
+
+        }
+
     }
     // Start is called before the first frame update
     void Start()
     {
-        //If this is a player
-        if (isPlayer)
-        {
-            Debug.Log("This is a player object");
-        }
-        //If this is a host
-        else
-        {
-            Debug.Log("This is a server object");
-        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-      
+        if (isLocalPlayer)
+        {
+            MOVE();
+        }
     }
 }
