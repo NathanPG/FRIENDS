@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Player : NetworkBehaviour
+public class PlayerController : MonoBehaviour
 {
     public float movespeed = 1f;
 
@@ -12,7 +12,6 @@ public class Player : NetworkBehaviour
         if (Input.GetKey(KeyCode.W))
 
         {
-
             this.gameObject.transform.Translate(Vector3.forward * Time.deltaTime);
 
         }
@@ -51,9 +50,12 @@ public class Player : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        MOVE();
+        /*
         if (isLocalPlayer)
         {
-            MOVE();
+            
         }
+        */
     }
 }
