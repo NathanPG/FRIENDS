@@ -9,15 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/_StartUp.unity
     guid: 4db72e4e455a63245b6e4707fd5caca6
   - enabled: 1
-    path: Assets/Scenes/OfflineScene.unity
-    guid: 51c43759c6002e543ac0aa9046797287
-  - enabled: 1
     path: Assets/Scenes/OnlineScene.unity
     guid: 6e03cd2f26dbe704c91bda35ea4311cd
-  - enabled: 1
-    path: Assets/Scenes/Admin_UI.unity
-    guid: 1cd4f00813202fe40b3db49545278930
-  - enabled: 0
-    path: Assets/Scenes/TEMP/Task_Interface.unity
-    guid: 530381aa6806018448135c53524092de
   m_configObjects: {}
