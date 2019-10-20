@@ -14,7 +14,7 @@ public class SQLtest : MonoBehaviour
     {
         // 数据库
         MySqlConnection sqlConn;
-        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=0129;port=3306";
+        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=212810;port=4323";
         sqlConn = new MySqlConnection(connStr);
         return sqlConn;
     }
@@ -230,14 +230,14 @@ public class SQLtest : MonoBehaviour
             
             while(sqlRes.Read())
             {
-                int id = sqlRes[0]; 
-                string content = sqlRes["content"];
-                int coin = sqlRes["coin"];
-                int exp  = sqlRes["exp"];
-                string owner = sqlRes["owner"];
+                int id = (int)sqlRes[0]; 
+                string content = (string)sqlRes["content"];
+                int coin = (int)sqlRes["coin"];
+                int exp  = (int)sqlRes["exp"];
+                string owner = (string)sqlRes["owner"];
 
                 string row = content+"|"+coin.ToString()+"|"+exp.ToString()+"|"+owner;
-                reuslt.Add(id.ToString(), row);
+                result.Add(id.ToString(), row);
             }            
         }
         catch (Exception ex)
