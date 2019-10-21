@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkTransform
 {
-    public float movespeed = 1f;
-
-    public void MOVE()
+    public void Move()
     {
         if (Input.GetKey(KeyCode.W))
 
@@ -47,15 +45,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        MOVE();
-        /*
         if (isLocalPlayer)
         {
-            
+            Move();
         }
-        */
     }
 }
