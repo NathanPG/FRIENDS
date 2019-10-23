@@ -5,4 +5,5 @@ using UnityEngine;
 public class PlayerIndicator : MonoBehaviour
 {
     public bool isPlayer;
+    public string Username;
 }

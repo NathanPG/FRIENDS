@@ -8,7 +8,15 @@ using UnityEngine.Networking;
 public class LoginUI : MonoBehaviour
 {
     public PlayerIndicator playerIndicator;
-    public Text username;
+    //public Text username;
+    public SQLHandler sql;
+
+    public string username;
+    public string pwd;
+    public GameObject warning;
+
+    public Dictionary<string, string> dbcheck;
+
     bool isStart;
 
 
@@ -16,17 +24,28 @@ public class LoginUI : MonoBehaviour
     public void LoginOnClick()
     {
         playerIndicator.isPlayer = true;
-        SceneManager.LoadScene(1);
+
         /*
-        if (username.text != "")
+        dbcheck = sql.searchUsr(username, pwd);
+        
+        //SHOW WARNING MESSAGE
+        if (dbcheck.ContainsKey("Error"))
         {
-            //
+            warning.SetActive(true);
+            warning.GetComponent<Text>().text = dbcheck["Error"];
         }
         else
         {
-            //warningPanel.SetActive(true);
+            playerIndicator.Username = username;
+            SceneManager.LoadScene(1);
         }
         */
+        SceneManager.LoadScene(1);
+    }
+
+    public void warningClose()
+    {
+        warning.SetActive(false);
     }
 
     //THIS IS GOING TO BE A SERVER

@@ -10,55 +10,66 @@ public class NetCore : MonoBehaviour
     GameObject spawned_player;
     NetworkClient myClient;
     public bool isPlayer;
-    const short MESSAGE_ID = 1002;
-    const short MESSAGE_ID0 = 1003;
+    public string user_name;
+    public PlayerIndicator playerIndicator;
 
-    public void OnClientConnected(NetworkMessage netMsg)
+    /*
+    public class ProfileMsg : MessageBase
     {
-        Debug.Log("CLINET CONNECTED!");
-        NetworkManager.singleton.client.Send(MESSAGE_ID, new StringMessage("MIAO"));
+        public string username;
+        public int exp;
+        public int gold;
+        public List<Task> accepted_task;
     }
-    
-    public void OnServerReceive(NetworkMessage netMsg)
-    {
-        Debug.Log("Server Received MSG!" + netMsg);
-        NetworkServer.SendToAll(MESSAGE_ID0, new StringMessage("I HEARED YOUR MIAO"));
-    }
+    */
 
+    //client get profile
     public void OnClientReceive(NetworkMessage netMsg)
     {
-        Debug.Log("Client Received MSG!" + netMsg);
+        Debug.Log("Client Received Player Profile!");
+        //if(user name matches)
+            //CLIENT STORE ALL DATA
+    }
+
+    //Server got client name, send profile
+    public void ServerReceiveName(NetworkMessage netMsg)
+    {
+        //SEND USER INFORMATION TO THE CLIENT
+        //NetworkServer.SendToAll(8889, ProfileMsg);
     }
 
     bool msg_sent = false;
+
     private void Update()
     {
         if (NetworkServer.active)
         {
             //Debug.Log("Server Active!");
         }
-        if(GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>().isPlayer && 
-            NetworkServer.active && !msg_sent && NetworkManager.singleton.client.isConnected)
-        {
-            Debug.Log("CLIENT MSG SENT");
-            msg_sent = true;
-            NetworkManager.singleton.client.Send(MESSAGE_ID, new StringMessage("MIAO"));
-        }
     }
 
+    const short NameChannelId = 8888;
     private void Start()
     {
-        
+        user_name = playerIndicator.Username;
+        //SEND USERNAME TO SERVER
+
+        //SERVER RETURN PLAYER PROFILE
+
+        //Client
         if (GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>().isPlayer)
         {
             Debug.Log("This is client");
-            //SetupClient();
+
             NetworkManager.singleton.networkPort = 9999;
-            //NetworkManager.singleton.networkAddress = "localhost";
             NetworkManager.singleton.StartClient();
             NetworkManager.singleton.client.Connect("localhost", 9999);
-            NetworkManager.singleton.client.RegisterHandler(MESSAGE_ID0, OnClientReceive);
+
+            //SEND USERNAME TO SERVER
+            NetworkManager.singleton.client.Send(8888, new StringMessage(user_name));
         }
+
+        //Host
         else
         {
             //SetupServer();
@@ -72,14 +83,7 @@ public class NetCore : MonoBehaviour
 
             //THIS START A NetworkServer
             NetworkManager.singleton.StartHost();
-            //NetworkServer.Listen(9999);
-            NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
-            NetworkServer.RegisterHandler(MESSAGE_ID, OnServerReceive);
-
-            
-            //spawned_player = Instantiate(player_pre);
-            //spawned_player.GetComponent<Player>().isPlayer = false;
-            //NetworkServer.Spawn(spawned_player);
+            //NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         }
     }
 
