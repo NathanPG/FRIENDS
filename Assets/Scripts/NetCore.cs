@@ -23,6 +23,31 @@ public class NetCore : MonoBehaviour
     }
     */
 
+    #region MsgTEST
+    public void TestServerReceive(NetworkMessage netMsg)
+    {
+        Debug.Log("SERVER RECEIVED THE MSG" + netMsg.ToString());
+    }
+    public void TestClientReceive(NetworkMessage netMsg)
+    {
+        Debug.Log("CLINET RECEIVED THE MSG" + netMsg.ToString());
+    }
+
+    public void SendStringOnClick()
+    {
+        //Client
+        if (playerIndicator.isPlayer)
+        {
+            NetworkManager.singleton.client.Send(1234, new StringMessage("client msg"));
+        }
+        //Servers
+        else
+        {
+            NetworkServer.SendToAll(4321, new StringMessage("server msg"));
+        }
+    }
+    #endregion
+
     //client get profile
     public void OnClientReceive(NetworkMessage netMsg)
     {
@@ -51,13 +76,14 @@ public class NetCore : MonoBehaviour
     const short NameChannelId = 8888;
     private void Start()
     {
+        playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
         user_name = playerIndicator.Username;
         //SEND USERNAME TO SERVER
 
         //SERVER RETURN PLAYER PROFILE
 
         //Client
-        if (GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>().isPlayer)
+        if (playerIndicator.isPlayer)
         {
             Debug.Log("This is client");
 
@@ -67,6 +93,7 @@ public class NetCore : MonoBehaviour
 
             //SEND USERNAME TO SERVER
             NetworkManager.singleton.client.Send(8888, new StringMessage(user_name));
+            NetworkManager.singleton.client.RegisterHandler(4321, TestClientReceive);
         }
 
         //Host
@@ -83,6 +110,7 @@ public class NetCore : MonoBehaviour
 
             //THIS START A NetworkServer
             NetworkManager.singleton.StartHost();
+            NetworkServer.RegisterHandler(1234, TestServerReceive);
             //NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         }
     }
