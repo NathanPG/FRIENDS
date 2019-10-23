@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 
-public class SQLtest : MonoBehaviour
+public class SQLHandler : MonoBehaviour
 {
     /// <summary>
     /// 建立数据库连接
@@ -14,7 +14,7 @@ public class SQLtest : MonoBehaviour
     {
         // 数据库
         MySqlConnection sqlConn;
-        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=212810;port=4323";
+        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=0129;port=3306";
         sqlConn = new MySqlConnection(connStr);
         return sqlConn;
     }
@@ -38,19 +38,20 @@ public class SQLtest : MonoBehaviour
             return;
         }
 
-/*
         try
         {
-            Dictionary<string, string> result = searchUsr("shabi", "233");
-            Debug.Log(result["coin"]);
-            Debug.Log(result["exp"]);
+            if(addTsk("shabi", "kill shabi", 233,"tiancai") )
+            {
+
+            }
+            Dictionary<string, string> result = getTsk() ;
+            Debug.Log(result);
         }
         catch (Exception ex)
         {
             Debug.Log("Error: Unable to add SHabi");
             Debug.Log(ex.Message);
         }
-*/
 
     }
 
@@ -91,7 +92,7 @@ public class SQLtest : MonoBehaviour
 
             Debug.Log("Start run");
             String SetUsr = "CREATE TABLE usr ( name CHAR(32) PRIMARY KEY , pwd CHAR(32) NOT NULL , coin int DEFAULT 100, exp int DEFAULT 0 );";
-            String SetTsk = "CREATE TABLE tsk ( id int AUTO_INCREMENT, title CHAR(32) , content CHAR(320), coin int, exp int, owner CHAR(32) NOT NULL, taker CHAR(32) );";
+            String SetTsk = "CREATE TABLE tsk ( id int AUTO_INCREMENT PRIMARY KEY, title CHAR(32) , content CHAR(255), coin int, exp int, owner CHAR(32) NOT NULL, taker CHAR(32) );";
             Debug.Log("unable to run");
             MySqlCommand setBaseUsr = new MySqlCommand(SetUsr);
             setBaseUsr.Connection = sqlConn;
@@ -274,7 +275,7 @@ public class SQLtest : MonoBehaviour
             instUsr.Parameters.AddWithValue("@title", title);
             instUsr.Parameters.AddWithValue("@contnet", content);
             instUsr.Parameters.AddWithValue("@coin", coin);
-            instUsr.Parameters.AddWithValue("owner",owner);
+            instUsr.Parameters.AddWithValue("@owner",owner);
             instUsr.ExecuteNonQuery();
             sqlConn.Close();
         }
