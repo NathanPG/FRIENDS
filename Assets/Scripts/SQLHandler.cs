@@ -40,16 +40,19 @@ public class SQLHandler : MonoBehaviour
 
         try
         {
-            if(addTsk("shabi", "kill shabi", 233,"tiancai") )
+            Dictionary<string, string> result = getTsk() ;
+
+            List<string> test = new List<string>(result.Keys);
+            Debug.Log(test.Count);
+            for (int i = 0; i < test.Count; i++)
             {
+                Debug.Log( result[test[i] ] );
 
             }
-            Dictionary<string, string> result = getTsk() ;
-            Debug.Log(result);
         }
         catch (Exception ex)
         {
-            Debug.Log("Error: Unable to add SHabi");
+            Debug.Log("Error: Unable to get Dict");
             Debug.Log(ex.Message);
         }
 
@@ -124,7 +127,7 @@ public class SQLHandler : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Console.Write(ex.Message);
+            Debug.Log(ex.Message);
             return false;
         }
 
@@ -140,8 +143,8 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             sqlConn.Close();
-            Console.Write("INSERT INTO Usr may can not work");
-            Console.Write(ex.Message);
+            Debug.Log("INSERT INTO Usr may can not work");
+            Debug.Log(ex.Message);
             return false;
         }
         return true;
@@ -231,13 +234,10 @@ public class SQLHandler : MonoBehaviour
             
             while(sqlRes.Read())
             {
-                int id = (int)sqlRes[0]; 
+                int id = (int)sqlRes["id"]; 
                 string content = (string)sqlRes["content"];
-                int coin = (int)sqlRes["coin"];
-                int exp  = (int)sqlRes["exp"];
                 string owner = (string)sqlRes["owner"];
-
-                string row = content+"|"+coin.ToString()+"|"+exp.ToString()+"|"+owner;
+                string row = content+"|"+owner;
                 result.Add(id.ToString(), row);
             }            
         }
@@ -248,7 +248,7 @@ public class SQLHandler : MonoBehaviour
             Console.Write("getTsk  may can not work");
             Console.Write(ex.Message);
 
-            result["Error"] = "have problem in finding Tsk" + ex.Message ;
+            result["Error"] = "have problem in finding Tsk" + ex.ToString() ;
         }
         return result;
     }
@@ -264,7 +264,7 @@ public class SQLHandler : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Console.Write(ex.Message);
+            Debug.Log(ex.Message);
             return true; 
         }
 
@@ -273,7 +273,7 @@ public class SQLHandler : MonoBehaviour
             String strUsr = "INSERT tsk(title , content, coin, owner) VALUES (@title, @content, @coin, @owner);";
             MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
             instUsr.Parameters.AddWithValue("@title", title);
-            instUsr.Parameters.AddWithValue("@contnet", content);
+            instUsr.Parameters.AddWithValue("@content",content);
             instUsr.Parameters.AddWithValue("@coin", coin);
             instUsr.Parameters.AddWithValue("@owner",owner);
             instUsr.ExecuteNonQuery();
@@ -282,8 +282,8 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             sqlConn.Close();
-            Console.Write("INSERT INTO Tsk may can not work");
-            Console.Write(ex.Message);
+            Debug.Log("INSERT INTO Tsk may can not work");
+            Debug.Log(ex.ToString() );
             return false;
         }
         return true;
