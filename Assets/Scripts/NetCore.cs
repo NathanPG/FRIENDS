@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
+using UnityEngine.UI;
 
 public class NetCore : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class NetCore : MonoBehaviour
     }
     */
 
+    public InputField Testinput;
     #region MsgTEST
     public void TestServerReceive(NetworkMessage netMsg)
     {
@@ -38,12 +40,12 @@ public class NetCore : MonoBehaviour
         //Client
         if (playerIndicator.isPlayer)
         {
-            NetworkManager.singleton.client.Send(1234, new StringMessage("client msg"));
+            NetworkManager.singleton.client.Send(1234, new StringMessage(Testinput.text));
         }
         //Servers
         else
         {
-            NetworkServer.SendToAll(4321, new StringMessage("server msg"));
+            NetworkServer.SendToAll(4321, new StringMessage(Testinput.text));
         }
     }
     #endregion
