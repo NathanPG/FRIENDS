@@ -7,12 +7,18 @@ using System.Data;
 using UnityEngine;
 
 
-[Serializable]
-public class checkMessage
+
+public class outputMessage
 {
     public Boolean success;
     public string ErrorMessage;
-    public  Dictionary<string, string[]> lst;
+    public  Dictionary<string, Dictionary<string, string> > lst;
+}
+
+public class inputMessage
+{
+    public string way;
+    public Dictionary<string, string> argument; 
 }
 
 
@@ -56,18 +62,7 @@ public class SQLHandler : MonoBehaviour
 
     public void jsontest()
     {
-        checkMessage tmp = new checkMessage();
-        tmp.success = false;
-        tmp.lst = new Dictionary<string,string[]> ();
-        tmp.lst["baba"] = new string[3];
-        tmp.lst["baba"][0] = "nihao";
-        tmp.lst["baba"][1] = "shi";
-        tmp.lst["baba"][2] = "baba";
-
-        string serializedPerson = JsonConvert.SerializeObject(tmp);
-        Debug.Log("\n\n>>>>>>>"+serializedPerson+"<<<<<\n\n\n");
-
-        checkMessage newPerson = JsonConvert.DeserializeObject<checkMessage>(serializedPerson);
+        
     }
 
     /// <summary>
@@ -75,8 +70,8 @@ public class SQLHandler : MonoBehaviour
     ///  (X) Two databse: (do the check first and then set up the database structure)
     ///  user
     ///  task
-    ///  (X) addUsr(String name, String pwd)
-    ///  (X) searchUsr(String name, String pwd)
+    ///  (X) addUsr()
+    ///  (X) searchUsr()
     ///  () addCoin(String name, int coin)
     ///  () addExp(Strig name, int exp)
     ///  () losCoin(String name, int coin)
@@ -129,8 +124,31 @@ public class SQLHandler : MonoBehaviour
 
     }
 
-    public Boolean addUsr(String name, String pwd)
+
+
+    /*
+     * string addUsr(string msg)
+     * 
+     * input msg is actually a inputMessage(I will do the serialize part): 
+     * way: "addUsr"
+     * argument [it is a dictionary]:
+     *  key(string) : value(string)
+     *  "name"       : "shabi"
+     *  "pwd"       : "wo si le"
+     * 
+     * 
+     * output msg(string)
+     * 
+     * success: True (addSuccess) / False (add doesn't success)
+     * ErrorMessage (if False) : will have the reason why it is false; 
+     * lst (if success)  : lst["result"] = a dictionary: {"name":"shabi", "pwd":"zhe shi mi ma", "coin":"100", "exp": "0"}
+     *     (False : null):
+     */ 
+    public string addUsr(string msg)
     {
+        inputMessage input = JsonConvert.DeserializeObject<inputMessage>(msg);
+        outputMessage output = new outputMessage();
+
         MySqlConnection sqlConn = GetSqlConn();
         try
         {
@@ -140,7 +158,8 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             Debug.Log(ex.Message);
-            return false;
+            output.ErrorMessage = "addUsr: Connection between mysql doesn't work correctly";
+            output.success = false;
         }
 
         try
@@ -163,7 +182,26 @@ public class SQLHandler : MonoBehaviour
     }
 
 
-    public Dictionary<string, string> searchUsr(String name, String pwd)
+    /*
+     * string search(string msg)
+     * 
+     * input msg is actually a inputMessage(I will do the serialize part): 
+     * way: "searchUsr"
+     * argument [it is a dictionary]:
+     *  key(string) : value(string)
+     *  "usr"       : "shabi"
+     *  "pwd"       : "wo si le"
+     * 
+     * 
+     * output msg(string)
+     * Defining success: there is a user 
+     *          false  : (1)there is no such a usr (2) the pwd is not correct  
+     * success: True (search Success) / False (search doesn't success)
+     * ErrorMessage (if False) : will have the reason why it is false; 
+     * lst (if success)  : lst["result"] = a dictionary: {"name":"shabi", "pwd":"zhe shi mi ma", "coin":"#", "exp": "#"}
+     *     (False : null):
+     */
+    public string searchUsr(string msg)
     {
         Dictionary<string, string> result = new Dictionary<string, string>();
 
@@ -221,8 +259,22 @@ public class SQLHandler : MonoBehaviour
         return result;
     }
 
-
-    public Dictionary<string, string> getTsk()
+    /*
+     * string getallTsk()
+     * 
+     * input msg is actually a inputMessage(I will do deserialize part): 
+     * way: "getallTsk"
+     * 
+     * 
+     * 
+     * output msg(string)
+     *   
+     * success: True (connect Success) / False (connect doesn't success)
+     * ErrorMessage (if False) : will have the reason why it is false; 
+     * lst (if success)  : lst["id"] = a dictionary: {"id":"#", "title":"X", "content":"XXX", "coin": "#" , "exp":"XX", "owner":"XX", "taker":"XX"}
+     *     (False : null):
+     */
+    public string getallTsk()
     {
         Dictionary<string, string> result = new Dictionary<string, string>();
         MySqlConnection sqlConn = GetSqlConn();
@@ -266,7 +318,27 @@ public class SQLHandler : MonoBehaviour
     }
 
 
-    public Boolean addTsk(String title, String content, int coin, String owner)
+
+    /*
+     * string addTsk(string msg)
+     * 
+     * input msg is actually a inputMessage(I will do deserialize part): 
+     * way: "addTsk"
+     * argument [it is a dictionary]:
+     *  key(string) : value(string)
+     *  "title"       : "shabi"
+     *  "content"     : "wo si le"
+     *  "coin"        : "23"
+     *  "owner"       : "woshiibaba"
+     * 
+     * output msg(string)
+     * 
+     * success: True (add Success) / False (add doesn't success)
+     * ErrorMessage (if False) : will have the reason why it is false; 
+     * lst (if success)  : lst["result"] = a dictionary: {"id":"#", "content":"XX", "content":"XX", "coin": "#" , "owner":"XXX"}
+     *     (False : null):
+     */
+    public string addTsk(string msg)
     {
         MySqlConnection sqlConn = GetSqlConn();
         try
@@ -299,6 +371,28 @@ public class SQLHandler : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    /*
+     * string takeTsk(string msg)
+     * 
+     * input msg is actually a inputMessage(I will do deserialize part): 
+     * way: "taekTsk"
+     * argument [it is a dictionary]:
+     *  key(string) : value(string)
+     *  "id"        : "XXXX"
+     *  "taker"     : "nibaba"
+     * 
+     * output msg(string)
+     * 
+     * success: True (take Success) / False (take doesn't success)
+     * ErrorMessage (if False) : will have the reason why it is false; 
+     * lst (if success)  : lst["result"] = a dictionary: {"id":"#", "content":"XX", "title":"XX", "coin": "#" , "owner":"XXX", "taker": "XXXXX"}
+     *     (False : null):
+     */
+    public string takeTsk(string msg)
+    {
+        return new outputMessage();
     }
 
     private void Start()
