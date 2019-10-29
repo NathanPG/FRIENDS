@@ -7,9 +7,10 @@ using UnityEngine.Networking;
 
 public class LoginUI : MonoBehaviour
 {
-    public PlayerIndicator playerIndicator;
+    
     //public Text username;
     public SQLHandler sql;
+    public PlayerIndicator playerIndicator;
 
     public string username;
     public string pwd;
@@ -20,14 +21,15 @@ public class LoginUI : MonoBehaviour
     public InputField loginPassword;
     public InputField signupAccount;
     public InputField signupPassword;
+    public GameObject loginUI;
 
     public Dictionary<string, string> dbcheck;
+    public NetCore netCore;
 
     bool isStart;
 
     public void LoginOnClick()
     {
-        playerIndicator.isPlayer = true;
         Debug.Log("loginAccount:" + loginAccount.text);
         Debug.Log("loginPassword:" + loginPassword.text);
         /*
@@ -41,11 +43,30 @@ public class LoginUI : MonoBehaviour
         }
         else
         {
-            playerIndicator.Username = username;
-            SceneManager.LoadScene(1);
+
         }
         */
-        //SceneManager.LoadScene(1);
+
+        //playerIndicator.isPlayer代表这是个CLIENT，需要将用户名密码发给HOST,HOST找数据库CHECK用户名密码
+        //!playerIndicator.isPlayer代表这是个HOST，可以直接找数据库CHECK用户名密码
+
+        //如果登陆成功，那就关掉登陆界面开始游戏
+        if (true)
+        {
+            loginUI.SetActive(false);
+        }
+        //如果有任何问题，那就报错
+        else
+        {
+
+        }
+        
+    }
+    //THIS IS GOING TO BE A SERVER
+    //WE ARE USING IT AS A HOST NOW
+    public void AdminOnClick()
+    {
+        loginUI.SetActive(false);
     }
 
     //Register on click
@@ -54,7 +75,18 @@ public class LoginUI : MonoBehaviour
         //Register new user to the database
         Debug.Log("signupAccount:" + signupAccount.text);
         Debug.Log("signupPassword:" + signupPassword.text);
-        signup_box.SetActive(false);
+        netCore.ClientSendName(signupAccount.text, signupPassword.text);
+        //如果没问题那就完成注册，关掉注册窗口
+        if (true)
+        {
+            signup_box.SetActive(false);
+        }
+        //如果已经被注册之类的，那就弹出error message
+        else
+        {
+
+        }
+        
     }
 
     public void warningClose()
@@ -62,15 +94,6 @@ public class LoginUI : MonoBehaviour
         warning.SetActive(false);
     }
 
-    //THIS IS GOING TO BE A SERVER
-    //WE ARE USING IT AS A HOST NOW
-    public void AdminOnClick()
-    {
-        playerIndicator.isPlayer = false;
-        SceneManager.LoadScene(1);
-    }
-
-    
     public void OpenSignUp()
     {
         signup_box.SetActive(true);
@@ -82,6 +105,7 @@ public class LoginUI : MonoBehaviour
 
     private void Start()
     {
+        playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
         isStart = false;
     }
 }

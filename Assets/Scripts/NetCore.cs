@@ -13,6 +13,7 @@ public class NetCore : MonoBehaviour
     public bool isPlayer;
     public string user_name;
     public PlayerIndicator playerIndicator;
+    public SQLHandler sql;
 
     /*
     public class ProfileMsg : MessageBase
@@ -24,16 +25,15 @@ public class NetCore : MonoBehaviour
     }
     */
 
-
     #region MsgTEST
     public InputField Testinput;
     public void TestServerReceive(NetworkMessage netMsg)
     {
-        Debug.Log("SERVER RECEIVED THE MSG" + netMsg.ToString());
+        Debug.Log("SERVER RECEIVED THE MSG" + netMsg.ReadMessage<StringMessage>().value);
     }
     public void TestClientReceive(NetworkMessage netMsg)
     {
-        Debug.Log("CLINET RECEIVED THE MSG" + netMsg.ToString());
+        Debug.Log("CLINET RECEIVED THE MSG" + netMsg.ReadMessage<StringMessage>().value);
     }
 
     public void SendStringOnClick()
@@ -52,17 +52,16 @@ public class NetCore : MonoBehaviour
     #endregion
 
     //client get profile
-    public void OnClientReceive(NetworkMessage netMsg) { 
+    public void OnClientReceiveProfile(NetworkMessage netMsg) { 
         Debug.Log("Client Received Player Profile!");
         //if(user name matches)
             //CLIENT STORE ALL DATA 
     }
 
-    //Server got client name, send profile
-    public void ServerReceiveName(NetworkMessage netMsg)
+    public void ClientSendName(string loginAccount, string loginPassword)
     {
-        //SEND USER INFORMATION TO THE CLIENT
-        //NetworkServer.SendToAll(8889, ProfileMsg);
+        //Client send Accound and Password to the server
+        //随便想一个ID NetworkManager.singleton.client.Send(想的ID, 包含账户密码的信息);
     }
 
     bool msg_sent = false;
@@ -79,7 +78,6 @@ public class NetCore : MonoBehaviour
     private void Start()
     {
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
-        user_name = playerIndicator.Username;
         //SEND USERNAME TO SERVER
 
         //SERVER RETURN PLAYER PROFILE
@@ -94,7 +92,6 @@ public class NetCore : MonoBehaviour
             NetworkManager.singleton.client.Connect("localhost", 9999);
 
             //SEND USERNAME TO SERVER
-            NetworkManager.singleton.client.Send(8888, new StringMessage(user_name));
             NetworkManager.singleton.client.RegisterHandler(4321, TestClientReceive);
         }
 
@@ -113,8 +110,21 @@ public class NetCore : MonoBehaviour
             //THIS START A NetworkServer
             NetworkManager.singleton.StartHost();
             NetworkServer.RegisterHandler(1234, TestServerReceive);
+
+            //NetworkServer.RegisterHandler(你想的ID, ServerReceiveName);
+
             //NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         }
+    }
+
+    //Server got client name, send profile
+    public void ServerReceiveName(NetworkMessage netMsg)
+    {
+        //sql.Check User
+        //sql.GET USER PROFILE
+        //SEND USER INFORMATION TO THE CLIENT
+
+        //NetworkServer.SendToAll(8889, ProfileMsg);
     }
 
     void OnApplicationQuit()

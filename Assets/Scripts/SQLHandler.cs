@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class SQLHandler : MonoBehaviour
 {
+    public PlayerIndicator playerIndicator;
     /// <summary>
     /// 建立数据库连接
     /// </summary>
@@ -291,7 +292,11 @@ public class SQLHandler : MonoBehaviour
 
     private void Start()
     {
-        OpenSql();
+        playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
+        if (!playerIndicator.isPlayer)
+        {
+            //OpenSql();
+        }
         //Debug.Log("Connection success!");
     }
 }
