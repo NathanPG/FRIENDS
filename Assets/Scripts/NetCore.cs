@@ -13,6 +13,7 @@ public class NetCore : MonoBehaviour
     public bool isPlayer;
     public string user_name;
     public PlayerIndicator playerIndicator;
+    public ProfileSys profileSys;
     public SQLHandler sql;
 
     /*
@@ -55,7 +56,10 @@ public class NetCore : MonoBehaviour
     public void OnClientReceiveProfile(NetworkMessage netMsg) { 
         Debug.Log("Client Received Player Profile!");
         //if(user name matches)
-            //CLIENT STORE ALL DATA 
+        //CLIENT STORE ALL DATA 
+        //profileSys.username = ......;
+        //profileSys.exp = .....;
+        //profileSys.gold = .........;
     }
 
     public void ClientSendName(string loginAccount, string loginPassword)

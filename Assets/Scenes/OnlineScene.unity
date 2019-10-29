@@ -7604,6 +7604,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 659666035}
   m_CullTransparentMesh: 0
+--- !u!1 &664207468
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 664207470}
+  - component: {fileID: 664207469}
+  m_Layer: 0
+  m_Name: ProfileSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &664207469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664207468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ce1ff40c53442d49b6d3cd663d08d1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  username: MIAO
+  exp: 0
+  gold: 0
+--- !u!4 &664207470
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664207468}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1093.2489, y: 586.46936, z: 99.47156}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &667681373
 GameObject:
   m_ObjectHideFlags: 0
@@ -11155,7 +11201,7 @@ RectTransform:
   - {fileID: 1727283229}
   - {fileID: 1678371668}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -11175,6 +11221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sql: {fileID: 1455470848}
+  playerIndicator: {fileID: 0}
   username: 
   pwd: 
   warning: {fileID: 9649393}
@@ -12027,7 +12074,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1129142435
 GameObject:
@@ -15784,7 +15831,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1455625207
 GameObject:
@@ -17810,7 +17857,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1613899269
 MonoBehaviour:
@@ -17829,6 +17876,7 @@ MonoBehaviour:
   isPlayer: 0
   user_name: 
   playerIndicator: {fileID: 0}
+  profileSys: {fileID: 664207469}
   sql: {fileID: 0}
   Testinput: {fileID: 1442066469}
 --- !u!1 &1615775798
