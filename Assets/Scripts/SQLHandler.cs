@@ -1,9 +1,21 @@
 ﻿using MySql.Data;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
+
+
+[Serializable]
+public class checkMessage
+{
+    public Boolean success;
+    public string ErrorMessage;
+    public  Dictionary<string, string[]> lst;
+}
+
+
 
 public class SQLHandler : MonoBehaviour
 {
@@ -24,6 +36,7 @@ public class SQLHandler : MonoBehaviour
     /// </summary>
     public void OpenSql()
     {
+        jsontest(); 
         // 数据库
         MySqlConnection sqlConn = GetSqlConn();
         try
@@ -38,24 +51,23 @@ public class SQLHandler : MonoBehaviour
             return;
         }
 
-        try
-        {
-            Dictionary<string, string> result = getTsk() ;
+        
+    }
 
-            List<string> test = new List<string>(result.Keys);
-            Debug.Log(test.Count);
-            for (int i = 0; i < test.Count; i++)
-            {
-                Debug.Log( result[test[i] ] );
+    public void jsontest()
+    {
+        checkMessage tmp = new checkMessage();
+        tmp.success = false;
+        tmp.lst = new Dictionary<string,string[]> ();
+        tmp.lst["baba"] = new string[3];
+        tmp.lst["baba"][0] = "nihao";
+        tmp.lst["baba"][1] = "shi";
+        tmp.lst["baba"][2] = "baba";
 
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.Log("Error: Unable to get Dict");
-            Debug.Log(ex.Message);
-        }
+        string serializedPerson = JsonConvert.SerializeObject(tmp);
+        Debug.Log("\n\n>>>>>>>"+serializedPerson+"<<<<<\n\n\n");
 
+        checkMessage newPerson = JsonConvert.DeserializeObject<checkMessage>(serializedPerson);
     }
 
     /// <summary>
