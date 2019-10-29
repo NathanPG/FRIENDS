@@ -24,8 +24,9 @@ public class NetCore : MonoBehaviour
     }
     */
 
-    public InputField Testinput;
+
     #region MsgTEST
+    public InputField Testinput;
     public void TestServerReceive(NetworkMessage netMsg)
     {
         Debug.Log("SERVER RECEIVED THE MSG" + netMsg.ToString());
@@ -51,11 +52,10 @@ public class NetCore : MonoBehaviour
     #endregion
 
     //client get profile
-    public void OnClientReceive(NetworkMessage netMsg)
-    {
+    public void OnClientReceive(NetworkMessage netMsg) { 
         Debug.Log("Client Received Player Profile!");
         //if(user name matches)
-            //CLIENT STORE ALL DATA
+            //CLIENT STORE ALL DATA 
     }
 
     //Server got client name, send profile

@@ -14,17 +14,22 @@ public class LoginUI : MonoBehaviour
     public string username;
     public string pwd;
     public GameObject warning;
+    public GameObject signup_box;
+
+    public InputField loginAccount;
+    public InputField loginPassword;
+    public InputField signupAccount;
+    public InputField signupPassword;
 
     public Dictionary<string, string> dbcheck;
 
     bool isStart;
 
-
-    //TODO: MORE PORT NUMBERS
     public void LoginOnClick()
     {
         playerIndicator.isPlayer = true;
-
+        Debug.Log("loginAccount:" + loginAccount.text);
+        Debug.Log("loginPassword:" + loginPassword.text);
         /*
         dbcheck = sql.searchUsr(username, pwd);
         
@@ -40,7 +45,16 @@ public class LoginUI : MonoBehaviour
             SceneManager.LoadScene(1);
         }
         */
-        SceneManager.LoadScene(1);
+        //SceneManager.LoadScene(1);
+    }
+
+    //Register on click
+    public void UserRegister()
+    {
+        //Register new user to the database
+        Debug.Log("signupAccount:" + signupAccount.text);
+        Debug.Log("signupPassword:" + signupPassword.text);
+        signup_box.SetActive(false);
     }
 
     public void warningClose()
@@ -54,6 +68,16 @@ public class LoginUI : MonoBehaviour
     {
         playerIndicator.isPlayer = false;
         SceneManager.LoadScene(1);
+    }
+
+    
+    public void OpenSignUp()
+    {
+        signup_box.SetActive(true);
+    }
+    public void CloseSignUp()
+    {
+        signup_box.SetActive(false);
     }
 
     private void Start()
