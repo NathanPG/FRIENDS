@@ -4,7 +4,28 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
+public class outputMessage
+{
+    public Boolean success;
+    public string ErrorMessage;
+    public Dictionary<string, Dictionary<string, string>> lst;
 
+    public outputMessage()
+    {
+        this.lst = new Dictionary<string, Dictionary<string, string>>();
+    }
+}
+
+public class inputMessage
+{
+    public string way;
+    public Dictionary<string, string> argument;
+
+    public inputMessage()
+    {
+        this.argument = new Dictionary<string, string>();
+    }
+}
 public class SQLHandler : MonoBehaviour
 {
     public PlayerIndicator playerIndicator;
