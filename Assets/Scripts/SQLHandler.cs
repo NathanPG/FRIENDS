@@ -632,9 +632,10 @@ public class SQLHandler : MonoBehaviour
     private void Start()
     {
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
+        //SERVER
         if (!playerIndicator.isPlayer)
         {
-            //OpenSql();
+            OpenSql();
         }
         //Debug.Log("Connection success!");
     }

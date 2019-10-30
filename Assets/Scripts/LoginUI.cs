@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 public class LoginUI : MonoBehaviour
 {
@@ -32,6 +32,31 @@ public class LoginUI : MonoBehaviour
     {
         Debug.Log("loginAccount:" + loginAccount.text);
         Debug.Log("loginPassword:" + loginPassword.text);
+        //Player
+        if (playerIndicator.isPlayer)
+        {
+            if(loginAccount.text == "" || loginPassword.text == "")
+            {
+                //TODO: EMPTY
+            }
+            else
+            {
+                inputMessage UNPWMsg = new inputMessage();
+                UNPWMsg.way = "searchUser";
+                UNPWMsg.argument["name"] = loginAccount.text;
+                UNPWMsg.argument["pwd"] = loginPassword.text;
+                string loginMsg = JsonConvert.SerializeObject(UNPWMsg);
+                netCore.ClientSendLogIn(loginMsg);
+            }
+        }
+        //Server
+        else
+        {
+            if(loginAccount.text == "MIAO" && loginPassword.text == "123")
+            {
+                loginUI.SetActive(false);
+            }
+        }
         /*
         dbcheck = sql.searchUsr(username, pwd);
         

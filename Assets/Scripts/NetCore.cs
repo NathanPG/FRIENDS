@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 using UnityEngine.UI;
+using Newtonsoft.Json;
 
 public class NetCore : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class NetCore : MonoBehaviour
     public string user_name;
     public PlayerIndicator playerIndicator;
     public ProfileSys profileSys;
+    public LoginUI loginui;
     public SQLHandler sql;
 
     /*
@@ -53,19 +56,39 @@ public class NetCore : MonoBehaviour
     #endregion
 
     //client get profile
-    public void OnClientReceiveProfile(NetworkMessage netMsg) { 
-        Debug.Log("Client Received Player Profile!");
-        //if(user name matches)
-        //CLIENT STORE ALL DATA 
-        //profileSys.username = ......;
-        //profileSys.exp = .....;
-        //profileSys.gold = .........;
+    public void OnClientReceiveFB(NetworkMessage FBMsg) { 
+        Debug.Log("Client Received Server Feedback!");
+        //Deserialize message
+        string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
+        outputMessage outputFBMsg = JsonConvert.DeserializeObject<outputMessage>(Fbjson);
+        if (outputFBMsg.success)
+        {
+            //outputFBMsg.lst["result"]["name"];
+            //outputFBMsg.lst["result"]["pwd"];
+            profileSys.exp = Convert.ToInt32(outputFBMsg.lst["result"]["exp"]);
+            profileSys.gold = Convert.ToInt32(outputFBMsg.lst["result"]["coin"]);
+            loginui.loginUI.SetActive(false);
+        }
+        else
+        {
+            //REPORT ERROR
+            Debug.Log("ERROR");
+        }
     }
 
-    public void ClientSendName(string loginAccount, string loginPassword)
+    public void ClientSendLogIn(string loginMsg)
     {
         //Client send Accound and Password to the server
         //随便想一个ID NetworkManager.singleton.client.Send(想的ID, 包含账户密码的信息);
+        Debug.Log("Client sent login user name and pwd");
+        NetworkManager.singleton.client.Send(1111, new StringMessage(loginMsg));
+    }
+
+    public void ServerRecvLogin(NetworkMessage logInMsg)
+    {
+        string clientLogIn = logInMsg.ReadMessage<StringMessage>().value;
+        string LogInOutPut = sql.recvMsg(clientLogIn);
+        NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
     }
 
     bool msg_sent = false;
@@ -92,11 +115,19 @@ public class NetCore : MonoBehaviour
             Debug.Log("This is client");
 
             NetworkManager.singleton.networkPort = 9999;
-            NetworkManager.singleton.StartClient();
+            NetworkClient netc = NetworkManager.singleton.StartClient();
+
+            /*
+             * CLIENT CONNECTION ID
+            NetworkConnection netconnect = netc.connection;
+            int connectionID = netconnect.connectionId;
+            */
+
             NetworkManager.singleton.client.Connect("localhost", 9999);
 
+
             //SEND USERNAME TO SERVER
-            NetworkManager.singleton.client.RegisterHandler(4321, TestClientReceive);
+            //NetworkManager.singleton.client.RegisterHandler(4321, TestClientReceive);
         }
 
         //Host
@@ -113,7 +144,9 @@ public class NetCore : MonoBehaviour
 
             //THIS START A NetworkServer
             NetworkManager.singleton.StartHost();
-            NetworkServer.RegisterHandler(1234, TestServerReceive);
+
+
+            //NetworkServer.RegisterHandler(1234, TestServerReceive);
 
             //NetworkServer.RegisterHandler(你想的ID, ServerReceiveName);
 
