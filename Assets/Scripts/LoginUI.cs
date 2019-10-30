@@ -100,7 +100,7 @@ public class LoginUI : MonoBehaviour
         //Register new user to the database
         Debug.Log("signupAccount:" + signupAccount.text);
         Debug.Log("signupPassword:" + signupPassword.text);
-        netCore.ClientSendName(signupAccount.text, signupPassword.text);
+        //netCore.ClientSendName(signupAccount.text, signupPassword.text);
         //如果没问题那就完成注册，关掉注册窗口
         if (true)
         {
