@@ -9,7 +9,6 @@ public class LoginUI : MonoBehaviour
 {
     
     //public Text username;
-    public SQLHandler sql;
     public PlayerIndicator playerIndicator;
 
     public string username;
@@ -30,8 +29,8 @@ public class LoginUI : MonoBehaviour
 
     public void LoginOnClick()
     {
-        Debug.Log("loginAccount:" + loginAccount.text);
-        Debug.Log("loginPassword:" + loginPassword.text);
+        //Debug.Log("loginAccount:" + loginAccount.text);
+        //Debug.Log("loginPassword:" + loginPassword.text);
         //Player
         if (playerIndicator.isPlayer)
         {
@@ -42,10 +41,12 @@ public class LoginUI : MonoBehaviour
             else
             {
                 inputMessage UNPWMsg = new inputMessage();
-                UNPWMsg.way = "searchUser";
-                UNPWMsg.argument["name"] = loginAccount.text;
-                UNPWMsg.argument["pwd"] = loginPassword.text;
+                UNPWMsg.way = "searchUsr";
+
+                UNPWMsg.argument.Add("name", loginAccount.text) ;
+                UNPWMsg.argument.Add("pwd", loginPassword.text);
                 string loginMsg = JsonConvert.SerializeObject(UNPWMsg);
+                Debug.Log(loginMsg);
                 netCore.ClientSendLogIn(loginMsg);
             }
         }
@@ -74,18 +75,7 @@ public class LoginUI : MonoBehaviour
 
         //playerIndicator.isPlayer代表这是个CLIENT，需要将用户名密码发给HOST,HOST找数据库CHECK用户名密码
         //!playerIndicator.isPlayer代表这是个HOST，可以直接找数据库CHECK用户名密码
-
-        //如果登陆成功，那就关掉登陆界面开始游戏
-        if (true)
-        {
-            loginUI.SetActive(false);
-        }
-        //如果有任何问题，那就报错
-        else
-        {
-
-        }
-        
+    
     }
     //THIS IS GOING TO BE A SERVER
     //WE ARE USING IT AS A HOST NOW
@@ -97,6 +87,7 @@ public class LoginUI : MonoBehaviour
     //Register on click
     public void UserRegister()
     {
+
         //Register new user to the database
         Debug.Log("signupAccount:" + signupAccount.text);
         Debug.Log("signupPassword:" + signupPassword.text);

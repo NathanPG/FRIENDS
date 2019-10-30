@@ -19,6 +19,9 @@ public class NetCore : MonoBehaviour
     public LoginUI loginui;
     public SQLHandler sql;
 
+    public Text debugtext;
+    public GameObject red;
+
     /*
     public class ProfileMsg : MessageBase
     {
@@ -55,18 +58,22 @@ public class NetCore : MonoBehaviour
     }
     #endregion
 
-    //client get profile
+    //CLIENT RECV 2222 FROM CLIENT
     public void OnClientReceiveFB(NetworkMessage FBMsg) { 
         Debug.Log("Client Received Server Feedback!");
         //Deserialize message
         string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
         outputMessage outputFBMsg = JsonConvert.DeserializeObject<outputMessage>(Fbjson);
+        Debug.Log(Fbjson);
+        /*
+        
         if (outputFBMsg.success)
         {
             //outputFBMsg.lst["result"]["name"];
             //outputFBMsg.lst["result"]["pwd"];
             profileSys.exp = Convert.ToInt32(outputFBMsg.lst["result"]["exp"]);
             profileSys.gold = Convert.ToInt32(outputFBMsg.lst["result"]["coin"]);
+            Debug.Log("CLIENT RECEIVED INFO");
             loginui.loginUI.SetActive(false);
         }
         else
@@ -74,6 +81,7 @@ public class NetCore : MonoBehaviour
             //REPORT ERROR
             Debug.Log("ERROR");
         }
+        */
     }
 
     public void ClientSendLogIn(string loginMsg)
@@ -84,11 +92,35 @@ public class NetCore : MonoBehaviour
         NetworkManager.singleton.client.Send(1111, new StringMessage(loginMsg));
     }
 
+
+    //AFTER RECV 1111 FROM CLIENT
     public void ServerRecvLogin(NetworkMessage logInMsg)
     {
+        red.SetActive(red);
+        Debug.Log("Server Received Login Info");
         string clientLogIn = logInMsg.ReadMessage<StringMessage>().value;
-        string LogInOutPut = sql.recvMsg(clientLogIn);
+
+        debugtext.text = clientLogIn;
+
+
+        //Debug.Log(clientLogIn);
+        SQLHandler tmp = new SQLHandler();
+        //debugtext.text += tmp.check() + "\n\n\n";
+
+
+
+        //string LogInOutPut = tmp.recvMsg(clientLogIn);
+        outputMessage optMsg = new outputMessage();
+        optMsg.success = false;
+        optMsg.ErrorMessage = "Unable to deserailze";
+        string LogInOutPut = JsonConvert.SerializeObject(optMsg);
+
+        debugtext.text += "XXXXXXXXXXXXXXXXXXX";
+        //debugtext.text += LogInOutPut;
+        //Debug.Log(LogInOutPut);
+
         NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
+        
     }
 
     bool msg_sent = false;
@@ -105,10 +137,7 @@ public class NetCore : MonoBehaviour
     private void Start()
     {
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
-        //SEND USERNAME TO SERVER
-
-        //SERVER RETURN PLAYER PROFILE
-
+        red.SetActive(false);
         //Client
         if (playerIndicator.isPlayer)
         {
@@ -124,7 +153,7 @@ public class NetCore : MonoBehaviour
             */
 
             NetworkManager.singleton.client.Connect("localhost", 9999);
-
+            NetworkManager.singleton.client.RegisterHandler(2222,OnClientReceiveFB);
 
             //SEND USERNAME TO SERVER
             //NetworkManager.singleton.client.RegisterHandler(4321, TestClientReceive);
@@ -144,25 +173,15 @@ public class NetCore : MonoBehaviour
 
             //THIS START A NetworkServer
             NetworkManager.singleton.StartHost();
+            NetworkServer.RegisterHandler(1111, ServerRecvLogin);
 
 
             //NetworkServer.RegisterHandler(1234, TestServerReceive);
-
-            //NetworkServer.RegisterHandler(你想的ID, ServerReceiveName);
 
             //NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         }
     }
 
-    //Server got client name, send profile
-    public void ServerReceiveName(NetworkMessage netMsg)
-    {
-        //sql.Check User
-        //sql.GET USER PROFILE
-        //SEND USER INFORMATION TO THE CLIENT
-
-        //NetworkServer.SendToAll(8889, ProfileMsg);
-    }
 
     void OnApplicationQuit()
     {
