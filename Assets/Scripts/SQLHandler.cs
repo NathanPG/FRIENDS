@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
+using Newtonsoft.Json;
+
 public class outputMessage
 {
     public Boolean success;
@@ -26,6 +28,8 @@ public class inputMessage
         this.argument = new Dictionary<string, string>();
     }
 }
+
+
 public class SQLHandler : MonoBehaviour
 {
     public PlayerIndicator playerIndicator;
@@ -139,8 +143,31 @@ public class SQLHandler : MonoBehaviour
 
     }
 
-    public Boolean addUsr(String name, String pwd)
+    /*
+        * string addUsr(string msg)
+        * 
+        * input msg is actually a inputMessage(I will do the serialize part): 
+        * way: "addUsr"
+        * argument [it is a dictionary]:
+        *  key(string) : value(string)
+        *  "name"       : "shabi"
+        *  "pwd"       : "wo si le"
+        * 
+        * 
+        * output msg(string)
+        * 
+        * success: True (addSuccess) / False (add doesn't success)
+        * ErrorMessage (if False) : will have the reason why it is false; 
+        * lst (if success)  : lst["result"] = a dictionary: {"name":"shabi", "pwd":"zhe shi mi ma", "coin":"100", "exp": "0"}
+        *     (False : null):
+        */
+    public string addUsr(string msg)
     {
+        inputMessage input = JsonConvert.DeserializeObject<inputMessage>(msg);
+        outputMessage output = new outputMessage();
+        string name = input.argument["name"];
+        string pwd = input.argument["pwd"];
+
         MySqlConnection sqlConn = GetSqlConn();
         try
         {
@@ -149,12 +176,25 @@ public class SQLHandler : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.Log(ex.Message);
-            return false;
+            Console.WriteLine(ex.Message);
+            output.ErrorMessage = "addUsr: Connection between mysql doesn't work correctly";
+            output.success = false;
+            return JsonConvert.SerializeObject(output);
         }
+
+        Boolean exitCheck = checkUsrExist(name);
+
+        if (exitCheck)
+        {
+            output.success = false;
+            output.ErrorMessage = "Sorry Already Exits";
+            return JsonConvert.SerializeObject(output);
+        }
+
 
         try
         {
+            output.success = true;
             String strUsr = "INSERT usr(name , pwd) VALUES (@name, @pwd);";
             MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
             instUsr.Parameters.AddWithValue("@name", name);
@@ -165,11 +205,55 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             sqlConn.Close();
-            Debug.Log("INSERT INTO Usr may can not work");
-            Debug.Log(ex.Message);
+            Console.WriteLine("INSERT INTO Usr may can not work");
+            Console.WriteLine(ex.Message);
+            output.success = false;
+            output.ErrorMessage = "INSERT INTO Usr may can not work / Invalid input by name , pwd";
+        }
+
+        exitCheck = checkUsrExist(name);
+        if (!exitCheck)
+        {
+            output.success = false;
+            output.ErrorMessage = "Sorry, Unable to login, please try again";
+        }
+        else
+        {
+            output.lst["result"] = new Dictionary<string, string>();
+            output.lst["result"]["name"] = name;
+            output.lst["result"]["pwd"] = pwd;
+            output.lst["result"]["exp"] = "0";
+            output.lst["result"]["coin"] = "100";
+        }
+
+
+
+        return JsonConvert.SerializeObject(output);
+
+    }
+
+    /*
+     * a helper function to check User exist or not 
+     * for before the insert , and after the insert. 
+     */
+    private Boolean checkUsrExist(string name)
+    {
+        MySqlConnection sqlConn = GetSqlConn();
+        sqlConn.Open();
+        String strUsr = "SELECT * FROM usr where name=@name;";
+        MySqlCommand findUsr = new MySqlCommand(strUsr, sqlConn);
+        findUsr.Parameters.AddWithValue("@name", name);
+        MySqlDataReader resUsr = findUsr.ExecuteReader();
+        resUsr.Read();
+
+        if (resUsr.HasRows)
+        {
+            return true;
+        }
+        else
+        {
             return false;
         }
-        return true;
     }
 
 
