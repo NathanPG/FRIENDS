@@ -32,15 +32,22 @@ public class inputMessage
 
 public class SQLHandler : MonoBehaviour
 {
-    public PlayerIndicator playerIndicator;
+    //public PlayerIndicator playerIndicator;
     /// <summary>
     /// 建立数据库连接
     /// </summary>
+    /// 
+
+
+    public string check()
+    {
+        return "wo shi shabbiiiiiiiiiiiiiiiiiiiiii";
+    }
     public MySqlConnection GetSqlConn()
     {
         // 数据库
         MySqlConnection sqlConn;
-        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=0129;port=3306";
+        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=3358;port=3306";
         sqlConn = new MySqlConnection(connStr);
         return sqlConn;
     }
@@ -86,13 +93,20 @@ public class SQLHandler : MonoBehaviour
 
     public string recvMsg(string msg)
     {
-        inputMessage iptMessage = JsonConvert.DeserializeObject<inputMessage>(msg);
-        string way = iptMessage.way;
-
         outputMessage optMessage = new outputMessage();
         optMessage.success = true;
         optMessage.lst["result"] = new Dictionary<string, string>();
+        optMessage.lst["result"]["coin"] = "233";
+        optMessage.lst["result"]["exp"] = "123";
+        return JsonConvert.SerializeObject(optMessage);
 
+        string way = "miao";
+        //outputMessage optMessage = new outputMessage();
+        optMessage.success = true;
+        optMessage.lst["result"] = new Dictionary<string, string>();
+        optMessage.lst["result"]["coin"] = "233";
+        optMessage.lst["result"]["exp"] = "123";
+        return JsonConvert.SerializeObject(optMessage);
         switch (way)
         {
             case "addUsr":
@@ -120,7 +134,7 @@ public class SQLHandler : MonoBehaviour
                 optMessage.ErrorMessage = "unable to match the way";
                 break;
         }
-        return JsonConvert.SerializeObject(optMessage);
+        
 
     }
 
@@ -628,14 +642,16 @@ public class SQLHandler : MonoBehaviour
 
 
 
-
+    /*
     private void Start()
     {
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
+        //SERVER
         if (!playerIndicator.isPlayer)
         {
-            //OpenSql();
+            OpenSql();
         }
         //Debug.Log("Connection success!");
     }
+    */
 }
