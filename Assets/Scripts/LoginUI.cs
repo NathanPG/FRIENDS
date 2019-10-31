@@ -41,18 +41,18 @@ public class LoginUI : MonoBehaviour
             else
             {
                 inputMessage UNPWMsg = new inputMessage();
-                UNPWMsg.way = "searchUsr";
-                UNPWMsg.argument.Add("name", loginAccount.text) ;
-                UNPWMsg.argument.Add("pwd", loginPassword.text);
+                UNPWMsg.addWay("searchUsr");
+                UNPWMsg.addArg("name", loginAccount.text) ;
+                UNPWMsg.addArg("pwd", loginPassword.text);
                 string loginMsg = JsonConvert.SerializeObject(UNPWMsg);
-                //企鹅要吃掉你！
                 Debug.Log(loginMsg);
                 netCore.ClientSendLogIn(loginMsg);
             }
         }
         //Server
         else
-        {if(loginAccount.text == "MIAO" && loginPassword.text == "123")
+        {
+            if(loginAccount.text == "MIAO" && loginPassword.text == "123")
             {
                 loginUI.SetActive(false);
             }

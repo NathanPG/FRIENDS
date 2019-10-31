@@ -5,27 +5,137 @@ using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 public class outputMessage
 {
-    public Boolean success;
-    public string ErrorMessage;
-    public Dictionary<string, Dictionary<string, string>> lst;
+    private JObject optJson;
+    private JObject rstJson;
+    private int index; 
+    public void addSuccess(Boolean success)
+    {
+        optJson.Add("success", success);
+    }
+
+    public void addErrorMsg(string reason)
+    {
+        optJson.Add("ErrorMessage", reason);
+    }
+
+    public void addResult( Dictionary<string,string> value)
+    {
+        JObject tmp = new JObject();
+        foreach(KeyValuePair<string,string> itr in value)
+        {
+            tmp.Add( itr.Key ,itr.Value);
+        }
+        
+        rstJson.Add(index.ToString() , tmp);
+        index++;
+    }
+
+    public Boolean getSuccess()
+    {
+        return optJson["success"].Value<Boolean>();
+    }
+
+    public string getErrorMsg()
+    {
+        return optJson["ErrorMessage"].Value<string>();
+    }
+
+    public Dictionary<String, Dictionary<String,String> > getResut()
+    {
+        Dictionary<String, Dictionary<String, String>> result = new Dictionary<string, Dictionary<string, string>>();
+        int index = optJson["number"].Value<int>();
+
+        for(int i=0; i<index; i++)
+        {
+            var tmpJson = rstJson[i.ToString()].ToString();
+            Dictionary<string, string> tmpDict = new Dictionary<string, string>();
+
+            JsonTextReader tmpReader = new JsonTextReader(new StringReader(tmpJson));
+
+            tmpReader.Read();
+
+            while(tmpReader.Read() )
+            {
+                if (tmpReader.Value == null)
+                    continue; 
+                String key = tmpReader.Value.ToString();
+                tmpReader.Read();
+                String value = tmpReader.Value.ToString();
+                tmpDict[key] = value; 
+            }
+            result.Add(i.ToString(), tmpDict);
+        }
+
+        return result;
+    }
+
+    public string getString()
+    {
+        optJson.Add("number", index);
+        optJson.Add("result", rstJson);
+        return optJson.ToString();
+    }
 
     public outputMessage()
     {
-        this.lst = new Dictionary<string, Dictionary<string, string>>();
+        optJson = new JObject();
+        rstJson = new JObject();
+        index = 0;
+    }
+    public outputMessage(string msg)
+    {
+        optJson = JObject.Parse(msg);
+        rstJson = optJson["result"].Value<JObject>();
+        index = optJson["number"].Value<int>();
     }
 }
 
 public class inputMessage
 {
-    public string way;
-    public Dictionary<string, string> argument;
+    private JObject iptJson;
+    private JObject argJson; 
+
+    public void addWay(string method)
+    {
+        iptJson.Add("way", method);
+    }
+
+    public void addArg(string name , string value)
+    {
+        argJson.Add(name, value);
+    }
+
+    public string getString()
+    {
+        iptJson.Add("argument", argJson);
+        return iptJson.ToString();
+    }
+
+    public string getWay()
+    {
+        return iptJson["way"].Value<string>();
+    }
+
+    public string getArg(string arg)
+    {
+        return argJson[arg].Value<string>();
+    }
 
     public inputMessage()
     {
-        this.argument = new Dictionary<string, string>();
+        iptJson = new JObject();
+        argJson = new JObject(); 
+    }
+
+    public inputMessage(string strJson)
+    {
+        iptJson = JObject.Parse(strJson);
+        argJson = iptJson["argument"].Value<JObject>();
     }
 }
 
@@ -38,11 +148,6 @@ public class SQLHandler : MonoBehaviour
     /// </summary>
     /// 
 
-
-    public string check()
-    {
-        return "wo shi shabbiiiiiiiiiiiiiiiiiiiiii";
-    }
     public MySqlConnection GetSqlConn()
     {
         // 数据库
@@ -58,17 +163,61 @@ public class SQLHandler : MonoBehaviour
     public void OpenSql()
     {
         // 数据库
-        MySqlConnection sqlConn = GetSqlConn();
-        try
+        //JsonObjectTest();
+        sqlTest();
+    }
+
+    public static void JsonObjectTest()
+    {
+        inputMessage iptMsg = new inputMessage();
+        iptMsg.addWay("searchUsr");
+        iptMsg.addArg("name", "nimabi");
+        iptMsg.addArg("pwd", "wo shi shabi");
+
+        string msg = iptMsg.getString();
+        Debug.Log(msg);
+
+        inputMessage transMsg = new inputMessage(msg);
+        string way = transMsg.getWay();
+        string argName = transMsg.getArg("name");
+        string argPwd = transMsg.getArg("pwd");
+
+        Debug.Log(string.Format("\n\n name {0} pwd {1} way {2}",argName, argPwd , way));
+    }
+
+    public void sqlTest()
+    {
+        Debug.Log(">>>>>>>>>>>>>testing    getTsk>>>>>>>>>>>>>>>\n");
+        inputMessage ipt = new inputMessage();
+        ipt.addWay("getallTsk");
+        
+
+        string msg = ipt.getString();
+        string opt = recvMsg(msg);
+
+        Debug.Log("\n\n" + opt + "\n\n");
+
+
+        outputMessage optMsg = new outputMessage(opt);
+        if(optMsg.getSuccess() )
         {
-            sqlConn.Open();
-            Debug.Log("NO ERROR!!!!!!!Connection success!");
+            var result = optMsg.getResut();
+
+            foreach(KeyValuePair<string, Dictionary<string, string> > itr in result)
+            {
+                string ans = itr.Key+"\n"; 
+
+                foreach(KeyValuePair<string, string> subitr in itr.Value)
+                {
+                    ans += subitr.Key + "  " + subitr.Value + "\n";
+                }
+
+                Debug.Log(ans);
+            }
         }
-        catch (Exception ex)
+        else
         {
-            Console.Write(ex.Message);
-            Debug.Log("ERROR!!!!!!");
-            return;
+            Debug.Log("we have some error " + optMsg.getErrorMsg());
         }
 
     }
@@ -94,48 +243,27 @@ public class SQLHandler : MonoBehaviour
     public string recvMsg(string msg)
     {
         outputMessage optMessage = new outputMessage();
-        optMessage.success = true;
-        optMessage.lst["result"] = new Dictionary<string, string>();
-        optMessage.lst["result"]["coin"] = "233";
-        optMessage.lst["result"]["exp"] = "123";
-        return JsonConvert.SerializeObject(optMessage);
+        inputMessage iptMessage = new inputMessage(msg);
 
-        string way = "miao";
-        //outputMessage optMessage = new outputMessage();
-        optMessage.success = true;
-        optMessage.lst["result"] = new Dictionary<string, string>();
-        optMessage.lst["result"]["coin"] = "233";
-        optMessage.lst["result"]["exp"] = "123";
-        return JsonConvert.SerializeObject(optMessage);
+        string way = iptMessage.getWay();
         switch (way)
         {
             case "addUsr":
-                optMessage.lst["result"]["way"] = "addUsr";
                 return addUsr(msg);
-                break;
-            case "searchUsr":
-                optMessage.lst["result"]["way"] = "searchUsr";
+            case "searchUsr":                
                 return searchUsr(msg);
-                break;
             case "getallTsk":
-                optMessage.lst["result"]["way"] = "getallTsk";
-                return getallTsk(msg);
-                break;
+                return getallTsk(msg);             
             case "addTsk":
-                optMessage.lst["result"]["way"] = "addTsk";
                 return addTsk(msg);
-                break;
             case "takeTsk":
-                optMessage.lst["result"]["way"] = "takeTsk";
                 return takeTsk(msg);
-                break;
             default:
-                optMessage.success = false;
-                optMessage.ErrorMessage = "unable to match the way";
+                optMessage.addSuccess(false);
+                optMessage.addErrorMsg("unable to match the way");
                 break;
         }
-        
-
+        return optMessage.getString();
     }
 
 
@@ -196,16 +324,15 @@ public class SQLHandler : MonoBehaviour
         * output msg(string)
         * 
         * success: True (addSuccess) / False (add doesn't success)
-        * ErrorMessage (if False) : will have the reason why it is false; 
-        * lst (if success)  : lst["result"] = a dictionary: {"name":"shabi", "pwd":"zhe shi mi ma", "coin":"100", "exp": "0"}
-        *     (False : null):
+        * ErrorMessage (if False) : will have the reason why it is false); 
+        * 
         */
     public string addUsr(string msg)
     {
-        inputMessage input = JsonConvert.DeserializeObject<inputMessage>(msg);
+        inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
-        string name = input.argument["name"];
-        string pwd = input.argument["pwd"];
+        string name = input.getArg("name");
+        string pwd = input.getArg("pwd");
 
         MySqlConnection sqlConn = GetSqlConn();
         try
@@ -216,24 +343,23 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            output.ErrorMessage = "addUsr: Connection between mysql doesn't work correctly";
-            output.success = false;
-            return JsonConvert.SerializeObject(output);
+            output.addErrorMsg("addUsr: Connection between mysql doesn't work correctly");
+            output.addSuccess(false);
+            return output.getString();
         }
 
         Boolean exitCheck = checkUsrExist(name);
 
         if (exitCheck)
         {
-            output.success = false;
-            output.ErrorMessage = "Sorry Already Exits";
-            return JsonConvert.SerializeObject(output);
+            output.addSuccess(false);
+            output.addErrorMsg("Sorry Already Exits");
+            return output.getString();
         }
 
 
         try
         {
-            output.success = true;
             String strUsr = "INSERT usr(name , pwd) VALUES (@name, @pwd);";
             MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
             instUsr.Parameters.AddWithValue("@name", name);
@@ -246,28 +372,23 @@ public class SQLHandler : MonoBehaviour
             sqlConn.Close();
             Console.WriteLine("INSERT INTO Usr may can not work");
             Console.WriteLine(ex.Message);
-            output.success = false;
-            output.ErrorMessage = "INSERT INTO Usr may can not work / Invalid input by name , pwd";
+            output.addSuccess(false);
+            output.addErrorMsg("INSERT INTO Usr may can not work / Invalid input by name , pwd");
+            return output.getString();
         }
 
         exitCheck = checkUsrExist(name);
         if (!exitCheck)
         {
-            output.success = false;
-            output.ErrorMessage = "Sorry, Unable to login, please try again";
+            output.addSuccess(false);
+            output.addErrorMsg("Sorry, Unable to login, please try again");
         }
         else
         {
-            output.lst["result"] = new Dictionary<string, string>();
-            output.lst["result"]["name"] = name;
-            output.lst["result"]["pwd"] = pwd;
-            output.lst["result"]["exp"] = "0";
-            output.lst["result"]["coin"] = "100";
+            output.addSuccess(true);
         }
 
-
-
-        return JsonConvert.SerializeObject(output);
+        return output.getString();
 
     }
 
@@ -311,29 +432,19 @@ public class SQLHandler : MonoBehaviour
      * Defining success: there is a user 
      *          false  : (1)there is no such a usr (2) the pwd is not correct  
      * success: True (search Success) / False (search doesn't success)
-     * ErrorMessage (if False) : will have the reason why it is false; 
+     * ErrorMessage (if False) : will have the reason why it is false); 
      * lst (if success)  : lst["result"] = a dictionary: {"name":"shabi", "pwd":"zhe shi mi ma", "coin":"#", "exp": "#"}
      *     (False : null):
      */
     public string searchUsr(string msg)
     {
-        inputMessage input = JsonConvert.DeserializeObject<inputMessage>(msg);
+        inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
 
         string name = "null";
         string pwd = "null";
 
-        try
-        {
-            name = input.argument["name"];
-            pwd = input.argument["pwd"];
-        }
-        catch (Exception ex)
-        {
-            output.success = false;
-            output.ErrorMessage = "name/pwd cannot be empty, Please try again";
-            return JsonConvert.SerializeObject(output);
-        }
+        
 
         MySqlConnection sqlConn = GetSqlConn();
         try
@@ -344,9 +455,21 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            output.ErrorMessage = "searchUsr: Connection between mysql doesn't work correctly";
-            output.success = false;
-            return JsonConvert.SerializeObject(output);
+            output.addErrorMsg("addUsr: Connection between mysql doesn't work correctly");
+            output.addSuccess(false);
+            return output.getString();
+        }
+
+        try
+        {
+            name = input.getArg("name");
+            pwd = input.getArg("pwd");
+        }
+        catch (Exception ex)
+        {
+            output.addSuccess(false);
+            output.addErrorMsg("name/pwd cannot be empty, Please try again");
+            return output.getString();
         }
 
 
@@ -361,37 +484,39 @@ public class SQLHandler : MonoBehaviour
             {
                 if (pwd.Equals(resUsr["pwd"]))
                 {
-                    output.success = true;
-                    output.lst["result"] = new Dictionary<string, string>();
-                    output.lst["result"]["name"] = resUsr["name"].ToString();
-                    output.lst["result"]["pwd"] = resUsr["pwd"].ToString();
-                    output.lst["result"]["coin"] = resUsr["coin"].ToString();
-                    output.lst["result"]["exp"] = resUsr["exp"].ToString();
+                    var lst = new Dictionary<string, string>();
+                    lst.Add("name", resUsr["name"].ToString() );
+                    lst.Add("pwd" ,resUsr["pwd"].ToString() );
+                    lst.Add("coin", resUsr["coin"].ToString());
+                    lst.Add("exp", resUsr["exp"].ToString());
+
+                    output.addResult(lst);
+                    output.addSuccess(true);
                 }
                 else
                 {
-                    output.success = false;
-                    output.ErrorMessage = "Wrong password, please try again";
+                    output.addSuccess(false);
+                    output.addErrorMsg("Wrong password, please try again");
 
                 }
 
-                return JsonConvert.SerializeObject(output);
+                return output.getString();
             }
             else
             {
                 sqlConn.Close();
-                output.success = false;
-                output.ErrorMessage = "Cannot find the usr, please re-enter";
-                return JsonConvert.SerializeObject(output);
+                output.addSuccess(false);
+                output.addErrorMsg("Cannot find the usr, please re-enter");
+                return output.getString();
             }
         }
         catch (Exception ex)
         {
             sqlConn.Close();
 
-            output.success = false;
-            output.ErrorMessage = "searchUsr has some problem, please try again or ask Developer about that";
-            return JsonConvert.SerializeObject(output);
+            output.addSuccess(false);
+            output.addErrorMsg("searchUsr has some problem, please try again or ask Developer about that");
+            return output.getString();
         }
     }
 
@@ -406,13 +531,13 @@ public class SQLHandler : MonoBehaviour
              * output msg(string)
              *   
              * success: True (connect Success) / False (connect doesn't success)
-             * ErrorMessage (if False) : will have the reason why it is false; 
+             * ErrorMessage (if False) : will have the reason why it is false); 
              * lst (if success)  : lst["id"] = a dictionary: {"id":"#", "title":"X", "content":"XXX", "coin": "#" , "exp":"XX", "owner":"XX"}
              *     (False : null):
              */
     public string getallTsk(string msg)
     {
-        inputMessage input = JsonConvert.DeserializeObject<inputMessage>(msg);
+        inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
         MySqlConnection sqlConn = GetSqlConn();
         try
@@ -423,9 +548,9 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            output.ErrorMessage = "searchUsr: Connection between mysql doesn't work correctly";
-            output.success = false;
-            return JsonConvert.SerializeObject(output);
+            output.addErrorMsg("addUsr: Connection between mysql doesn't work correctly");
+            output.addSuccess(false);
+            return output.getString();
         }
 
 
@@ -435,7 +560,7 @@ public class SQLHandler : MonoBehaviour
             MySqlCommand sqlComm = new MySqlCommand(strsql, sqlConn);
             MySqlDataReader sqlRes = sqlComm.ExecuteReader();
 
-            output.success = true;
+            output.addSuccess(true);
 
             while (sqlRes.Read())
             {
@@ -447,13 +572,16 @@ public class SQLHandler : MonoBehaviour
                 string exp = sqlRes["exp"].ToString();
 
 
-                output.lst[id] = new Dictionary<string, string>();
-                output.lst[id]["id"] = id;
-                output.lst[id]["title"] = title;
-                output.lst[id]["content"] = content;
-                output.lst[id]["coin"] = coin;
-                output.lst[id]["exp"] = exp;
-                output.lst[id]["owner"] = owner;
+                var lst = new Dictionary<string, string>();
+                lst["id"] = id;
+                lst["title"] = title;
+                lst["content"] = content;
+                lst["coin"] = coin;
+                lst["exp"] = exp;
+                lst["owner"] = owner;
+
+                
+                output.addResult(lst);
             }
         }
         catch (Exception ex)
@@ -463,10 +591,10 @@ public class SQLHandler : MonoBehaviour
             Console.Write("getTsk  may can not work");
             Console.Write(ex.Message);
 
-            output.success = false;
-            output.ErrorMessage = "have problem in getallTsk";
+            output.addSuccess(false);
+            output.addErrorMsg("have problem in getallTsk");
         }
-        return JsonConvert.SerializeObject(output);
+        return output.getString();
     }
 
 
@@ -486,13 +614,12 @@ public class SQLHandler : MonoBehaviour
      * output msg(string)
      * 
      * success: True (add Success) / False (add doesn't success)
-     * ErrorMessage (if False) : will have the reason why it is false; 
-     * lst (if success)  : lst["result"] = a dictionary: {"id":"#", "content":"XX", "content":"XX", "coin": "#" , "owner":"XXX"}
-     *     (False : null):
+     * ErrorMessage (if False) : will have the reason why it is false); 
+     *
      */
     public string addTsk(string msg)
     {
-        inputMessage input = JsonConvert.DeserializeObject<inputMessage>(msg);
+        inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
         MySqlConnection sqlConn = GetSqlConn();
         try
@@ -503,9 +630,9 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            output.ErrorMessage = "addTsk: Connection between mysql doesn't work correctly";
-            output.success = false;
-            return JsonConvert.SerializeObject(output);
+            output.addErrorMsg("addUsr: Connection between mysql doesn't work correctly");
+            output.addSuccess(false);
+            return output.getString();
         }
 
         string title, content, owner;
@@ -513,16 +640,16 @@ public class SQLHandler : MonoBehaviour
 
         try
         {
-            title = input.argument["title"];
-            content = input.argument["content"];
-            coin = Convert.ToInt32(input.argument["coin"]);
-            owner = input.argument["owner"];
+            title = input.getArg("title");
+            content = input.getArg("content");
+            coin = Convert.ToInt32(input.getArg("coin") );
+            owner = input.getArg("owner");
         }
         catch (Exception e)
         {
-            output.ErrorMessage = "addTsk: Invalid input please re-enter";
-            output.success = false;
-            return JsonConvert.SerializeObject(output);
+            output.addErrorMsg("addTsk: Invalid input please re-enter");
+            output.addSuccess(false);
+            return output.getString();
         }
 
         try
@@ -537,17 +664,17 @@ public class SQLHandler : MonoBehaviour
             sqlConn.Close();
 
 
-            output.success = true;
+            output.addSuccess(true);
         }
         catch (Exception ex)
         {
             sqlConn.Close();
             Console.WriteLine("INSERT INTO Tsk may can not work");
             Console.WriteLine(ex.ToString());
-            output.success = false;
-            output.ErrorMessage = "INSERT INTO Tsk may can not work";
+            output.addSuccess(false);
+            output.addErrorMsg("INSERT INTO Tsk may can not work");
         }
-        return JsonConvert.SerializeObject(output);
+        return output.getString();
     }
 
     /*
@@ -589,13 +716,11 @@ public class SQLHandler : MonoBehaviour
          * output msg(string)
          * 
          * success: True (take Success) / False (take doesn't success)
-         * ErrorMessage (if False) : will have the reason why it is false; 
-         * lst (if success)  : lst["result"] = a dictionary: {"id":"#", "content":"XX", "title":"XX", "coin": "#" , "owner":"XXX", "taker": "XXXXX"}
-         *     (False : null):
+         * ErrorMessage (if False) : will have the reason why it is false); 
          */
     public string takeTsk(string msg)
     {
-        inputMessage input = JsonConvert.DeserializeObject<inputMessage>(msg);
+        inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
         MySqlConnection sqlConn = GetSqlConn();
         try
@@ -606,13 +731,13 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            output.ErrorMessage = "take: Connection between mysql doesn't work correctly";
-            output.success = false;
-            return JsonConvert.SerializeObject(output);
+            output.addErrorMsg("addUsr: Connection between mysql doesn't work correctly");
+            output.addSuccess(false);
+            return output.getString();
         }
 
-        int id = Convert.ToInt32(input.argument["id"]);
-        string taker = input.argument["taker"];
+        int id = Convert.ToInt32(input.getArg("id") );
+        string taker = input.getArg("taker");
 
 
         try
@@ -625,27 +750,27 @@ public class SQLHandler : MonoBehaviour
             instUsr.ExecuteNonQuery();
             sqlConn.Close();
 
-            output.success = true;
+            output.addSuccess(true);
         }
         catch (Exception ex)
         {
             sqlConn.Close();
             Console.WriteLine("UPDATE tsk taker may can not work");
             Console.WriteLine(ex.ToString());
-            output.success = false;
-            output.ErrorMessage = "UPDATE tsk taker may can not work";
+            output.addSuccess(false);
+            output.addErrorMsg("UPDATE tsk taker may can not work");
         }
-        return JsonConvert.SerializeObject(output);
+        return output.getString();
     }
 
 
 
 
 
-    /*
+    
     private void Start()
     {
-        playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
+        PlayerIndicator playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
         //SERVER
         if (!playerIndicator.isPlayer)
         {
@@ -653,5 +778,5 @@ public class SQLHandler : MonoBehaviour
         }
         //Debug.Log("Connection success!");
     }
-    */
+    
 }

@@ -58,54 +58,8 @@ public class NetCore : MonoBehaviour
     }
     #endregion
 
-    #region TASK_TRANSMISSION
-    //3333
-    public void ReadTaskRequest()
-    {
-
-    }
-
-    //3333
-    public void ServerRecvTaskRQ()
-    {
-
-    }
-    #endregion
-
-    #region LOGIN_TRANSMISSION
-    //Client send username and pwd through 1111
-    public void ClientSendLogIn(string loginMsg)
-    {
-        //Client send Accound and Password to the server
-        //随便想一个ID NetworkManager.singleton.client.Send(想的ID, 包含账户密码的信息);
-        Debug.Log("Client sent login user name and pwd");
-        NetworkManager.singleton.client.Send(1111, new StringMessage(loginMsg));
-    }
-
-
-    //AFTER RECV 1111 FROM CLIENT
-    public void ServerRecvLogin(NetworkMessage logInMsg)
-    {
-        red.SetActive(red);
-        Debug.Log("Server Received Login Info");
-        string clientLogIn = logInMsg.ReadMessage<StringMessage>().value;
-
-
-        SQLHandler tmp = new SQLHandler();
-        outputMessage optMsg = new outputMessage();
-        optMsg.success = false;
-        optMsg.ErrorMessage = "Unable to deserailze";
-        string LogInOutPut = JsonConvert.SerializeObject(optMsg);
-
-        //debugtext.text += LogInOutPut;
-        //Debug.Log(LogInOutPut);
-
-        NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
-        
-    }
     //CLIENT RECV 2222 FROM CLIENT
-    public void OnClientReceiveFB(NetworkMessage FBMsg)
-    {
+    public void OnClientReceiveFB(NetworkMessage FBMsg) { 
         Debug.Log("Client Received Server Feedback!");
         //Deserialize message
         string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
@@ -129,7 +83,48 @@ public class NetCore : MonoBehaviour
         }
         */
     }
-    #endregion
+
+    public void ClientSendLogIn(string loginMsg)
+    {
+        //Client send Accound and Password to the server
+        //随便想一个ID NetworkManager.singleton.client.Send(想的ID, 包含账户密码的信息);
+        Debug.Log("Client sent login user name and pwd");
+        NetworkManager.singleton.client.Send(1111, new StringMessage(loginMsg));
+    }
+
+
+    //AFTER RECV 1111 FROM CLIENT
+    public void ServerRecvLogin(NetworkMessage logInMsg)
+    {
+        red.SetActive(red);
+        Debug.Log("Server Received Login Info");
+        string clientLogIn = logInMsg.ReadMessage<StringMessage>().value;
+
+        debugtext.text = clientLogIn;
+
+
+        //Debug.Log(clientLogIn);
+        SQLHandler tmp = new SQLHandler();
+        //debugtext.text += tmp.check() + "\n\n\n";
+
+
+
+        string LogInOutPut = tmp.recvMsg(clientLogIn);
+        
+
+        NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
+        
+    }
+
+    bool msg_sent = false;
+
+    private void Update()
+    {
+        if (NetworkServer.active)
+        {
+            //Debug.Log("Server Active!");
+        }
+    }
 
     const short NameChannelId = 8888;
     private void Start()
