@@ -201,16 +201,16 @@ public class SQLHandler : MonoBehaviour
 
     public void sqlTest()
     {
-        Debug.Log(">>>>>>>>>>>>>testing    getTsk>>>>>>>>>>>>>>>\n");
+        Debug.Log(">>>>>>>>>>>>>testing    searchUsr>>>>>>>>>>>>>>>\n");
         inputMessage ipt = new inputMessage();
-        ipt.addWay("getallTsk");
-        
+        ipt.addWay("searchUsr");
+        ipt.addArg("name","wo shi shabi");
+        ipt.addArg("pwd","wsl");
 
         string msg = ipt.getString();
         string opt = recvMsg(msg);
 
         Debug.Log("\n\n" + opt + "\n\n");
-
 
         outputMessage optMsg = new outputMessage(opt);
         if(optMsg.getSuccess() )
