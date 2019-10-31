@@ -8,6 +8,12 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 
+
+
+/**
+outputMessage:
+
+*/
 public class outputMessage
 {
     private JObject optJson;
@@ -95,6 +101,14 @@ public class outputMessage
     }
 }
 
+/**
+inputMessage:
+(1) addWay(string method): method->addUsr
+(2) addArg(string argument, string value)
+(3) getString(): return the string (which is a json object); 
+(4) getWay(): return the way
+(5) getArg(string arg): return the specific argument 
+*/
 public class inputMessage
 {
     private JObject iptJson;
@@ -312,21 +326,14 @@ public class SQLHandler : MonoBehaviour
 
     /*
     * string addUsr(string msg)
+    * input msg (inputMessage)
+    * way: addUsr<getWay()>
+    * arg: name (getArg("name"))  / pwd (getArg("pwd"))
     * 
-        * input msg is actually a inputMessage(I will do the serialize part): 
-        * way: "addUsr"
-        * argument [it is a dictionary]:
-        *  key(string) : value(string)
-        *  "name"       : "shabi"
-        *  "pwd"       : "wo si le"
-        * 
-        * 
-        * output msg(string)
-        * 
-        * success: True (addSuccess) / False (add doesn't success)
-        * ErrorMessage (if False) : will have the reason why it is false); 
-        * 
-        */
+    * output outpuMessage(string) 
+    * success: True (addSuccess) / False (add doesn't success)
+    * ErrorMessage (if False) : will have the reason why it is false); 
+    */
     public string addUsr(string msg)
     {
         inputMessage input = new inputMessage(msg);
