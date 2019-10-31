@@ -109,15 +109,8 @@ public class NetCore : MonoBehaviour
 
 
 
-        //string LogInOutPut = tmp.recvMsg(clientLogIn);
-        outputMessage optMsg = new outputMessage();
-        optMsg.success = false;
-        optMsg.ErrorMessage = "Unable to deserailze";
-        string LogInOutPut = JsonConvert.SerializeObject(optMsg);
-
-        debugtext.text += "XXXXXXXXXXXXXXXXXXX";
-        //debugtext.text += LogInOutPut;
-        //Debug.Log(LogInOutPut);
+        string LogInOutPut = tmp.recvMsg(clientLogIn);
+        
 
         NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
         

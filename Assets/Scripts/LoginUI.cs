@@ -41,10 +41,9 @@ public class LoginUI : MonoBehaviour
             else
             {
                 inputMessage UNPWMsg = new inputMessage();
-                UNPWMsg.way = "searchUsr";
-
-                UNPWMsg.argument.Add("name", loginAccount.text) ;
-                UNPWMsg.argument.Add("pwd", loginPassword.text);
+                UNPWMsg.addWay("searchUsr");
+                UNPWMsg.addArg("name", loginAccount.text) ;
+                UNPWMsg.addArg("pwd", loginPassword.text);
                 string loginMsg = JsonConvert.SerializeObject(UNPWMsg);
                 Debug.Log(loginMsg);
                 netCore.ClientSendLogIn(loginMsg);
