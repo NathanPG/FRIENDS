@@ -76,15 +76,15 @@ public class LoginUI : MonoBehaviour
                 profileSys.gold = Convert.ToInt32(outDic["0"]["coin"]);
                 Debug.Log("CLIENT RECEIVED INFO");
 
+                //getAlltsk
 
+                inputMessage tskMessage = new inputMessage();
+                tskMessage.addWay("getallTsk");
+                string strOpt = tmp.recvMsg(tskMessage.getString());
+                outputMessage tskOpt = new outputMessage(strOpt);
 
-
-
-
-
-
-
-
+                Debug.Log(strOpt);
+                profileSys.Task_List = tskOpt.getResult();
 
                 loginUI.SetActive(false);
             }

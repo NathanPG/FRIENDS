@@ -51,7 +51,7 @@ public class outputMessage
         return optJson["ErrorMessage"].Value<string>();
     }
 
-    public Dictionary<String, Dictionary<String,String> > getResut()
+    public Dictionary<String, Dictionary<String,String> > getResult()
     {
         Dictionary<String, Dictionary<String, String>> result = new Dictionary<string, Dictionary<string, string>>();
         int index = optJson["number"].Value<int>();
@@ -233,7 +233,7 @@ public class SQLHandler : MonoBehaviour
         outputMessage optMsg = new outputMessage(opt);
         if(optMsg.getSuccess() )
         {
-            var result = optMsg.getResut();
+            var result = optMsg.getResult();
 
             foreach(KeyValuePair<string, Dictionary<string, string> > itr in result)
             {
