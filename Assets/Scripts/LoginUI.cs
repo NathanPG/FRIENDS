@@ -85,8 +85,8 @@ public class LoginUI : MonoBehaviour
                 outputMessage tskOpt = new outputMessage(strOpt);
 
                 Debug.Log(strOpt);
-                profileSys.Task_List = tskOpt.getResult();
-
+                
+                profileSys.UpdateResult(tskOpt.getResult());
                 loginUI.SetActive(false);
             }
             else
