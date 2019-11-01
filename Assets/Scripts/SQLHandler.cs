@@ -166,7 +166,7 @@ public class SQLHandler : MonoBehaviour
     {
         // 数据库
         MySqlConnection sqlConn;
-        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=3358;port=3306";
+        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=Arespenguin233;port=3306";
         sqlConn = new MySqlConnection(connStr);
         return sqlConn;
     }
@@ -178,15 +178,33 @@ public class SQLHandler : MonoBehaviour
     {
         // 数据库
         //JsonObjectTest();
-        sqlTest();
+        //sqlTest();
+
+        connectTest();
     }
+
+    public void connectTest()
+    {
+        MySqlConnection sqlConn = GetSqlConn();
+        try
+        {
+            sqlConn.Open();
+            Debug.Log("suppose to set up the table");
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex.Message);
+            return;
+        }
+    }
+
 
     public static void JsonObjectTest()
     {
         inputMessage iptMsg = new inputMessage();
         iptMsg.addWay("searchUsr");
-        iptMsg.addArg("name", "nimabi");
-        iptMsg.addArg("pwd", "wo shi shabi");
+        iptMsg.addArg("name", "test");
+        iptMsg.addArg("pwd", "pwd");
 
         string msg = iptMsg.getString();
         Debug.Log(msg);
@@ -204,8 +222,8 @@ public class SQLHandler : MonoBehaviour
         Debug.Log(">>>>>>>>>>>>>testing    searchUsr>>>>>>>>>>>>>>>\n");
         inputMessage ipt = new inputMessage();
         ipt.addWay("searchUsr");
-        ipt.addArg("name","wo shi shabi");
-        ipt.addArg("pwd","wsl");
+        ipt.addArg("name","test");
+        ipt.addArg("pwd","pwd");
 
         string msg = ipt.getString();
         string opt = recvMsg(msg);
@@ -462,7 +480,7 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            output.addErrorMsg("addUsr: Connection between mysql doesn't work correctly");
+            output.addErrorMsg("addUsr: Connection between mysql doesn't work correctly"+ ex.ToString() );
             output.addSuccess(false);
             return output.getString();
         }
@@ -779,11 +797,10 @@ public class SQLHandler : MonoBehaviour
     {
         PlayerIndicator playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
         //SERVER
-        if (!playerIndicator.isPlayer)
-        {
-            OpenSql();
-        }
-        //Debug.Log("Connection success!");
+        
+        OpenSql();
+        
+        Debug.Log("CHECKING FOR THE OUTSIDE");
     }
     
 }

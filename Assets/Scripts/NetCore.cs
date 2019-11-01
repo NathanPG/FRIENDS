@@ -58,31 +58,7 @@ public class NetCore : MonoBehaviour
     }
     #endregion
 
-    //CLIENT RECV 2222 FROM CLIENT
-    public void OnClientReceiveFB(NetworkMessage FBMsg) { 
-        Debug.Log("Client Received Server Feedback!");
-        //Deserialize message
-        string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
-        outputMessage outputFBMsg = JsonConvert.DeserializeObject<outputMessage>(Fbjson);
-        Debug.Log(Fbjson);
-        /*
-        
-        if (outputFBMsg.success)
-        {
-            //outputFBMsg.lst["result"]["name"];
-            //outputFBMsg.lst["result"]["pwd"];
-            profileSys.exp = Convert.ToInt32(outputFBMsg.lst["result"]["exp"]);
-            profileSys.gold = Convert.ToInt32(outputFBMsg.lst["result"]["coin"]);
-            Debug.Log("CLIENT RECEIVED INFO");
-            loginui.loginUI.SetActive(false);
-        }
-        else
-        {
-            //REPORT ERROR
-            Debug.Log("ERROR");
-        }
-        */
-    }
+    
 
     public void ClientSendLogIn(string loginMsg)
     {
@@ -96,24 +72,40 @@ public class NetCore : MonoBehaviour
     //AFTER RECV 1111 FROM CLIENT
     public void ServerRecvLogin(NetworkMessage logInMsg)
     {
-        red.SetActive(red);
         Debug.Log("Server Received Login Info");
         string clientLogIn = logInMsg.ReadMessage<StringMessage>().value;
 
-        debugtext.text = clientLogIn;
-
-
-        //Debug.Log(clientLogIn);
         SQLHandler tmp = new SQLHandler();
-        //debugtext.text += tmp.check() + "\n\n\n";
-
-
-
         string LogInOutPut = tmp.recvMsg(clientLogIn);
         
-
         NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
         
+    }
+    //CLIENT RECV 2222 FROM CLIENT
+    public void OnClientReceiveFB(NetworkMessage FBMsg)
+    {
+        Debug.Log("Client Received Server Feedback!");
+        //Deserialize message
+        string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
+        outputMessage outputFBMsg = new outputMessage(Fbjson);
+
+
+        if (outputFBMsg.getSuccess())
+        {
+            //outputFBMsg.lst["result"]["name"];
+            //outputFBMsg.lst["result"]["pwd"];        
+            Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResut();
+            profileSys.exp = Convert.ToInt32(outDic["0"]["exp"]);
+            profileSys.gold = Convert.ToInt32(outDic["0"]["coin"]);
+            Debug.Log("CLIENT RECEIVED INFO");
+            loginui.loginUI.SetActive(false);
+        }
+        else
+        {
+            //REPORT ERROR
+            Debug.Log("ERROR" + outputFBMsg.getErrorMsg());
+        }
+
     }
 
     bool msg_sent = false;
@@ -124,6 +116,11 @@ public class NetCore : MonoBehaviour
         {
             //Debug.Log("Server Active!");
         }
+    }
+    
+    public void OnClientConnected(NetworkMessage netMsg)
+    {
+        Debug.Log("A CLIENT HAS CONNECTED");
     }
 
     const short NameChannelId = 8888;
@@ -165,13 +162,14 @@ public class NetCore : MonoBehaviour
             //config.AddChannel(QosType.UnreliableFragmented);
 
             //THIS START A NetworkServer
+
             NetworkManager.singleton.StartHost();
             NetworkServer.RegisterHandler(1111, ServerRecvLogin);
 
 
             //NetworkServer.RegisterHandler(1234, TestServerReceive);
 
-            //NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
+            NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         }
     }
 

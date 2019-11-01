@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 
 public class OLScene : MonoBehaviour
 {
@@ -11,10 +12,16 @@ public class OLScene : MonoBehaviour
     public GameObject infoWindow;
     public GameObject questTitilePre;
 
+    public ProfileSys profileSys;
+
     public List<GameObject> questList = new List<GameObject>();
 
-    public ScrollRect scrollRect;
+    
+    public Text exp;
+    public Text coin;
     public void InfoOnClick() {
+        exp.text = "EXP: " + profileSys.exp.ToString();
+        coin.text = "Coin: " + profileSys.gold.ToString();
         if (infoWindow.activeInHierarchy)
         {
             infoWindow.SetActive(false);
@@ -23,15 +30,14 @@ public class OLScene : MonoBehaviour
         {
             infoWindow.SetActive(true);
         }
+
     }
     public void InfoClose() { infoWindow.SetActive(false); }
 
-
-
-
+    #region Quest_Detail
     public Text singleQuestTitle;
     public Text singleQuestContent;
-
+    
     public GameObject SingleQuest;
     public void SingleQuestOpen()
     {
@@ -43,16 +49,15 @@ public class OLScene : MonoBehaviour
         {
             SingleQuest.SetActive(true);
             //CHANGE QUEST CONTENT
-            singleQuestTitle.text = "企鹅世界第一可爱";
-            singleQuestContent.text = "喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵" +
-                "喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵";
+            singleQuestTitle.text = this.gameObject.GetComponentInChildren<questINFO>().title;
+            singleQuestContent.text = this.gameObject.GetComponentInChildren<questINFO>().content;
         }
         
     }
     public void SingleQuestClose() { SingleQuest.SetActive(false); }
+    #endregion
 
-
-
+    #region Publish_Window
     public GameObject publishWindow;
     public void publishWindowOn() {
         if (publishWindow.activeInHierarchy)
@@ -65,10 +70,10 @@ public class OLScene : MonoBehaviour
         }
     }
     public void publishWindowOff() { publishWindow.SetActive(false); }
+    #endregion
 
-
-
-
+    #region Task_List
+    public ScrollRect scrollRect;
     public GameObject questListWindow;
     public void QuestListOn()
     {
@@ -79,30 +84,45 @@ public class OLScene : MonoBehaviour
         else
         {
             questListWindow.SetActive(true);
-            UpdateQuestList("喵喵喵");
+            
+            foreach(KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Task_List)
+            {
+                UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"], 
+                    itr.Value["exp"], itr.Value["coin"], itr.Value["owner"] );
+            }
         }
     }
+
     public void QuestListOff() { questListWindow.SetActive(false); }
 
 
-    public void UpdateQuestList(string newText)
+    public void UpdateQuestList(string QID, string content, string title,
+        string exp, string coin, string owner)
     {
         foreach(GameObject task in questList)
         {
             Destroy(task);
         }
-        AddTextToScrollView(newText);
+        AddTextToScrollView(QID,content,title,exp,coin,owner);
     }
 
-    public GameObject AddTextToScrollView(string newText)
+    public GameObject AddTextToScrollView(string QID, string content, string title, 
+        string exp, string coin, string owner)
     {
         if (questTitilePre == null)
         {
             return null;
         }
         GameObject temp = Instantiate(questTitilePre, scrollRect.content, false);
-        temp.GetComponentInChildren<Text>().text = newText;
+        temp.GetComponentInChildren<Text>().text = title;
         temp.GetComponent<Button>().onClick.AddListener(SingleQuestOpen);
+        questINFO QI= temp.GetComponent<questINFO>();
+        QI.QID = QID;
+        QI.content = content;
+        QI.title = title;
+        QI.exp = Convert.ToInt32(exp);
+        QI.coin = Convert.ToInt32(coin);
+        QI.owner = owner;
         questList.Add(temp);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
@@ -110,6 +130,6 @@ public class OLScene : MonoBehaviour
         scrollRect.verticalNormalizedPosition = 0;
 
         return temp;
-
     }
+    #endregion
 }

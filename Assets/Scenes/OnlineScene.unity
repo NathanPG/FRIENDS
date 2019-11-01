@@ -798,7 +798,7 @@ RectTransform:
   - {fileID: 1931015692}
   - {fileID: 4950394}
   m_Father: {fileID: 1013408955}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1781,7 +1781,7 @@ RectTransform:
   - {fileID: 611954778}
   - {fileID: 410092752}
   m_Father: {fileID: 1013408955}
-  m_RootOrder: 14
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -8012,7 +8012,7 @@ RectTransform:
   - {fileID: 828468927}
   - {fileID: 36253226}
   m_Father: {fileID: 1013408955}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -12897,7 +12897,7 @@ RectTransform:
   m_Children:
   - {fileID: 2035795112}
   m_Father: {fileID: 1013408955}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -13127,13 +13127,13 @@ RectTransform:
   - {fileID: 981938137}
   - {fileID: 1009770543}
   - {fileID: 1442066468}
-  - {fileID: 1678371668}
   - {fileID: 1604623078}
   - {fileID: 585562521}
   - {fileID: 1008501532}
-  - {fileID: 1294667516}
   - {fileID: 75687096}
+  - {fileID: 1294667516}
   - {fileID: 16553070}
+  - {fileID: 1678371668}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13165,6 +13165,7 @@ MonoBehaviour:
   signupPassword: {fileID: 1966699284}
   loginUI: {fileID: 1678371667}
   netCore: {fileID: 1613899269}
+  profileSys: {fileID: 664207469}
 --- !u!114 &1013408957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20811,7 +20812,7 @@ RectTransform:
   m_Children:
   - {fileID: 1944772819}
   m_Father: {fileID: 1013408955}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -22454,7 +22455,7 @@ RectTransform:
   - {fileID: 9649394}
   - {fileID: 1822312185}
   m_Father: {fileID: 1013408955}
-  m_RootOrder: 9
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
@@ -25,6 +26,8 @@ public class LoginUI : MonoBehaviour
     public Dictionary<string, string> dbcheck;
     public NetCore netCore;
 
+    public ProfileSys profileSys;
+
     bool isStart;
 
     public void LoginOnClick()
@@ -44,7 +47,7 @@ public class LoginUI : MonoBehaviour
                 UNPWMsg.addWay("searchUsr");
                 UNPWMsg.addArg("name", loginAccount.text) ;
                 UNPWMsg.addArg("pwd", loginPassword.text);
-                string loginMsg = JsonConvert.SerializeObject(UNPWMsg);
+                string loginMsg = UNPWMsg.getString();
                 Debug.Log(loginMsg);
                 netCore.ClientSendLogIn(loginMsg);
             }
@@ -52,28 +55,44 @@ public class LoginUI : MonoBehaviour
         //Server
         else
         {
-            if(loginAccount.text == "MIAO" && loginPassword.text == "123")
+            inputMessage UNPWMsg = new inputMessage();
+            UNPWMsg.addWay("searchUsr");
+            UNPWMsg.addArg("name", loginAccount.text);
+            UNPWMsg.addArg("pwd", loginPassword.text);
+            string loginMsg = UNPWMsg.getString();
+            SQLHandler tmp = new SQLHandler();
+
+            string LogInOutPut = tmp.recvMsg(loginMsg);
+
+            outputMessage outputFBMsg = new outputMessage(LogInOutPut);
+
+            if (outputFBMsg.getSuccess())
             {
+
+                //outputFBMsg.lst["result"]["name"];
+                //outputFBMsg.lst["result"]["pwd"];        
+                Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResut();
+                profileSys.exp = Convert.ToInt32(outDic["0"]["exp"]);
+                profileSys.gold = Convert.ToInt32(outDic["0"]["coin"]);
+                Debug.Log("CLIENT RECEIVED INFO");
+
+
+
+
+
+
+
+
+
+
+
                 loginUI.SetActive(false);
             }
+            else
+            {
+                Debug.Log("SOME KIND OF LOG IN ERROR");
+            }
         }
-        /*
-        dbcheck = sql.searchUsr(username, pwd);
-        
-        //SHOW WARNING MESSAGE
-        if (dbcheck.ContainsKey("Error"))
-        {
-            warning.SetActive(true);
-            warning.GetComponent<Text>().text = dbcheck["Error"];
-        }
-        else
-        {
-
-        }
-        */
-
-        //playerIndicator.isPlayer代表这是个CLIENT，需要将用户名密码发给HOST,HOST找数据库CHECK用户名密码
-        //!playerIndicator.isPlayer代表这是个HOST，可以直接找数据库CHECK用户名密码
     
     }
     //THIS IS GOING TO BE A SERVER
