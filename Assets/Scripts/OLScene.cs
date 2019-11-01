@@ -16,7 +16,14 @@ public class OLScene : MonoBehaviour
 
     public List<GameObject> questList = new List<GameObject>();
 
-    
+    public PlayerIndicator playerIndicator;
+
+    private void Start()
+    {
+        playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
+    }
+
+    #region Info_Window
     public Text exp;
     public Text coin;
     public void InfoOnClick() {
@@ -33,6 +40,7 @@ public class OLScene : MonoBehaviour
 
     }
     public void InfoClose() { infoWindow.SetActive(false); }
+    #endregion
 
     #region Quest_Detail
     public Text singleQuestTitle;
@@ -59,6 +67,9 @@ public class OLScene : MonoBehaviour
 
     #region Publish_Window
     public GameObject publishWindow;
+    public InputField questContent;
+    public InputField questTitle;
+    public Dropdown questCoin;
     public void publishWindowOn() {
         if (publishWindow.activeInHierarchy)
         {
@@ -70,6 +81,27 @@ public class OLScene : MonoBehaviour
         }
     }
     public void publishWindowOff() { publishWindow.SetActive(false); }
+
+    public void pulishOnClick()
+    {
+        if (playerIndicator.isPlayer)
+        {
+
+        }
+        //Host
+        else
+        {
+            string owner = playerIndicator.UserName;
+            inputMessage publishMsg = new inputMessage();
+            publishMsg.addWay("addTsk");
+            publishMsg.addArg("title", questTitle.text);
+            publishMsg.addArg("content", questContent.text);
+            publishMsg.addArg("coin", questCoin.value.ToString());
+            publishMsg.addArg("owner", owner);
+            SQLHandler tmp = new SQLHandler();
+            tmp.addTsk(publishMsg.getString());
+        }
+    }
     #endregion
 
     #region Task_List
@@ -90,6 +122,7 @@ public class OLScene : MonoBehaviour
                 UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"], 
                     itr.Value["exp"], itr.Value["coin"], itr.Value["owner"] );
             }
+            Debug.Log("UPDATING THE QUESTLIST");
         }
     }
 

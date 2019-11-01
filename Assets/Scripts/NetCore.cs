@@ -94,7 +94,7 @@ public class NetCore : MonoBehaviour
         {
             //outputFBMsg.lst["result"]["name"];
             //outputFBMsg.lst["result"]["pwd"];        
-            Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResut();
+            Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResult();
             profileSys.exp = Convert.ToInt32(outDic["0"]["exp"]);
             profileSys.gold = Convert.ToInt32(outDic["0"]["coin"]);
             Debug.Log("CLIENT RECEIVED INFO");
