@@ -18,6 +18,11 @@ public class OLScene : MonoBehaviour
 
     public PlayerIndicator playerIndicator;
 
+    public Text singleQuestTitle;
+    public Text singleQuestContent;
+    public Text singleQuestCoin;
+    public Text singleQuestExp;
+
     private void Start()
     {
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
@@ -43,8 +48,7 @@ public class OLScene : MonoBehaviour
     #endregion
 
     #region Quest_Detail
-    public Text singleQuestTitle;
-    public Text singleQuestContent;
+    
     
     public GameObject SingleQuest;
     public void SingleQuestOpen()
@@ -57,10 +61,7 @@ public class OLScene : MonoBehaviour
         {
             SingleQuest.SetActive(true);
             //CHANGE QUEST CONTENT
-            singleQuestTitle.text = this.gameObject.GetComponentInChildren<questINFO>().title;
-            singleQuestContent.text = this.gameObject.GetComponentInChildren<questINFO>().content;
         }
-        
     }
     public void SingleQuestClose() { SingleQuest.SetActive(false); }
     #endregion
@@ -113,16 +114,51 @@ public class OLScene : MonoBehaviour
         {
             questListWindow.SetActive(false);
         }
+
         else
         {
+            //UPDATE TASK
+            SQLHandler sql = new SQLHandler();
+            inputMessage tskMessage = new inputMessage();
+            tskMessage.addWay("getallTsk");
+            string strOpt = sql.recvMsg(tskMessage.getString());
+            outputMessage tskOpt = new outputMessage(strOpt);
+            profileSys.UpdateResult(tskOpt.getResult());
+
+
+
             questListWindow.SetActive(true);
-            
-            foreach(KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Task_List)
+            foreach (GameObject task in questList)
+            {
+                Destroy(task);
+            }
+            foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Task_List)
             {
                 UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"], 
                     itr.Value["exp"], itr.Value["coin"], itr.Value["owner"] );
             }
-            Debug.Log("UPDATING THE QUESTLIST");
+        }
+    }
+
+    public void RefreshOnClick()
+    {
+        //UPDATE TASK
+        SQLHandler sql = new SQLHandler();
+        inputMessage tskMessage = new inputMessage();
+        tskMessage.addWay("getallTsk");
+        string strOpt = sql.recvMsg(tskMessage.getString());
+        outputMessage tskOpt = new outputMessage(strOpt);
+        profileSys.UpdateResult(tskOpt.getResult());
+
+        questListWindow.SetActive(true);
+        foreach (GameObject task in questList)
+        {
+            Destroy(task);
+        }
+        foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Task_List)
+        {
+            UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"],
+                itr.Value["exp"], itr.Value["coin"], itr.Value["owner"]);
         }
     }
 
@@ -132,10 +168,7 @@ public class OLScene : MonoBehaviour
     public void UpdateQuestList(string QID, string content, string title,
         string exp, string coin, string owner)
     {
-        foreach(GameObject task in questList)
-        {
-            Destroy(task);
-        }
+        
         AddTextToScrollView(QID,content,title,exp,coin,owner);
     }
 
@@ -149,13 +182,16 @@ public class OLScene : MonoBehaviour
         GameObject temp = Instantiate(questTitilePre, scrollRect.content, false);
         temp.GetComponentInChildren<Text>().text = title;
         temp.GetComponent<Button>().onClick.AddListener(SingleQuestOpen);
-        questINFO QI= temp.GetComponent<questINFO>();
-        QI.QID = QID;
-        QI.content = content;
-        QI.title = title;
-        QI.exp = Convert.ToInt32(exp);
-        QI.coin = Convert.ToInt32(coin);
-        QI.owner = owner;
+        temp.GetComponent<questINFO>().QuestTitle = singleQuestTitle;
+        temp.GetComponent<questINFO>().QuestContent = singleQuestContent;
+        temp.GetComponent<questINFO>().QuestCoin = singleQuestCoin;
+        temp.GetComponent<questINFO>().QuestExp = singleQuestExp;
+        temp.GetComponent<questINFO>().QID = QID;
+        temp.GetComponent<questINFO>().content = content;
+        temp.GetComponent<questINFO>().title = title;
+        temp.GetComponent<questINFO>().exp = Convert.ToInt32(exp);
+        temp.GetComponent<questINFO>().coin = Convert.ToInt32(coin);
+        temp.GetComponent<questINFO>().owner = owner;
         questList.Add(temp);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
@@ -165,4 +201,9 @@ public class OLScene : MonoBehaviour
         return temp;
     }
     #endregion
+
+    #region Accpeted_List
+
+    #endregion
+
 }

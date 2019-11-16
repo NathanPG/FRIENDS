@@ -787,11 +787,6 @@ public class SQLHandler : MonoBehaviour
         }
         return output.getString();
     }
-
-
-
-
-
     
     private void Start()
     {

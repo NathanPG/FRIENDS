@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,14 +21,28 @@ public class ProfileSys : MonoBehaviour
 
     public void UpdateResult(Dictionary<string, Dictionary<string, string>> sourceDict)
     {
+        Debug.Log("UPDATING");
         foreach (KeyValuePair<string, Dictionary<string, string>> itr in sourceDict)
         {
-            string qid = itr.Value["id"].ToString();
-            string title = itr.Value["title"].ToString();
-            string content = itr.Value["content"].ToString();
-            string coin = itr.Value["coin"].ToString();
-            string owner = itr.Value["owner"].ToString();
-            string exp = itr.Value["exp"].ToString();
+            Debug.Log("GETTING QUEST:" + itr.Value["title"].ToString());
+            string qid = "unset id";
+            string title = "unset title";
+            string content = "unet content";
+            string coin = "-1";
+            string owner = "unset owner";
+            string exp = "-1";
+            try
+            {
+                qid = itr.Value["id"].ToString();
+                title = itr.Value["title"].ToString();
+                content = itr.Value["content"].ToString();
+                coin = itr.Value["coin"].ToString();
+                owner = itr.Value["owner"].ToString();
+                //exp = itr.Value["exp"].ToString();
+            } catch (Exception ex)
+            {
+
+            }
 
             this.Task_List[qid] = new Dictionary<string, string>();
             this.Task_List[qid]["QID"] = qid;
@@ -35,7 +50,7 @@ public class ProfileSys : MonoBehaviour
             this.Task_List[qid]["title"] = title;
             this.Task_List[qid]["exp"] = exp;
             this.Task_List[qid]["coin"] = coin;
-            this.Task_List[qid]["onwer"] = owner;
+            this.Task_List[qid]["owner"] = owner;
 
         }
     }

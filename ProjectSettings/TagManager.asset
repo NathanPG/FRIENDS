@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - NET
+  - qtitle
+  - qcontent
   layers:
   - Default
   - TransparentFX

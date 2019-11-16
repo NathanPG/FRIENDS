@@ -134,14 +134,13 @@ public class NetCore : MonoBehaviour
             Debug.Log("This is client");
 
             NetworkManager.singleton.networkPort = 9999;
-            NetworkClient netc = NetworkManager.singleton.StartClient();
+            //NetworkManager.singleton.networkAddress = "129.161.48.77";
 
-            /*
-             * CLIENT CONNECTION ID
+            NetworkClient netc = NetworkManager.singleton.StartClient();
+            //CLIENT CONNECTION ID
             NetworkConnection netconnect = netc.connection;
             int connectionID = netconnect.connectionId;
-            */
-
+         
             NetworkManager.singleton.client.Connect("localhost", 9999);
             NetworkManager.singleton.client.RegisterHandler(2222,OnClientReceiveFB);
 
@@ -149,13 +148,15 @@ public class NetCore : MonoBehaviour
             //NetworkManager.singleton.client.RegisterHandler(4321, TestClientReceive);
         }
 
+        
         //Host
         else
         {
             //SetupServer();
             NetworkManager.singleton.networkPort = 9999;
 
-            //NetworkManager.singleton.networkPort = 10000;
+            //NetworkManager.singleton.networkAddress = "129.161.48.77";
+        
             //var config = new ConnectionConfig();
             // There are different types of channels you can use, check the official documentation
             //config.AddChannel(QosType.ReliableFragmented);
@@ -164,15 +165,24 @@ public class NetCore : MonoBehaviour
             //THIS START A NetworkServer
 
             NetworkManager.singleton.StartHost();
+
+            //HANDLERS
             NetworkServer.RegisterHandler(1111, ServerRecvLogin);
-
-
             //NetworkServer.RegisterHandler(1234, TestServerReceive);
-
             NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         }
     }
 
+    [Command]
+    public void CmdMoveClient()
+    {
+
+    }
+    [ClientRpc]
+    public void RpcSendInt()
+    {
+
+    }
 
     void OnApplicationQuit()
     {
