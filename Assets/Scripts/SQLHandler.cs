@@ -176,10 +176,7 @@ public class SQLHandler : MonoBehaviour
     /// </summary>
     public void OpenSql()
     {
-        // 数据库
-        //JsonObjectTest();
-        //sqlTest();
-
+        
         connectTest();
     }
 
