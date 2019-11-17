@@ -80,6 +80,10 @@ public class outputMessage
         return result;
     }
 
+    /// <summary>
+    /// Make the outputMessage to string type Json form 
+    /// </summary>
+    /// <returns></returns>
     public string getString()
     {
         optJson.Add("number", index);
@@ -93,6 +97,11 @@ public class outputMessage
         rstJson = new JObject();
         index = 0;
     }
+
+    /// <summary>
+    /// Load the string type Json Type to its real form 
+    /// </summary>
+    /// <param name="msg"></param>
     public outputMessage(string msg)
     {
         optJson = JObject.Parse(msg);
@@ -287,6 +296,8 @@ public class SQLHandler : MonoBehaviour
                 return addTsk(msg);
             case "takeTsk":
                 return takeTsk(msg);
+            case "finishTsk":
+                return finishTsk(msg);
             default:
                 optMessage.addSuccess(false);
                 optMessage.addErrorMsg("unable to match the way");
@@ -543,20 +554,17 @@ public class SQLHandler : MonoBehaviour
     }
 
     /*
-             * string getallTsk()
-             * 
-             * input msg is actually a inputMessage(I will do deserialize part): 
-             * way: "getallTsk"
-             * 
-             * 
-             * 
-             * output msg(string)
-             *   
-             * success: True (connect Success) / False (connect doesn't success)
-             * ErrorMessage (if False) : will have the reason why it is false); 
-             * lst (if success)  : lst["id"] = a dictionary: {"id":"#", "title":"X", "content":"XXX", "coin": "#" , "exp":"XX", "owner":"XX"}
-             *     (False : null):
-             */
+     * string getallTsk()
+     * 
+     *input msg is actually a inputMessage(I will do deserialize part): 
+     * way: "getallTsk"
+     * output msg(string)
+     *   
+     * success: True (connect Success) / False (connect doesn't success)
+     * ErrorMessage (if False) : will have the reason why it is false); 
+     * lst (if success)  : lst["id"] = a dictionary: {"id":"#", "title":"X", "content":"XXX", "coin": "#" , "exp":"XX", "owner":"XX"}
+     *     (False : null):
+     */
     public string getallTsk(string msg)
     {
         inputMessage input = new inputMessage(msg);
@@ -619,8 +627,80 @@ public class SQLHandler : MonoBehaviour
         return output.getString();
     }
 
+    /// <summary>
+    /// go to find the tasks you have accepted.
+    /// Input: argument must have "taker".
+    /// Output: Outputmessage, Results are dictionary, each subDictionary is a detailed information for each dictionary
+    /// </summary>
+    /// <param name="msg"></param>
+    /// <returns></returns>
+    public string getAcceptedTsk(string msg)
+    {
+        inputMessage input = new inputMessage(msg);
+        outputMessage output = new outputMessage();
+        MySqlConnection sqlConn = GetSqlConn();
+        try
+        {
+            sqlConn.Open();
 
-    //TODO: Import decide ADDUSR and ADDTSK's return value 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            output.addErrorMsg("getOwnedTsk: Connection between mysql doesn't work correctly");
+            output.addSuccess(false);
+            return output.getString();
+        }
+
+        string taker = input.getArg("taker");
+
+        try
+        {
+            String strsql = "SELECT * FROM taker = @taker ;";
+            MySqlCommand sqlComm = new MySqlCommand(strsql, sqlConn);
+            sqlComm.Parameters.AddWithValue("@taker", taker);
+
+            MySqlDataReader sqlRes = sqlComm.ExecuteReader();
+
+            output.addSuccess(true);
+
+            while (sqlRes.Read())
+            {
+                string id = sqlRes["id"].ToString();
+                string title = sqlRes["title"].ToString();
+                string content = (string)sqlRes["content"];
+                string owner = (string)sqlRes["owner"];
+                string coin = sqlRes["coin"].ToString();
+                string exp = sqlRes["exp"].ToString();
+
+
+                var lst = new Dictionary<string, string>();
+                lst["id"] = id;
+                lst["title"] = title;
+                lst["content"] = content;
+                lst["coin"] = coin;
+                lst["exp"] = exp;
+                lst["owner"] = owner;
+
+
+                output.addResult(lst);
+            }
+        }
+        catch (Exception ex)
+        {
+            sqlConn.Close();
+            Console.Write("getAcceptedTsk may can not work");
+            Console.Write(ex.Message);
+            output.addSuccess(false);
+            output.addErrorMsg("have problem in getAcceptedTsk");
+        }
+        return output.getString();
+    }
+
+
+
+
+
     /*
      * string addTsk(string msg)
      * 
@@ -699,9 +779,14 @@ public class SQLHandler : MonoBehaviour
         return output.getString();
     }
 
-    /*
-     * helper function to find id
-     */
+    /// <summary>
+    /// Helper Function: which help use title, content, to find the id. 
+    /// </summary>
+    /// <param name="title"></param>
+    /// <param name="content"></param>
+    /// <param name="owner"></param>
+    /// <param name="coin"></param>
+    /// <returns></returns>
     public int find_id(string title, string content, string owner, int coin)
     {
         MySqlConnection sqlConn = GetSqlConn();
@@ -753,7 +838,7 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            output.addErrorMsg("addUsr: Connection between mysql doesn't work correctly");
+            output.addErrorMsg("takeTsk: Connection between mysql doesn't work correctly");
             output.addSuccess(false);
             return output.getString();
         }
@@ -784,7 +869,83 @@ public class SQLHandler : MonoBehaviour
         }
         return output.getString();
     }
+
+    /// <summary>
+    /// get coin and exp from db by its id. 
+    /// </summary>
+    /// <param name="strId"></param>
+    /// <returns></returns>
+    public Tuple<int, int> getTsk8id(string strId)
+    {
+        int id = Convert.ToInt32(strId);
+
+        MySqlConnection sqlConn = GetSqlConn();
+        sqlConn.Open();
+        String strUsr = "SELECT * FROM tsk WHERE id = @id;";
+        MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
+        instUsr.Parameters.AddWithValue("@id", id);
+        
+
+        MySqlDataReader sqlRes = instUsr.ExecuteReader();
+        int coin = -1;
+        int exp = -1;
+
+       
+       while (sqlRes.Read())
+       {
+           coin = (int)sqlRes["coin"];
+           exp = (int)sqlRes["exp"];
+       }
+       return new Tuple<int, int>(coin, exp);
+    }
+
+    /// <summary>
+    /// delete the Tsk by id from DB  
+    /// </summary>
+    /// <param name="strId">strId you need to delete</param>
+    public void deleteTsk(string strId)
+    {
+        int id = Convert.ToInt32(strId);
+
+        MySqlConnection sqlConn = GetSqlConn();
+        sqlConn.Open();
+        String strUsr = "DELETE FROM tsk WHERE id = @id;";
+        MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
+        instUsr.Parameters.AddWithValue("@id", id);
+        instUsr.ExecuteNonQuery();
+    }
+
+    /// <summary>
+    /// Finish tsk: Delete the Tsk from the TSk DB, and add the coin and exp to the users
+    /// </summary>
+    /// <param name="msg">inputMessage: getWay = "finishTsk" and arugment: "user","id"(tskid)</param>
+    /// <returns>string(outputMessage)</returns>
+    public string finishTsk(string msg)
+    {
+        inputMessage input = new inputMessage(msg);
+        outputMessage output = new outputMessage();
+        MySqlConnection sqlConn = GetSqlConn();
+        try
+        {
+            sqlConn.Open();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            output.addErrorMsg("takeTsk: Connection between mysql doesn't work correctly");
+            output.addSuccess(false);
+            return output.getString();
+        }
+
+        return output.getString(); 
+    }
+
     
+
+
+
+
     private void Start()
     {
         PlayerIndicator playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
