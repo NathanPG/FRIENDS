@@ -300,6 +300,8 @@ public class SQLHandler : MonoBehaviour
                 return finishTsk(msg);
             case "getAcceptedTsk":
                 return getAcceptedTsk(msg);
+            case "getDetailsUsr":
+                return getDetailsUsr(msg);
             default:
                 optMessage.addSuccess(false);
                 optMessage.addErrorMsg("unable to match the way");
@@ -424,6 +426,75 @@ public class SQLHandler : MonoBehaviour
         }
 
         return output.getString();
+
+    }
+
+    private string getDetailsUsr(string msg)
+    {
+        inputMessage input = new inputMessage(msg);
+        outputMessage output = new outputMessage();
+
+        string name = "null";
+        
+        MySqlConnection sqlConn = GetSqlConn();
+        try
+        {
+            sqlConn.Open();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            output.addErrorMsg("getDetailsUsr: Connection between mysql doesn't work correctly" + ex.ToString());
+            output.addSuccess(false);
+            return output.getString();
+        }
+
+        try
+        {
+            name = input.getArg("name");
+        }
+        catch (Exception ex)
+        {
+            output.addSuccess(false);
+            output.addErrorMsg("name cannot be empty, Please try again");
+            return output.getString();
+        }
+
+
+        try
+        {
+            String strUsr = "SELECT * FROM usr where name=@name;";
+            MySqlCommand findUsr = new MySqlCommand(strUsr, sqlConn);
+            findUsr.Parameters.AddWithValue("@name", name);
+            MySqlDataReader resUsr = findUsr.ExecuteReader();
+            resUsr.Read();
+            try
+            {
+                
+                var lst = new Dictionary<string, string>();
+                lst.Add("name", resUsr["name"].ToString());
+                lst.Add("coin", resUsr["coin"].ToString());
+                lst.Add("exp", resUsr["exp"].ToString());
+                output.addResult(lst);
+                output.addSuccess(true);
+                return output.getString();
+            }
+            catch(Exception e)
+            {
+                sqlConn.Close();
+                output.addSuccess(false);
+                output.addErrorMsg("have something wrong with the get information");
+                return output.getString();
+            }
+        }
+        catch (Exception ex)
+        {
+            sqlConn.Close();
+            output.addSuccess(false);
+            output.addErrorMsg("searchUsr has some problem, please try again or ask Developer about that");
+            return output.getString();
+        }
 
     }
 
