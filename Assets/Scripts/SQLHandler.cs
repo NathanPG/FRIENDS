@@ -298,6 +298,8 @@ public class SQLHandler : MonoBehaviour
                 return takeTsk(msg);
             case "finishTsk":
                 return finishTsk(msg);
+            case "getAcceptedTsk":
+                return getAcceptedTsk(msg);
             default:
                 optMessage.addSuccess(false);
                 optMessage.addErrorMsg("unable to match the way");
@@ -552,6 +554,36 @@ public class SQLHandler : MonoBehaviour
             return output.getString();
         }
     }
+
+    public string getCoin(string name)
+    {
+        return "-10";
+    }
+
+    public string getExp(string name)
+    {
+        return "-10";
+    }
+
+
+    public void addCoin(string name, string addCoin_)
+    {
+        string strCoin = getCoin(name);
+        int addCoin = Convert.ToInt32(addCoin_);
+
+        MySqlConnection sqlConn = GetSqlConn();
+        sqlConn.Open();
+        String strUsr = ";";
+        MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
+        instUsr.Parameters.AddWithValue("@id", id);
+        instUsr.ExecuteNonQuery();
+    }
+
+    public void addExp(string name, string addCoin)
+    {
+        return;
+    }
+
 
     /*
      * string getallTsk()
@@ -898,6 +930,7 @@ public class SQLHandler : MonoBehaviour
        }
        return new Tuple<int, int>(coin, exp);
     }
+
 
     /// <summary>
     /// delete the Tsk by id from DB  
