@@ -173,6 +173,7 @@ public class NetCore : MonoBehaviour
         }
     }
 
+    /*
     [Command]
     public void CmdMoveClient()
     {
@@ -183,6 +184,7 @@ public class NetCore : MonoBehaviour
     {
 
     }
+    */
 
     void OnApplicationQuit()
     {

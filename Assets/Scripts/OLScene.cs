@@ -9,19 +9,19 @@ using System;
 public class OLScene : MonoBehaviour
 {
     public NetCore net;
-    public GameObject infoWindow;
-    public GameObject questTitilePre;
-
     public ProfileSys profileSys;
 
     public List<GameObject> questList = new List<GameObject>();
+    public List<GameObject> acceptedList = new List<GameObject>();
 
     public PlayerIndicator playerIndicator;
+    public bool personal = false;
 
     public Text singleQuestTitle;
     public Text singleQuestContent;
     public Text singleQuestCoin;
     public Text singleQuestExp;
+    public Button acceptButton;
 
     private void Start()
     {
@@ -31,6 +31,7 @@ public class OLScene : MonoBehaviour
     #region Info_Window
     public Text exp;
     public Text coin;
+    public GameObject infoWindow;
     public void InfoOnClick() {
         exp.text = "EXP: " + profileSys.exp.ToString();
         coin.text = "Coin: " + profileSys.gold.ToString();
@@ -51,6 +52,9 @@ public class OLScene : MonoBehaviour
     
     
     public GameObject SingleQuest;
+    public GameObject AcceptButtoninDetail;
+    public Text Coin;
+    public Text Exp;
     public void SingleQuestOpen()
     {
         if (SingleQuest.activeInHierarchy)
@@ -61,9 +65,25 @@ public class OLScene : MonoBehaviour
         {
             SingleQuest.SetActive(true);
             //CHANGE QUEST CONTENT
+            AcceptButtoninDetail.SetActive(true);
         }
     }
-    public void SingleQuestClose() { SingleQuest.SetActive(false); }
+
+    public void PersonalQuestOpen()
+    {
+        if (SingleQuest.activeInHierarchy)
+        {
+            SingleQuest.SetActive(false);
+        }
+        else
+        {
+            SingleQuest.SetActive(true);
+            //CHANGE QUEST CONTENT
+            AcceptButtoninDetail.SetActive(true);
+        }
+    }
+
+    public void SingleQuestClose() { SingleQuest.SetActive(false); AcceptButtoninDetail.SetActive(false); }
     #endregion
 
     #region Publish_Window
@@ -108,6 +128,8 @@ public class OLScene : MonoBehaviour
     #region Task_List
     public ScrollRect scrollRect;
     public GameObject questListWindow;
+    public GameObject questTitilePre;
+
     public void QuestListOn()
     {
         if (questListWindow.activeInHierarchy)
@@ -126,7 +148,6 @@ public class OLScene : MonoBehaviour
             profileSys.UpdateResult(tskOpt.getResult());
 
 
-
             questListWindow.SetActive(true);
             foreach (GameObject task in questList)
             {
@@ -135,7 +156,7 @@ public class OLScene : MonoBehaviour
             foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Task_List)
             {
                 UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"], 
-                    itr.Value["exp"], itr.Value["coin"], itr.Value["owner"] );
+                    itr.Value["exp"], itr.Value["coin"], itr.Value["owner"],false);
             }
         }
     }
@@ -155,25 +176,22 @@ public class OLScene : MonoBehaviour
         {
             Destroy(task);
         }
-        foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Task_List)
+        if (profileSys.Task_List.Count != 0)
         {
-            UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"],
-                itr.Value["exp"], itr.Value["coin"], itr.Value["owner"]);
+            foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Task_List)
+            {
+                UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"],
+                    itr.Value["exp"], itr.Value["coin"], itr.Value["owner"], false);
+            }
         }
+        
     }
 
     public void QuestListOff() { questListWindow.SetActive(false); }
 
 
-    public void UpdateQuestList(string QID, string content, string title,
-        string exp, string coin, string owner)
-    {
-        
-        AddTextToScrollView(QID,content,title,exp,coin,owner);
-    }
-
-    public GameObject AddTextToScrollView(string QID, string content, string title, 
-        string exp, string coin, string owner)
+    public GameObject UpdateQuestList(string QID, string content, string title, 
+        string exp, string coin, string owner, bool ispersonal)
     {
         if (questTitilePre == null)
         {
@@ -181,7 +199,16 @@ public class OLScene : MonoBehaviour
         }
         GameObject temp = Instantiate(questTitilePre, scrollRect.content, false);
         temp.GetComponentInChildren<Text>().text = title;
-        temp.GetComponent<Button>().onClick.AddListener(SingleQuestOpen);
+        if (personal)
+        {
+            temp.GetComponent<Button>().onClick.RemoveAllListeners();
+            temp.GetComponent<Button>().onClick.AddListener(PersonalQuestOpen);
+        }
+        else
+        {
+            temp.GetComponent<Button>().onClick.RemoveAllListeners();
+            temp.GetComponent<Button>().onClick.AddListener(SingleQuestOpen);
+        }
         temp.GetComponent<questINFO>().QuestTitle = singleQuestTitle;
         temp.GetComponent<questINFO>().QuestContent = singleQuestContent;
         temp.GetComponent<questINFO>().QuestCoin = singleQuestCoin;
@@ -192,7 +219,18 @@ public class OLScene : MonoBehaviour
         temp.GetComponent<questINFO>().exp = Convert.ToInt32(exp);
         temp.GetComponent<questINFO>().coin = Convert.ToInt32(coin);
         temp.GetComponent<questINFO>().owner = owner;
-        questList.Add(temp);
+        temp.GetComponent<questINFO>().current_user = playerIndicator.UserName;
+        temp.GetComponent<questINFO>().profileSys = profileSys;
+        temp.GetComponent<questINFO>().acceptButton = acceptButton;
+        if (personal)
+        {
+            acceptedList.Add(temp);
+        }
+        else
+        {
+            questList.Add(temp);
+        }
+        
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
 
@@ -204,6 +242,45 @@ public class OLScene : MonoBehaviour
 
     #region Accpeted_List
 
+    public GameObject acceptedWindow;
+    public void AcceptedListOff() { acceptedWindow.SetActive(false); }
+
+    public void AcceptedListOn() {
+        if (acceptedWindow.activeInHierarchy)
+        {
+            acceptedWindow.SetActive(false);
+        }
+        else
+        {
+            acceptedWindow.SetActive(true);
+            AcceptRefresh();
+        }
+    }
+
+    public void AcceptRefresh()
+    {
+        //UPDATE TASK
+        SQLHandler sql = new SQLHandler();
+        inputMessage acceptMessage = new inputMessage();
+        acceptMessage.addWay("getAcceptedTsk");
+        acceptMessage.addArg("taker", playerIndicator.UserName);
+        string strOpt = sql.recvMsg(acceptMessage.getString());
+        outputMessage tskOpt = new outputMessage(strOpt);
+        profileSys.UpdateAccepted(tskOpt.getResult());
+
+        foreach (GameObject task in acceptedList)
+        {
+            Destroy(task);
+        }
+        if (profileSys.Accepted_List.Count != 0)
+        {
+            foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Accepted_List)
+            {
+                UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"],
+                    itr.Value["exp"], itr.Value["coin"], itr.Value["owner"], true);
+            }
+        } 
+    }
     #endregion
 
 }

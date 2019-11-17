@@ -915,13 +915,13 @@ public class SQLHandler : MonoBehaviour
         int id = Convert.ToInt32(input.getArg("id") );
         string taker = input.getArg("taker");
 
-        string owner = getOwner8id(id.ToString());
-        if(owner.Equals(taker))
-        {
-            output.addSuccess(false);
-            output.addErrorMsg("you can not take your own task");
-            return output.getString();
-        }
+        //string owner = getOwner8id(id.ToString());
+        //if(owner.Equals(taker))
+        //{
+        //    output.addSuccess(false);
+        //    output.addErrorMsg("you can not take your own task");
+        //    return output.getString();
+        //}
 
 
 
