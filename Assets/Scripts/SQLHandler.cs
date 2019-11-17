@@ -725,7 +725,7 @@ public class SQLHandler : MonoBehaviour
 
         try
         {
-            String strsql = "SELECT * FROM taker = @taker ;";
+            String strsql = "SELECT * FROM tsk where taker = @taker ;";
             MySqlCommand sqlComm = new MySqlCommand(strsql, sqlConn);
             sqlComm.Parameters.AddWithValue("@taker", taker);
 
@@ -1057,6 +1057,10 @@ public class SQLHandler : MonoBehaviour
         addCoin(owner, (0 - coin).ToString());
         addExp(taker, exp.ToString() );
         deleteTsk(id_);
+
+
+        output.addSuccess(true);
+
         return output.getString(); 
     }
 
