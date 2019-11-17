@@ -557,31 +557,68 @@ public class SQLHandler : MonoBehaviour
 
     public string getCoin(string name)
     {
-        return "-10";
+        MySqlConnection sqlConn = GetSqlConn();
+        sqlConn.Open();
+        String strUsr = "SELECT coin FROM usr WHERE name =@name;";
+        MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
+        instUsr.Parameters.AddWithValue("@name", name);
+        MySqlDataReader sqlRes = instUsr.ExecuteReader();
+
+        while (sqlRes.Read())
+        {
+            String coin = (String)sqlRes["coin"];
+            return coin;
+        }
+
+        return "-2333";
+
     }
 
     public string getExp(string name)
     {
-        return "-10";
+        MySqlConnection sqlConn = GetSqlConn();
+        sqlConn.Open();
+        String strUsr = "SELECT exp FROM usr WHERE name =@name;";
+        MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
+        instUsr.Parameters.AddWithValue("@name", name);
+        MySqlDataReader sqlRes = instUsr.ExecuteReader();
+
+        while (sqlRes.Read())
+        {
+            String exp = (String)sqlRes["exp"];
+            return exp;
+        }
+
+        return "-2333";
     }
 
 
     public void addCoin(string name, string addCoin_)
     {
-        string strCoin = getCoin(name);
+        
         int addCoin = Convert.ToInt32(addCoin_);
 
         MySqlConnection sqlConn = GetSqlConn();
         sqlConn.Open();
-        String strUsr = ";";
+        String strUsr = "UPDATE usr SET coin= coin+@addCoin WHERE name = @name;";
         MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
-        instUsr.Parameters.AddWithValue("@id", id);
+        instUsr.Parameters.AddWithValue("@addCoin", addCoin);
+        instUsr.Parameters.AddWithValue("@name", name);
         instUsr.ExecuteNonQuery();
     }
 
-    public void addExp(string name, string addCoin)
+    public void addExp(string name, string addExp_)
     {
-        return;
+        
+        int addExp = Convert.ToInt32(addExp_);
+
+        MySqlConnection sqlConn = GetSqlConn();
+        sqlConn.Open();
+        String strUsr = "UPDATE usr SET exp= exp+@addExp WHERE name = @name;";
+        MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
+        instUsr.Parameters.AddWithValue("@addExp", addExp);
+        instUsr.Parameters.AddWithValue("@name", name);
+        instUsr.ExecuteNonQuery();
     }
 
 
@@ -788,7 +825,7 @@ public class SQLHandler : MonoBehaviour
 
         try
         {
-            String strUsr = "INSERT tsk(title , content, coin, owner) VALUES (@title, @content, @coin, @owner);";
+            String strUsr = "INSERT tsk(title , content, coin, owner) VALUES (@title, @content, @coin, @owner;";
             MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
             instUsr.Parameters.AddWithValue("@title", title);
             instUsr.Parameters.AddWithValue("@content", content);
@@ -878,6 +915,16 @@ public class SQLHandler : MonoBehaviour
         int id = Convert.ToInt32(input.getArg("id") );
         string taker = input.getArg("taker");
 
+        string owner = getOwner8id(id.ToString());
+        if(owner.Equals(taker))
+        {
+            output.addSuccess(false);
+            output.addErrorMsg("you can not take your own task");
+            return output.getString();
+        }
+
+
+
 
         try
         {
@@ -931,6 +978,32 @@ public class SQLHandler : MonoBehaviour
        return new Tuple<int, int>(coin, exp);
     }
 
+    public string getOwner8id(string strId)
+    {
+        int id = Convert.ToInt32(strId);
+
+        MySqlConnection sqlConn = GetSqlConn();
+        sqlConn.Open();
+        String strUsr = "SELECT owner FROM tsk WHERE id = @id;";
+        MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
+        instUsr.Parameters.AddWithValue("@id", id);
+
+
+        MySqlDataReader sqlRes = instUsr.ExecuteReader();
+        String owner = "None";
+
+        while (sqlRes.Read())
+        {
+            owner = (String)sqlRes["owner"];
+        }
+        return owner;
+    }
+
+    public string getDetailsTsk(string id_)
+    {
+        return "hello";
+        
+    }
 
     /// <summary>
     /// delete the Tsk by id from DB  
@@ -951,7 +1024,7 @@ public class SQLHandler : MonoBehaviour
     /// <summary>
     /// Finish tsk: Delete the Tsk from the TSk DB, and add the coin and exp to the users
     /// </summary>
-    /// <param name="msg">inputMessage: getWay = "finishTsk" and arugment: "user","id"(tskid)</param>
+    /// <param name="msg">inputMessage: getWay = "finishTsk" and arugment: "name","id"(tskid)</param>
     /// <returns>string(outputMessage)</returns>
     public string finishTsk(string msg)
     {
@@ -971,6 +1044,19 @@ public class SQLHandler : MonoBehaviour
             return output.getString();
         }
 
+        string taker = input.getArg("name");
+        string id_ = input.getArg("id");
+        int id = Convert.ToInt32(id_);
+        string owner = getOwner8id(id_);
+
+        Tuple<int, int> CoinExp = getTsk8id(id_);
+        int coin = CoinExp.Item1;
+        int exp = CoinExp.Item2;
+
+        addCoin(taker, coin.ToString());
+        addCoin(owner, (0 - coin).ToString());
+        addExp(taker, exp.ToString() );
+        deleteTsk(id_);
         return output.getString(); 
     }
 
