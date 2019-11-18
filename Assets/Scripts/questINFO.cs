@@ -19,6 +19,7 @@ public class questINFO : MonoBehaviour
     public Text QuestExp;
     public ProfileSys profileSys;
     public Button acceptButton;
+    public Button finishButton;
 
     public void thisOnClick()
     {
@@ -31,6 +32,11 @@ public class questINFO : MonoBehaviour
             acceptButton.onClick.RemoveAllListeners();
             acceptButton.onClick.AddListener(AcceptOnClick);
         }
+        if (finishButton)
+        {
+            finishButton.onClick.RemoveAllListeners();
+            finishButton.onClick.AddListener(FinishOnClick);
+        }
     }
 
     public void AcceptOnClick()
@@ -41,6 +47,20 @@ public class questINFO : MonoBehaviour
         iptMsg.addWay("takeTsk");
         iptMsg.addArg("id", QID);
         iptMsg.addArg("taker", current_user);
+
+        string strOpt = sql.recvMsg(iptMsg.getString());
+        outputMessage tskOpt = new outputMessage(strOpt);
+        profileSys.UpdateAccepted(tskOpt.getResult());
+    }
+
+    public void FinishOnClick()
+    {
+        SQLHandler sql = new SQLHandler();
+        //FINISH TASK
+        inputMessage iptMsg = new inputMessage();
+        iptMsg.addWay("finishTsk");
+        iptMsg.addArg("id", QID);
+        iptMsg.addArg("name", current_user);
 
         string strOpt = sql.recvMsg(iptMsg.getString());
         outputMessage tskOpt = new outputMessage(strOpt);

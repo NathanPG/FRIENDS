@@ -96,32 +96,40 @@ public class LoginUI : MonoBehaviour
         }
     
     }
-    //THIS IS GOING TO BE A SERVER
-    //WE ARE USING IT AS A HOST NOW
-    public void AdminOnClick()
-    {
-        loginUI.SetActive(false);
-    }
 
     //Register on click
     public void UserRegister()
     {
-
-        //Register new user to the database
-        Debug.Log("signupAccount:" + signupAccount.text);
-        Debug.Log("signupPassword:" + signupPassword.text);
-        //netCore.ClientSendName(signupAccount.text, signupPassword.text);
-        //如果没问题那就完成注册，关掉注册窗口
-        if (true)
+        //CLIENT
+        if (playerIndicator.isPlayer)
         {
-            signup_box.SetActive(false);
+
         }
-        //如果已经被注册之类的，那就弹出error message
+        //HOST
         else
         {
+            SQLHandler sql = new SQLHandler();
+            inputMessage regMsg = new inputMessage();
+            regMsg.addWay("addUsr");
+            regMsg.addArg("name", signupAccount.text);
+            regMsg.addArg("pwd", signupPassword.text);
+            string strOpt = sql.recvMsg(regMsg.getString());
+            outputMessage regOpt = new outputMessage(strOpt);
+            if (regOpt.getSuccess())
+            {
+                Debug.Log("REG SUCCESS");
+                signup_box.SetActive(false);
 
+                //REG success
+            }
+            else
+            {
+                Debug.Log("REG ERROR");
+                Debug.Log(regOpt.getErrorMsg());
+                //REG FAIL
+            }
         }
-        
+
     }
 
     public void warningClose()

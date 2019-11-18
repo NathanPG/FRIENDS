@@ -896,12 +896,13 @@ public class SQLHandler : MonoBehaviour
 
         try
         {
-            String strUsr = "INSERT tsk(title , content, coin, owner) VALUES (@title, @content, @coin, @owner;";
+            String strUsr = "INSERT tsk(title , content, coin, owner, exp) VALUES (@title, @content, @coin, @owner, @exp);";
             MySqlCommand instUsr = new MySqlCommand(strUsr, sqlConn);
             instUsr.Parameters.AddWithValue("@title", title);
             instUsr.Parameters.AddWithValue("@content", content);
             instUsr.Parameters.AddWithValue("@coin", coin);
             instUsr.Parameters.AddWithValue("@owner", owner);
+            instUsr.Parameters.AddWithValue("@exp", coin * 10);
             instUsr.ExecuteNonQuery();
             sqlConn.Close();
 

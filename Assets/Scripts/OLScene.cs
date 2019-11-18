@@ -15,13 +15,13 @@ public class OLScene : MonoBehaviour
     public List<GameObject> acceptedList = new List<GameObject>();
 
     public PlayerIndicator playerIndicator;
-    public bool personal = false;
 
     public Text singleQuestTitle;
     public Text singleQuestContent;
     public Text singleQuestCoin;
     public Text singleQuestExp;
     public Button acceptButton;
+    public Button finishButton;
 
     private void Start()
     {
@@ -33,6 +33,15 @@ public class OLScene : MonoBehaviour
     public Text coin;
     public GameObject infoWindow;
     public void InfoOnClick() {
+        SQLHandler sql = new SQLHandler();
+        inputMessage pMsg = new inputMessage();
+        pMsg.addWay("getDetailsUsr");
+        pMsg.addArg("name", playerIndicator.UserName);
+        string strOpt = sql.recvMsg(pMsg.getString());
+        Debug.Log(strOpt);
+        outputMessage tskOpt = new outputMessage(strOpt);
+        profileSys.exp = Convert.ToInt32(tskOpt.getResult()["0"]["exp"]);
+        profileSys.gold = Convert.ToInt32(tskOpt.getResult()["0"]["coin"]);
         exp.text = "EXP: " + profileSys.exp.ToString();
         coin.text = "Coin: " + profileSys.gold.ToString();
         if (infoWindow.activeInHierarchy)
@@ -53,9 +62,10 @@ public class OLScene : MonoBehaviour
     
     public GameObject SingleQuest;
     public GameObject AcceptButtoninDetail;
+    public GameObject FinishButtoninDetail;
     public Text Coin;
     public Text Exp;
-    public void SingleQuestOpen()
+    public void LobbyQuestOpen()
     {
         if (SingleQuest.activeInHierarchy)
         {
@@ -64,7 +74,7 @@ public class OLScene : MonoBehaviour
         else
         {
             SingleQuest.SetActive(true);
-            //CHANGE QUEST CONTENT
+            FinishButtoninDetail.SetActive(false);
             AcceptButtoninDetail.SetActive(true);
         }
     }
@@ -78,12 +88,12 @@ public class OLScene : MonoBehaviour
         else
         {
             SingleQuest.SetActive(true);
-            //CHANGE QUEST CONTENT
-            AcceptButtoninDetail.SetActive(true);
+            FinishButtoninDetail.SetActive(true);
+            AcceptButtoninDetail.SetActive(false);
         }
     }
 
-    public void SingleQuestClose() { SingleQuest.SetActive(false); AcceptButtoninDetail.SetActive(false); }
+    public void SingleQuestClose() { SingleQuest.SetActive(false); AcceptButtoninDetail.SetActive(false); FinishButtoninDetail.SetActive(false); }
     #endregion
 
     #region Publish_Window
@@ -119,14 +129,25 @@ public class OLScene : MonoBehaviour
             publishMsg.addArg("content", questContent.text);
             publishMsg.addArg("coin", questCoin.value.ToString());
             publishMsg.addArg("owner", owner);
-            SQLHandler tmp = new SQLHandler();
-            tmp.addTsk(publishMsg.getString());
+            SQLHandler sql = new SQLHandler();
+            string opt_ = sql.recvMsg(publishMsg.getString());
+            outputMessage opt = new outputMessage(opt_);
+
+            if(opt.getSuccess() )
+            {
+                Debug.Log("success");
+            }
+            else
+            {
+                Debug.Log(opt_);
+            }
         }
     }
     #endregion
 
     #region Task_List
-    public ScrollRect scrollRect;
+    public ScrollRect LobbytRect;
+    public ScrollRect AcceptRect;
     public GameObject questListWindow;
     public GameObject questTitilePre;
 
@@ -197,9 +218,18 @@ public class OLScene : MonoBehaviour
         {
             return null;
         }
-        GameObject temp = Instantiate(questTitilePre, scrollRect.content, false);
+        GameObject temp;
+        if (ispersonal)
+        {
+            temp = Instantiate(questTitilePre, AcceptRect.content, false);
+        }
+        else
+        {
+            temp = Instantiate(questTitilePre, LobbytRect.content, false);
+        }
+        
         temp.GetComponentInChildren<Text>().text = title;
-        if (personal)
+        if (ispersonal)
         {
             temp.GetComponent<Button>().onClick.RemoveAllListeners();
             temp.GetComponent<Button>().onClick.AddListener(PersonalQuestOpen);
@@ -207,7 +237,7 @@ public class OLScene : MonoBehaviour
         else
         {
             temp.GetComponent<Button>().onClick.RemoveAllListeners();
-            temp.GetComponent<Button>().onClick.AddListener(SingleQuestOpen);
+            temp.GetComponent<Button>().onClick.AddListener(LobbyQuestOpen);
         }
         temp.GetComponent<questINFO>().QuestTitle = singleQuestTitle;
         temp.GetComponent<questINFO>().QuestContent = singleQuestContent;
@@ -222,19 +252,21 @@ public class OLScene : MonoBehaviour
         temp.GetComponent<questINFO>().current_user = playerIndicator.UserName;
         temp.GetComponent<questINFO>().profileSys = profileSys;
         temp.GetComponent<questINFO>().acceptButton = acceptButton;
-        if (personal)
+        temp.GetComponent<questINFO>().finishButton = finishButton;
+        if (ispersonal)
         {
             acceptedList.Add(temp);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(AcceptRect.content);
+            AcceptRect.verticalNormalizedPosition = 0;
         }
         else
         {
             questList.Add(temp);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(LobbytRect.content);
+            LobbytRect.verticalNormalizedPosition = 0;
         }
+
         
-
-        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
-
-        scrollRect.verticalNormalizedPosition = 0;
 
         return temp;
     }
@@ -272,6 +304,7 @@ public class OLScene : MonoBehaviour
         {
             Destroy(task);
         }
+        Debug.Log("ACCEPTED LENGTH" + profileSys.Accepted_List.Count);
         if (profileSys.Accepted_List.Count != 0)
         {
             foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Accepted_List)
