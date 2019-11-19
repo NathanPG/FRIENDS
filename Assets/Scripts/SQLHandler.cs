@@ -104,6 +104,7 @@ public class outputMessage
     /// <param name="msg"></param>
     public outputMessage(string msg)
     {
+        Debug.Log(msg);
         optJson = JObject.Parse(msg);
         rstJson = optJson["result"].Value<JObject>();
         index = optJson["number"].Value<int>();
