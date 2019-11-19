@@ -14908,7 +14908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50f483039f1c50b46ba021263ad2c53e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  netcore: {fileID: 0}
+  netcore: {fileID: 1613899269}
   profileSys: {fileID: 664207469}
   questList: []
   acceptedList: []
@@ -23548,7 +23548,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1617895410
 RectTransform:
   m_ObjectHideFlags: 0
@@ -24845,7 +24845,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1678371668
 RectTransform:
   m_ObjectHideFlags: 0

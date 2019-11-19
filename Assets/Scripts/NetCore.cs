@@ -104,7 +104,6 @@ public class NetCore : MonoBehaviour
         string LogInOutPut = tmp.recvMsg(clientLogIn);
         Debug.Log(LogInOutPut);
         bool return_value = NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
-        Debug.Log(return_value);
         
     }
     //CLIENT RECV 2222 FROM Server
