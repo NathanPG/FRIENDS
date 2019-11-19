@@ -22,6 +22,8 @@ public class NetCore : MonoBehaviour
     public Text debugtext;
     public GameObject red;
 
+    public Text testText;
+
     /*
     public class ProfileMsg : MessageBase
     {
@@ -67,6 +69,20 @@ public class NetCore : MonoBehaviour
         NetworkManager.singleton.client.Send(1111, new StringMessage(loginMsg));
     }
 
+    public void ClientSendMeg(string testMsg)
+    {
+        //Client send Accound and Password to the server
+        Debug.Log("Client sent login user name and pwd");
+        NetworkManager.singleton.client.Send(3333, new StringMessage(testMsg));
+    }
+
+    public void ServerRecvMsg(NetworkMessage logInMsg)
+    {
+        Debug.Log("Server Received TEST Msg");
+        string clientLogIn = logInMsg.ReadMessage<StringMessage>().value;
+        Debug.Log(clientLogIn);
+    }
+
     //AFTER RECV 1111 FROM CLIENT
     public void ServerRecvLogin(NetworkMessage logInMsg)
     {
@@ -75,14 +91,17 @@ public class NetCore : MonoBehaviour
 
         SQLHandler tmp = new SQLHandler();
         string LogInOutPut = tmp.recvMsg(clientLogIn);
-        
-        NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
+        Debug.Log(LogInOutPut);
+        bool return_value = NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
+        Debug.Log(return_value);
         
     }
     //CLIENT RECV 2222 FROM Server
     public void OnClientReceiveFB(NetworkMessage FBMsg)
     {
         Debug.Log("Client Received Server Feedback!");
+        testText.text = "Client Received Server Feedback!";
+        ClientSendMeg("received server feedback!");
         //Deserialize message
         string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
         outputMessage outputFBMsg = new outputMessage(Fbjson);
@@ -90,6 +109,8 @@ public class NetCore : MonoBehaviour
 
         if (outputFBMsg.getSuccess())
         {
+            ClientSendMeg("received database success");
+            testText.text = "received database success";
             //outputFBMsg.lst["result"]["name"];
             //outputFBMsg.lst["result"]["pwd"];        
             Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResult();
@@ -100,8 +121,10 @@ public class NetCore : MonoBehaviour
         }
         else
         {
+            ClientSendMeg("database error!");
             //REPORT ERROR
             Debug.Log("ERROR" + outputFBMsg.getErrorMsg());
+            testText.text = "ERROR" + outputFBMsg.getErrorMsg();
         }
 
     }
@@ -119,6 +142,7 @@ public class NetCore : MonoBehaviour
     public void OnClientConnected(NetworkMessage netMsg)
     {
         Debug.Log("A CLIENT HAS CONNECTED");
+
     }
 
     const short NameChannelId = 8888;
@@ -135,10 +159,10 @@ public class NetCore : MonoBehaviour
             NetworkClient netc = NetworkManager.singleton.StartClient();
             //CLIENT CONNECTION ID
             NetworkConnection netconnect = netc.connection;
-            int connectionID = netconnect.connectionId;
+            //int connectionID = netconnect.connectionId;
 
             ///////////////////////////////////////////////////////////////////////////
-            NetworkManager.singleton.client.Connect("localhost", 8888);
+            NetworkManager.singleton.client.Connect("192.168.1.10", 8888);
             ///////////////////////////////////////////////////////////////////////////
             ///
             NetworkManager.singleton.client.RegisterHandler(2222,OnClientReceiveFB);
@@ -156,7 +180,7 @@ public class NetCore : MonoBehaviour
 
             ///////////////////////////////////////////////////////////////////////////
             NetworkManager.singleton.networkPort = 8888;
-            NetworkManager.singleton.networkAddress = "172.20.10.2";
+            NetworkManager.singleton.networkAddress = "192.168.1.10";
             ///////////////////////////////////////////////////////////////////////////
             ///
 
@@ -172,6 +196,7 @@ public class NetCore : MonoBehaviour
 
             //HANDLERS
             NetworkServer.RegisterHandler(1111, ServerRecvLogin);
+            NetworkServer.RegisterHandler(3333, ServerRecvMsg);
             //NetworkServer.RegisterHandler(1234, TestServerReceive);
             NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         }
