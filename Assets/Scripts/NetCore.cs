@@ -17,7 +17,6 @@ public class NetCore : MonoBehaviour
     public PlayerIndicator playerIndicator;
     public ProfileSys profileSys;
     public LoginUI loginui;
-    public SQLHandler sql;
 
     public Text debugtext;
     public GameObject red;
@@ -67,15 +66,17 @@ public class NetCore : MonoBehaviour
     public void ClientSendMsg(string Msg)
     {
         //Client send Accound and Password to the server
-
+        Debug.Log("CLIENT SENT REQUEST: " + Msg);
         NetworkManager.singleton.client.Send(3333, new StringMessage(Msg));
     }
 
     //HANDLE 3333, SEND 4444
     public void ServerRecvMsg(NetworkMessage Msg)
     {
+        SQLHandler sql = new SQLHandler();
         string msg = Msg.ReadMessage<StringMessage>().value;
         string fb = sql.recvMsg(msg);
+        Debug.Log("SERVER SENT FEEDBACK: " + fb);
         NetworkServer.SendToAll(4444, new StringMessage(fb));
     }
 
@@ -84,6 +85,7 @@ public class NetCore : MonoBehaviour
     public void ClientRecvMsg(NetworkMessage Msg)
     {
         string msg = Msg.ReadMessage<StringMessage>().value;
+        Debug.Log("CLIENT RECV FEEDBACK: " + msg);
         tempMSG = msg;
     }
 
@@ -100,11 +102,10 @@ public class NetCore : MonoBehaviour
         Debug.Log("Server Received Login Info");
         string clientLogIn = logInMsg.ReadMessage<StringMessage>().value;
 
-        SQLHandler tmp = new SQLHandler();
-        string LogInOutPut = tmp.recvMsg(clientLogIn);
+        SQLHandler sql = new SQLHandler();
+        string LogInOutPut = sql.recvMsg(clientLogIn);
         Debug.Log(LogInOutPut);
-        bool return_value = NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
-        
+        bool return_value = NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));      
     }
     //CLIENT RECV 2222 FROM Server
     public void OnClientReceiveFB(NetworkMessage FBMsg)
