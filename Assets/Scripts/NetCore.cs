@@ -63,11 +63,9 @@ public class NetCore : MonoBehaviour
     public void ClientSendLogIn(string loginMsg)
     {
         //Client send Accound and Password to the server
-        //随便想一个ID NetworkManager.singleton.client.Send(想的ID, 包含账户密码的信息);
         Debug.Log("Client sent login user name and pwd");
         NetworkManager.singleton.client.Send(1111, new StringMessage(loginMsg));
     }
-
 
     //AFTER RECV 1111 FROM CLIENT
     public void ServerRecvLogin(NetworkMessage logInMsg)
@@ -81,7 +79,7 @@ public class NetCore : MonoBehaviour
         NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));
         
     }
-    //CLIENT RECV 2222 FROM CLIENT
+    //CLIENT RECV 2222 FROM Server
     public void OnClientReceiveFB(NetworkMessage FBMsg)
     {
         Debug.Log("Client Received Server Feedback!");
@@ -133,15 +131,16 @@ public class NetCore : MonoBehaviour
         {
             Debug.Log("This is client");
 
-            NetworkManager.singleton.networkPort = 9999;
-            //NetworkManager.singleton.networkAddress = "129.161.48.77";
 
             NetworkClient netc = NetworkManager.singleton.StartClient();
             //CLIENT CONNECTION ID
             NetworkConnection netconnect = netc.connection;
             int connectionID = netconnect.connectionId;
-         
-            NetworkManager.singleton.client.Connect("localhost", 9999);
+
+            ///////////////////////////////////////////////////////////////////////////
+            NetworkManager.singleton.client.Connect("localhost", 8888);
+            ///////////////////////////////////////////////////////////////////////////
+            ///
             NetworkManager.singleton.client.RegisterHandler(2222,OnClientReceiveFB);
 
             //SEND USERNAME TO SERVER
@@ -153,10 +152,15 @@ public class NetCore : MonoBehaviour
         else
         {
             //SetupServer();
-            NetworkManager.singleton.networkPort = 9999;
 
-            //NetworkManager.singleton.networkAddress = "129.161.48.77";
-        
+
+            ///////////////////////////////////////////////////////////////////////////
+            NetworkManager.singleton.networkPort = 8888;
+            NetworkManager.singleton.networkAddress = "172.20.10.2";
+            ///////////////////////////////////////////////////////////////////////////
+            ///
+
+
             //var config = new ConnectionConfig();
             // There are different types of channels you can use, check the official documentation
             //config.AddChannel(QosType.ReliableFragmented);

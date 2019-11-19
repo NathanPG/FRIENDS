@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 0}
-  showGUI: 0
+  showGUI: 1
   offsetX: 0
   offsetY: 0
 --- !u!114 &110020298
@@ -241,10 +241,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10c2fd873b12541b392f10ecc4846574, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_NetworkPort: 9999
+  m_NetworkPort: 8888
   m_ServerBindToIP: 0
-  m_ServerBindAddress: 129.161.37.69
-  m_NetworkAddress: localhost
+  m_ServerBindAddress: 172.20.10.2
+  m_NetworkAddress: 172.20.10.4
   m_DontDestroyOnLoad: 1
   m_RunInBackground: 1
   m_ScriptCRCCheck: 0
