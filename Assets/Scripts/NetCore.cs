@@ -62,27 +62,38 @@ public class NetCore : MonoBehaviour
 
     
 
+    
+    //SEND 3333
+    public void ClientSendMsg(string Msg)
+    {
+        //Client send Accound and Password to the server
+
+        NetworkManager.singleton.client.Send(3333, new StringMessage(Msg));
+    }
+
+    //HANDLE 3333, SEND 4444
+    public void ServerRecvMsg(NetworkMessage Msg)
+    {
+        string msg = Msg.ReadMessage<StringMessage>().value;
+        string fb = sql.recvMsg(msg);
+        NetworkServer.SendToAll(4444, new StringMessage(fb));
+    }
+
+    //HANDLE, 4444
+    public string tempMSG;
+    public void ClientRecvMsg(NetworkMessage Msg)
+    {
+        string msg = Msg.ReadMessage<StringMessage>().value;
+        tempMSG = msg;
+    }
+
+    #region old_transmission
     public void ClientSendLogIn(string loginMsg)
     {
         //Client send Accound and Password to the server
         Debug.Log("Client sent login user name and pwd");
         NetworkManager.singleton.client.Send(1111, new StringMessage(loginMsg));
     }
-
-    public void ClientSendMeg(string testMsg)
-    {
-        //Client send Accound and Password to the server
-        Debug.Log("Client sent login user name and pwd");
-        NetworkManager.singleton.client.Send(3333, new StringMessage(testMsg));
-    }
-
-    public void ServerRecvMsg(NetworkMessage logInMsg)
-    {
-        Debug.Log("Server Received TEST Msg");
-        string clientLogIn = logInMsg.ReadMessage<StringMessage>().value;
-        Debug.Log(clientLogIn);
-    }
-
     //AFTER RECV 1111 FROM CLIENT
     public void ServerRecvLogin(NetworkMessage logInMsg)
     {
@@ -99,20 +110,17 @@ public class NetCore : MonoBehaviour
     //CLIENT RECV 2222 FROM Server
     public void OnClientReceiveFB(NetworkMessage FBMsg)
     {
-        Debug.Log("Client Received Server Feedback!");
+
         testText.text = "Client Received Server Feedback!";
-        ClientSendMeg("received server feedback!");
         //Deserialize message
         string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
+        Debug.Log(Fbjson);
         outputMessage outputFBMsg = new outputMessage(Fbjson);
 
 
         if (outputFBMsg.getSuccess())
         {
-            ClientSendMeg("received database success");
-            testText.text = "received database success";
-            //outputFBMsg.lst["result"]["name"];
-            //outputFBMsg.lst["result"]["pwd"];        
+            testText.text = "received database success";        
             Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResult();
             profileSys.exp = Convert.ToInt32(outDic["0"]["exp"]);
             profileSys.gold = Convert.ToInt32(outDic["0"]["coin"]);
@@ -121,15 +129,14 @@ public class NetCore : MonoBehaviour
         }
         else
         {
-            ClientSendMeg("database error!");
             //REPORT ERROR
             Debug.Log("ERROR" + outputFBMsg.getErrorMsg());
             testText.text = "ERROR" + outputFBMsg.getErrorMsg();
         }
 
     }
+    #endregion
 
-    bool msg_sent = false;
 
     private void Update()
     {
@@ -162,10 +169,11 @@ public class NetCore : MonoBehaviour
             //int connectionID = netconnect.connectionId;
 
             ///////////////////////////////////////////////////////////////////////////
-            NetworkManager.singleton.client.Connect("192.168.1.10", 8888);
+            NetworkManager.singleton.client.Connect("192.168.31.165", 8888);
             ///////////////////////////////////////////////////////////////////////////
             ///
-            NetworkManager.singleton.client.RegisterHandler(2222,OnClientReceiveFB);
+            NetworkManager.singleton.client.RegisterHandler(2222 , OnClientReceiveFB);
+            NetworkManager.singleton.client.RegisterHandler(4444, ClientRecvMsg);
 
             //SEND USERNAME TO SERVER
             //NetworkManager.singleton.client.RegisterHandler(4321, TestClientReceive);
@@ -180,7 +188,7 @@ public class NetCore : MonoBehaviour
 
             ///////////////////////////////////////////////////////////////////////////
             NetworkManager.singleton.networkPort = 8888;
-            NetworkManager.singleton.networkAddress = "192.168.1.10";
+            NetworkManager.singleton.networkAddress = "192.168.31.165";
             ///////////////////////////////////////////////////////////////////////////
             ///
 

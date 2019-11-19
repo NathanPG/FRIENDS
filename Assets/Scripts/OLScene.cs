@@ -8,7 +8,7 @@ using System;
 
 public class OLScene : MonoBehaviour
 {
-    public NetCore net;
+    public NetCore netcore;
     public ProfileSys profileSys;
 
     public List<GameObject> questList = new List<GameObject>();
@@ -31,19 +31,43 @@ public class OLScene : MonoBehaviour
     #region Info_Window
     public Text exp;
     public Text coin;
+    public Text user_name;
     public GameObject infoWindow;
     public void InfoOnClick() {
-        SQLHandler sql = new SQLHandler();
-        inputMessage pMsg = new inputMessage();
-        pMsg.addWay("getDetailsUsr");
-        pMsg.addArg("name", playerIndicator.UserName);
-        string strOpt = sql.recvMsg(pMsg.getString());
-        Debug.Log(strOpt);
-        outputMessage tskOpt = new outputMessage(strOpt);
-        profileSys.exp = Convert.ToInt32(tskOpt.getResult()["0"]["exp"]);
-        profileSys.gold = Convert.ToInt32(tskOpt.getResult()["0"]["coin"]);
-        exp.text = "EXP: " + profileSys.exp.ToString();
-        coin.text = "Coin: " + profileSys.gold.ToString();
+        //CLIENT
+        if (playerIndicator.isPlayer)
+        {
+            //SEND
+            inputMessage pMsg = new inputMessage();
+            pMsg.addWay("getDetailsUsr");
+            pMsg.addArg("name", playerIndicator.UserName);
+            netcore.ClientSendMsg(pMsg.getString());
+            //GET
+            outputMessage tskOpt = new outputMessage(netcore.tempMSG);
+            profileSys.exp = Convert.ToInt32(tskOpt.getResult()["0"]["exp"]);
+            profileSys.gold = Convert.ToInt32(tskOpt.getResult()["0"]["coin"]);
+            profileSys.username = tskOpt.getResult()["0"]["name"].ToString();
+            exp.text = "EXP: " + profileSys.exp.ToString();
+            coin.text = "Coin: " + profileSys.gold.ToString();
+            user_name.text = profileSys.username;
+        }
+        //HOST
+        else
+        {
+            SQLHandler sql = new SQLHandler();
+            inputMessage pMsg = new inputMessage();
+            pMsg.addWay("getDetailsUsr");
+            pMsg.addArg("name", playerIndicator.UserName);
+            string strOpt = sql.recvMsg(pMsg.getString());
+            outputMessage tskOpt = new outputMessage(strOpt);
+            profileSys.exp = Convert.ToInt32(tskOpt.getResult()["0"]["exp"]);
+            profileSys.gold = Convert.ToInt32(tskOpt.getResult()["0"]["coin"]);
+            profileSys.username = tskOpt.getResult()["0"]["name"].ToString();
+            exp.text = "EXP: " + profileSys.exp.ToString();
+            coin.text = "Coin: " + profileSys.gold.ToString();
+            user_name.text = profileSys.username;
+        }
+        
         if (infoWindow.activeInHierarchy)
         {
             infoWindow.SetActive(false);
@@ -52,8 +76,8 @@ public class OLScene : MonoBehaviour
         {
             infoWindow.SetActive(true);
         }
-
     }
+
     public void InfoClose() { infoWindow.SetActive(false); }
     #endregion
 

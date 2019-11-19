@@ -175,7 +175,7 @@ public class SQLHandler : MonoBehaviour
     {
         // 数据库
         MySqlConnection sqlConn;
-        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=0129;port=3306";
+        string connStr = "Database=test;Data Source=127.0.0.1;User Id=root;Password=Arespenguin233;port=3306";
         sqlConn = new MySqlConnection(connStr);
         return sqlConn;
     }
