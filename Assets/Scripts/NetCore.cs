@@ -66,8 +66,8 @@ public class NetCore : MonoBehaviour
     public void ClientSendMsg(string Msg)
     {
         //Client send Accound and Password to the server
-        Debug.Log("CLIENT SENT REQUEST: " + Msg);
         NetworkManager.singleton.client.Send(3333, new StringMessage(Msg));
+        Debug.Log("CLIENT SENT REQUEST: " + Msg);
     }
 
     //HANDLE 3333, SEND 4444
@@ -75,9 +75,10 @@ public class NetCore : MonoBehaviour
     {
         SQLHandler sql = new SQLHandler();
         string msg = Msg.ReadMessage<StringMessage>().value;
+        Debug.Log("SERVER RECV REQUEST: " + msg);
         string fb = sql.recvMsg(msg);
-        Debug.Log("SERVER SENT FEEDBACK: " + fb);
         NetworkServer.SendToAll(4444, new StringMessage(fb));
+        Debug.Log("SERVER SENT FEEDBACK: " + fb);
     }
 
     //HANDLE, 4444
@@ -124,6 +125,8 @@ public class NetCore : MonoBehaviour
             Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResult();
             profileSys.exp = Convert.ToInt32(outDic["0"]["exp"]);
             profileSys.gold = Convert.ToInt32(outDic["0"]["coin"]);
+            profileSys.username = outDic["0"]["name"].ToString();
+            playerIndicator.UserName = outDic["0"]["name"].ToString();
             Debug.Log("CLIENT RECEIVED INFO");
             loginui.loginUI.SetActive(false);
         }

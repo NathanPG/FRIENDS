@@ -47,6 +47,7 @@ public class OLScene : MonoBehaviour
             profileSys.exp = Convert.ToInt32(tskOpt.getResult()["0"]["exp"]);
             profileSys.gold = Convert.ToInt32(tskOpt.getResult()["0"]["coin"]);
             profileSys.username = tskOpt.getResult()["0"]["name"].ToString();
+            playerIndicator.UserName = profileSys.username;
             exp.text = "EXP: " + profileSys.exp.ToString();
             coin.text = "Coin: " + profileSys.gold.ToString();
             user_name.text = profileSys.username;
@@ -63,6 +64,7 @@ public class OLScene : MonoBehaviour
             profileSys.exp = Convert.ToInt32(tskOpt.getResult()["0"]["exp"]);
             profileSys.gold = Convert.ToInt32(tskOpt.getResult()["0"]["coin"]);
             profileSys.username = tskOpt.getResult()["0"]["name"].ToString();
+            playerIndicator.UserName = profileSys.username;
             exp.text = "EXP: " + profileSys.exp.ToString();
             coin.text = "Coin: " + profileSys.gold.ToString();
             user_name.text = profileSys.username;

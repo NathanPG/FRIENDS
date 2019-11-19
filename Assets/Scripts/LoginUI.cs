@@ -74,7 +74,7 @@ public class LoginUI : MonoBehaviour
                 Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResult();
                 profileSys.exp = Convert.ToInt32(outDic["0"]["exp"]);
                 profileSys.gold = Convert.ToInt32(outDic["0"]["coin"]);
-
+                profileSys.username = outDic["0"]["name"].ToString();
                 playerIndicator.UserName = loginAccount.text;
                 //getAlltsk
 
