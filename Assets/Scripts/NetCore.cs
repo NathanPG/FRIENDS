@@ -149,7 +149,7 @@ public class NetCore : MonoBehaviour
     public void OnClientReceiveFB(NetworkMessage FBMsg)
     {
 
-        testText.text = "Client Received Server Feedback!";
+
         //Deserialize message
         string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
         Debug.Log(Fbjson);
@@ -158,7 +158,7 @@ public class NetCore : MonoBehaviour
 
         if (outputFBMsg.getSuccess())
         {
-            testText.text = "received database success";        
+
             Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResult();
             profileSys.exp = Convert.ToInt32(outDic["0"]["exp"]);
             profileSys.gold = Convert.ToInt32(outDic["0"]["coin"]);
