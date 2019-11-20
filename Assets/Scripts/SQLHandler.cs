@@ -29,6 +29,11 @@ public class outputMessage
         optJson.Add("ErrorMessage", reason);
     }
 
+    public void addWay(string way)
+    {
+        optJson.Add("way", way);
+    }
+
     public void addResult( Dictionary<string,string> value)
     {
         JObject tmp = new JObject();
@@ -39,6 +44,11 @@ public class outputMessage
         
         rstJson.Add(index.ToString() , tmp);
         index++;
+    }
+
+    public string getWay()
+    {
+        return optJson["way"].Value<string>();
     }
 
     public Boolean getSuccess()
@@ -371,6 +381,7 @@ public class SQLHandler : MonoBehaviour
         outputMessage output = new outputMessage();
         string name = input.getArg("name");
         string pwd = input.getArg("pwd");
+        output.addWay("addUsr");
 
         MySqlConnection sqlConn = GetSqlConn();
         try
@@ -434,7 +445,7 @@ public class SQLHandler : MonoBehaviour
     {
         inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
-
+        output.addWay("getDetailsUsr");
         string name = "null";
         
         MySqlConnection sqlConn = GetSqlConn();
@@ -547,7 +558,7 @@ public class SQLHandler : MonoBehaviour
     {
         inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
-
+        output.addWay("searchUsr");
         string name = "null";
         string pwd = "null";
 
@@ -711,6 +722,7 @@ public class SQLHandler : MonoBehaviour
         inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
         MySqlConnection sqlConn = GetSqlConn();
+        output.addWay("getallTsk");
         try
         {
             sqlConn.Open();
@@ -779,6 +791,7 @@ public class SQLHandler : MonoBehaviour
     {
         inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
+        output.addWay("getAcceptedTsk");
         MySqlConnection sqlConn = GetSqlConn();
         try
         {
@@ -865,6 +878,7 @@ public class SQLHandler : MonoBehaviour
         inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
         MySqlConnection sqlConn = GetSqlConn();
+        output.addWay("addTsk");
         try
         {
             sqlConn.Open();
@@ -962,6 +976,7 @@ public class SQLHandler : MonoBehaviour
     {
         inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
+        output.addWay("takeTsk");
         MySqlConnection sqlConn = GetSqlConn();
         try
         {
@@ -1078,6 +1093,7 @@ public class SQLHandler : MonoBehaviour
     {
         MySqlConnection sqlConn = GetSqlConn();
         outputMessage opt = new outputMessage();
+        opt.addWay("getDetailsTsk");
         Dictionary<string, string> result = new Dictionary<string, string>(); 
         sqlConn.Open();
         String strUsr = "SELECT * FROM tsk WHERE id =@id;";
@@ -1124,6 +1140,7 @@ public class SQLHandler : MonoBehaviour
     {
         inputMessage input = new inputMessage(msg);
         outputMessage output = new outputMessage();
+        output.addWay("finishTsk");
         MySqlConnection sqlConn = GetSqlConn();
         try
         {
