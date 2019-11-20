@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 110020302}
   - component: {fileID: 110020300}
   m_Layer: 0
-  m_Name: PlayerIndicator
+  m_Name: NET
   m_TagString: NET
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
