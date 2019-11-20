@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
+using System.Threading;
 
 public class OLScene : MonoBehaviour
 {
@@ -33,6 +34,18 @@ public class OLScene : MonoBehaviour
     public Text coin;
     public Text user_name;
     public GameObject infoWindow;
+
+    public void UPDATEINFO(string json)
+    {
+        outputMessage tskOpt = new outputMessage(json);
+        profileSys.exp = Convert.ToInt32(tskOpt.getResult()["0"]["exp"]);
+        profileSys.gold = Convert.ToInt32(tskOpt.getResult()["0"]["coin"]);
+        profileSys.username = tskOpt.getResult()["0"]["name"].ToString();
+        playerIndicator.UserName = profileSys.username;
+        exp.text = "EXP: " + profileSys.exp.ToString();
+        coin.text = "Coin: " + profileSys.gold.ToString();
+        user_name.text = profileSys.username;
+    }
     public void InfoOnClick() {
         //CLIENT
         if (playerIndicator.isPlayer)
@@ -42,15 +55,6 @@ public class OLScene : MonoBehaviour
             pMsg.addWay("getDetailsUsr");
             pMsg.addArg("name", playerIndicator.UserName);
             netcore.ClientSendMsg(pMsg.getString());
-            //GET
-            outputMessage tskOpt = new outputMessage(netcore.tempMSG);
-            profileSys.exp = Convert.ToInt32(tskOpt.getResult()["0"]["exp"]);
-            profileSys.gold = Convert.ToInt32(tskOpt.getResult()["0"]["coin"]);
-            profileSys.username = tskOpt.getResult()["0"]["name"].ToString();
-            playerIndicator.UserName = profileSys.username;
-            exp.text = "EXP: " + profileSys.exp.ToString();
-            coin.text = "Coin: " + profileSys.gold.ToString();
-            user_name.text = profileSys.username;
         }
         //HOST
         else
@@ -60,14 +64,7 @@ public class OLScene : MonoBehaviour
             pMsg.addWay("getDetailsUsr");
             pMsg.addArg("name", playerIndicator.UserName);
             string strOpt = sql.recvMsg(pMsg.getString());
-            outputMessage tskOpt = new outputMessage(strOpt);
-            profileSys.exp = Convert.ToInt32(tskOpt.getResult()["0"]["exp"]);
-            profileSys.gold = Convert.ToInt32(tskOpt.getResult()["0"]["coin"]);
-            profileSys.username = tskOpt.getResult()["0"]["name"].ToString();
-            playerIndicator.UserName = profileSys.username;
-            exp.text = "EXP: " + profileSys.exp.ToString();
-            coin.text = "Coin: " + profileSys.gold.ToString();
-            user_name.text = profileSys.username;
+            UPDATEINFO(strOpt);
         }
         
         if (infoWindow.activeInHierarchy)

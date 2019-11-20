@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 public class NetCore : MonoBehaviour
 {
     public GameObject player_pre;
+    public OLScene oLScene;
     GameObject spawned_player;
     NetworkClient myClient;
     public bool isPlayer;
@@ -82,12 +83,39 @@ public class NetCore : MonoBehaviour
     }
 
     //HANDLE, 4444
-    public string tempMSG;
+    
     public void ClientRecvMsg(NetworkMessage Msg)
     {
         string msg = Msg.ReadMessage<StringMessage>().value;
         Debug.Log("CLIENT RECV FEEDBACK: " + msg);
-        tempMSG = msg;
+        outputMessage tskOpt = new outputMessage(msg);
+        if (tskOpt.getWay().Equals("getDetailsUsr"))
+        {
+            oLScene.UPDATEINFO(msg);
+        }else if (true)
+        {
+
+        }
+        else if (true)
+        {
+
+        }
+        else if (true)
+        {
+
+        }
+        else if (true)
+        {
+
+        }
+        else if (true)
+        {
+
+        }
+        else if (true)
+        {
+
+        }
     }
 
     #region old_transmission
