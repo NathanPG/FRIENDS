@@ -9,11 +9,9 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 
 
-
-/**
-outputMessage:
-
-*/
+/// <summary>
+/// a outputMessage for DB sending result back the the front
+/// </summary>
 public class outputMessage
 {
     private JObject optJson;
@@ -469,7 +467,7 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             output.addSuccess(false);
-            output.addErrorMsg("name cannot be empty, Please try again");
+            output.addErrorMsg("name cannot be empty, Please try again "+ex.ToString() );
             return output.getString();
         }
 
@@ -496,7 +494,7 @@ public class SQLHandler : MonoBehaviour
             {
                 sqlConn.Close();
                 output.addSuccess(false);
-                output.addErrorMsg("have something wrong with the get information");
+                output.addErrorMsg("have something wrong with the get information" + e.ToString() );
                 return output.getString();
             }
         }
@@ -504,7 +502,7 @@ public class SQLHandler : MonoBehaviour
         {
             sqlConn.Close();
             output.addSuccess(false);
-            output.addErrorMsg("searchUsr has some problem, please try again or ask Developer about that");
+            output.addErrorMsg("searchUsr has some problem, please try again or ask Developer about that "+ex.ToString() );
             return output.getString();
         }
 
@@ -586,7 +584,7 @@ public class SQLHandler : MonoBehaviour
         catch (Exception ex)
         {
             output.addSuccess(false);
-            output.addErrorMsg("name/pwd cannot be empty, Please try again");
+            output.addErrorMsg("name/pwd cannot be empty, Please try again"+ ex.ToString() );
             return output.getString();
         }
 
@@ -633,7 +631,7 @@ public class SQLHandler : MonoBehaviour
             sqlConn.Close();
 
             output.addSuccess(false);
-            output.addErrorMsg("searchUsr has some problem, please try again or ask Developer about that");
+            output.addErrorMsg("searchUsr has some problem, please try again or ask Developer about that" + ex.ToString() );
             return output.getString();
         }
     }
@@ -904,7 +902,7 @@ public class SQLHandler : MonoBehaviour
         }
         catch (Exception e)
         {
-            output.addErrorMsg("addTsk: Invalid input please re-enter");
+            output.addErrorMsg("addTsk: Invalid input please re-enter "+ e.ToString() );
             output.addSuccess(false);
             return output.getString();
         }
@@ -1103,13 +1101,13 @@ public class SQLHandler : MonoBehaviour
 
         while (sqlRes.Read())
         {
-            try { result["id"] = (string)sqlRes["id"]; } catch (Exception e) { result["id"] = "None_id"; }
-            try { result["title"] = (string)sqlRes["title"]; } catch (Exception e) { result["title"] = "None_title"; }
-            try { result["content"] = (string)sqlRes["content"]; } catch (Exception e) { result["content"] = "None_content"; }
-            try { result["coin"] = (string)sqlRes["coin"]; } catch (Exception e) { result["content"] = "None_coin"; }
-            try { result["exp"] = (string)sqlRes["exp"]; } catch (Exception e) { result["exp"] = "None_exp"; }
-            try { result["owner"] = (string)sqlRes["owner"]; } catch (Exception e) { result["owner"] = "None_owner"; }
-            try { result["taker"] = (string)sqlRes["taker"]; } catch (Exception e) { result["taker"] = "None_taker"; }
+            try { result["id"] = (string)sqlRes["id"]; } catch (Exception) { result["id"] = "None_id"; }
+            try { result["title"] = (string)sqlRes["title"]; } catch (Exception ) { result["title"] = "None_title"; }
+            try { result["content"] = (string)sqlRes["content"]; } catch (Exception ) { result["content"] = "None_content"; }
+            try { result["coin"] = (string)sqlRes["coin"]; } catch (Exception ) { result["content"] = "None_coin"; }
+            try { result["exp"] = (string)sqlRes["exp"]; } catch (Exception ) { result["exp"] = "None_exp"; }
+            try { result["owner"] = (string)sqlRes["owner"]; } catch (Exception ) { result["owner"] = "None_owner"; }
+            try { result["taker"] = (string)sqlRes["taker"]; } catch (Exception ) { result["taker"] = "None_taker"; }
         }
         opt.addResult(result);
         return opt.getString() ;
@@ -1183,9 +1181,9 @@ public class SQLHandler : MonoBehaviour
         PlayerIndicator playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
         //SERVER
         
-        OpenSql();
+        //OpenSql();
         
-        Debug.Log("CHECKING FOR THE OUTSIDE");
+        //Debug.Log("CHECKING FOR THE OUTSIDE");
     }
     
 }
