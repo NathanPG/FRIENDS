@@ -136,11 +136,32 @@ public class OLScene : MonoBehaviour
     }
     public void publishWindowOff() { publishWindow.SetActive(false); }
 
+    public void ADDTASK(string json)
+    {
+        outputMessage opt = new outputMessage(json);
+
+        if (opt.getSuccess())
+        {
+            Debug.Log("success");
+        }
+        else
+        {
+            Debug.Log(json);
+        }
+    }
     public void pulishOnClick()
     {
+        //CLIENT
         if (playerIndicator.isPlayer)
         {
-
+            string owner = playerIndicator.UserName;
+            inputMessage publishMsg = new inputMessage();
+            publishMsg.addWay("addTsk");
+            publishMsg.addArg("title", questTitle.text);
+            publishMsg.addArg("content", questContent.text);
+            publishMsg.addArg("coin", questCoin.value.ToString());
+            publishMsg.addArg("owner", owner);
+            netcore.ClientSendMsg(publishMsg.getString());
         }
         //Host
         else
@@ -153,17 +174,8 @@ public class OLScene : MonoBehaviour
             publishMsg.addArg("coin", questCoin.value.ToString());
             publishMsg.addArg("owner", owner);
             SQLHandler sql = new SQLHandler();
-            string opt_ = sql.recvMsg(publishMsg.getString());
-            outputMessage opt = new outputMessage(opt_);
-
-            if(opt.getSuccess() )
-            {
-                Debug.Log("success");
-            }
-            else
-            {
-                Debug.Log(opt_);
-            }
+            string strOpt = sql.recvMsg(publishMsg.getString());
+            ADDTASK(strOpt);
         }
     }
     #endregion

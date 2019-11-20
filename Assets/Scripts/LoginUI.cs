@@ -34,7 +34,7 @@ public class LoginUI : MonoBehaviour
     {
         //Debug.Log("loginAccount:" + loginAccount.text);
         //Debug.Log("loginPassword:" + loginPassword.text);
-        //Player
+        //CLIENT
         if (playerIndicator.isPlayer)
         {
             if(loginAccount.text == "" || loginPassword.text == "")
@@ -52,7 +52,7 @@ public class LoginUI : MonoBehaviour
                 netCore.ClientSendLogIn(loginMsg);
             }
         }
-        //Server
+        //HOST
         else
         {
             inputMessage UNPWMsg = new inputMessage();
@@ -96,13 +96,36 @@ public class LoginUI : MonoBehaviour
     
     }
 
+    public void REG_USER(string json)
+    {
+        outputMessage regOpt = new outputMessage(json);
+        if (regOpt.getSuccess())
+        {
+            Debug.Log("REG SUCCESS");
+            signup_box.SetActive(false);
+
+            //REG success
+        }
+        else
+        {
+            Debug.Log("REG ERROR");
+            Debug.Log(regOpt.getErrorMsg());
+            //REG FAIL
+        }
+    }
+
     //Register on click
     public void UserRegister()
     {
         //CLIENT
         if (playerIndicator.isPlayer)
         {
-
+            SQLHandler sql = new SQLHandler();
+            inputMessage regMsg = new inputMessage();
+            regMsg.addWay("addUsr");
+            regMsg.addArg("name", signupAccount.text);
+            regMsg.addArg("pwd", signupPassword.text);
+            netCore.ClientSendMsg(regMsg.getString());
         }
         //HOST
         else
@@ -113,20 +136,7 @@ public class LoginUI : MonoBehaviour
             regMsg.addArg("name", signupAccount.text);
             regMsg.addArg("pwd", signupPassword.text);
             string strOpt = sql.recvMsg(regMsg.getString());
-            outputMessage regOpt = new outputMessage(strOpt);
-            if (regOpt.getSuccess())
-            {
-                Debug.Log("REG SUCCESS");
-                signup_box.SetActive(false);
-
-                //REG success
-            }
-            else
-            {
-                Debug.Log("REG ERROR");
-                Debug.Log(regOpt.getErrorMsg());
-                //REG FAIL
-            }
+            REG_USER(strOpt);
         }
 
     }

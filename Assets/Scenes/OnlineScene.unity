@@ -22907,7 +22907,7 @@ GameObject:
   - component: {fileID: 1613899269}
   m_Layer: 0
   m_Name: NetCore
-  m_TagString: Untagged
+  m_TagString: NETCORE
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22941,6 +22941,7 @@ MonoBehaviour:
   player_pre: {fileID: 8438458219294261470, guid: 119eb3ce68da86b4fa7780e562a7b48f,
     type: 3}
   oLScene: {fileID: 1013408957}
+  loginUI: {fileID: 1013408956}
   isPlayer: 0
   user_name: 
   playerIndicator: {fileID: 0}

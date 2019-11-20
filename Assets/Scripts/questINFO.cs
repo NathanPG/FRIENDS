@@ -13,6 +13,7 @@ public class questINFO : MonoBehaviour
     public string owner;
     public string current_user;
 
+    public PlayerIndicator playerIndicator;
     public Text QuestTitle;
     public Text QuestContent;
     public Text QuestCoin;
@@ -20,6 +21,13 @@ public class questINFO : MonoBehaviour
     public ProfileSys profileSys;
     public Button acceptButton;
     public Button finishButton;
+    public NetCore netCore;
+
+    private void Start()
+    {
+        playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
+        netCore = GameObject.FindGameObjectWithTag("NETCORE").GetComponent<NetCore>();
+    }
 
     public void thisOnClick()
     {
@@ -47,10 +55,19 @@ public class questINFO : MonoBehaviour
         iptMsg.addWay("takeTsk");
         iptMsg.addArg("id", QID);
         iptMsg.addArg("taker", current_user);
-
-        string strOpt = sql.recvMsg(iptMsg.getString());
-        outputMessage tskOpt = new outputMessage(strOpt);
-        profileSys.UpdateAccepted(tskOpt.getResult());
+        //CLIENT
+        if (playerIndicator.isPlayer)
+        {
+            netCore.ClientSendMsg(iptMsg.getString());
+        }
+        //HOST
+        else
+        {
+            string strOpt = sql.recvMsg(iptMsg.getString());
+            outputMessage tskOpt = new outputMessage(strOpt);
+            profileSys.UpdateAccepted(tskOpt.getResult());
+        }
+        
     }
 
     public void FinishOnClick()
@@ -61,9 +78,18 @@ public class questINFO : MonoBehaviour
         iptMsg.addWay("finishTsk");
         iptMsg.addArg("id", QID);
         iptMsg.addArg("name", current_user);
-
-        string strOpt = sql.recvMsg(iptMsg.getString());
-        outputMessage tskOpt = new outputMessage(strOpt);
-        profileSys.UpdateAccepted(tskOpt.getResult());
+        //CLIENT
+        if (playerIndicator.isPlayer)
+        {
+            netCore.ClientSendMsg(iptMsg.getString());
+        }
+        //HOST
+        else
+        {
+            string strOpt = sql.recvMsg(iptMsg.getString());
+            outputMessage tskOpt = new outputMessage(strOpt);
+            profileSys.UpdateAccepted(tskOpt.getResult());
+        }
+        
     }
 }

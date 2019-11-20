@@ -11,6 +11,7 @@ public class NetCore : MonoBehaviour
 {
     public GameObject player_pre;
     public OLScene oLScene;
+    public LoginUI loginUI;
     GameObject spawned_player;
     NetworkClient myClient;
     public bool isPlayer;
@@ -83,7 +84,15 @@ public class NetCore : MonoBehaviour
     }
 
     //HANDLE, 4444
-    
+    public void ACCEPT(string json)
+    {
+
+    }
+    public void FINISH(string json)
+    {
+
+    }
+
     public void ClientRecvMsg(NetworkMessage Msg)
     {
         string msg = Msg.ReadMessage<StringMessage>().value;
@@ -94,11 +103,7 @@ public class NetCore : MonoBehaviour
             oLScene.UPDATEINFO(msg);
         }else if (tskOpt.getWay().Equals("addUsr"))
         {
-
-        }
-        else if (tskOpt.getWay().Equals("searchUsr"))
-        {
-
+            loginUI.REG_USER(msg);
         }
         else if (tskOpt.getWay().Equals("getallTsk"))
         {
@@ -106,7 +111,7 @@ public class NetCore : MonoBehaviour
         }
         else if (tskOpt.getWay().Equals("addTsk"))
         {
-
+            oLScene.ADDTASK(msg);
         }
         else if (tskOpt.getWay().Equals("finishTsk"))
         {
@@ -114,11 +119,11 @@ public class NetCore : MonoBehaviour
         }
         else if (tskOpt.getWay().Equals("getAcceptedTsk"))
         {
-
+            profileSys.UpdateAccepted(tskOpt.getResult());
         }
         else if (tskOpt.getWay().Equals("getDetailsUsr"))
         {
-
+            profileSys.UpdateAccepted(tskOpt.getResult());
         }
         else
         {
