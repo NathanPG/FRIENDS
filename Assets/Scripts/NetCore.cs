@@ -115,15 +115,18 @@ public class NetCore : MonoBehaviour
         }
         else if (tskOpt.getWay().Equals("finishTsk"))
         {
-
+            profileSys.UpdateAccepted(tskOpt.getResult());
+        }else if (tskOpt.getWay().Equals("takeTsk"))
+        {
+            profileSys.UpdateAccepted(tskOpt.getResult());
         }
         else if (tskOpt.getWay().Equals("getAcceptedTsk"))
         {
-            profileSys.UpdateAccepted(tskOpt.getResult());
+            
         }
         else if (tskOpt.getWay().Equals("getDetailsUsr"))
         {
-            profileSys.UpdateAccepted(tskOpt.getResult());
+            
         }
         else
         {
