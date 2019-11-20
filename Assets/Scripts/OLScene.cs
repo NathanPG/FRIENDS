@@ -188,33 +188,48 @@ public class OLScene : MonoBehaviour
 
     public void QuestListOn()
     {
+        inputMessage tskMessage = new inputMessage();
+        tskMessage.addWay("getallTsk");
+
+
         if (questListWindow.activeInHierarchy)
         {
             questListWindow.SetActive(false);
         }
-
         else
         {
             //UPDATE TASK
-            SQLHandler sql = new SQLHandler();
-            inputMessage tskMessage = new inputMessage();
-            tskMessage.addWay("getallTsk");
-            string strOpt = sql.recvMsg(tskMessage.getString());
-            outputMessage tskOpt = new outputMessage(strOpt);
-            profileSys.UpdateResult(tskOpt.getResult());
-
-
-            questListWindow.SetActive(true);
-            foreach (GameObject task in questList)
+            if(playerIndicator.isPlayer)
             {
-                Destroy(task);
+                netcore.ClientSendMsg(tskMessage.getString());
             }
-            foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Task_List)
+            else
             {
-                UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"], 
-                    itr.Value["exp"], itr.Value["coin"], itr.Value["owner"],false);
+                SQLHandler sql = new SQLHandler();
+                string strOpt = sql.recvMsg(tskMessage.getString());
+                UPDATETSK(strOpt);
             }
+
+            
         }
+    }
+
+    public void UPDATETSK(string json)
+    {
+
+        outputMessage tskOpt = new outputMessage(json);
+        profileSys.UpdateResult(tskOpt.getResult());
+        questListWindow.SetActive(true);
+        foreach (GameObject task in questList)
+        {
+            Destroy(task);
+        }
+        foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Task_List)
+        {
+            UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"],
+                itr.Value["exp"], itr.Value["coin"], itr.Value["owner"], false);
+        }
+
     }
 
     public void RefreshOnClick()
@@ -324,14 +339,9 @@ public class OLScene : MonoBehaviour
         }
     }
 
-    public void AcceptRefresh()
+    public void UPDATEACCEPTED(string strOpt)
     {
-        //UPDATE TASK
-        SQLHandler sql = new SQLHandler();
-        inputMessage acceptMessage = new inputMessage();
-        acceptMessage.addWay("getAcceptedTsk");
-        acceptMessage.addArg("taker", playerIndicator.UserName);
-        string strOpt = sql.recvMsg(acceptMessage.getString());
+
         outputMessage tskOpt = new outputMessage(strOpt);
         profileSys.UpdateAccepted(tskOpt.getResult());
 
@@ -347,7 +357,27 @@ public class OLScene : MonoBehaviour
                 UpdateQuestList(itr.Value["QID"], itr.Value["content"], itr.Value["title"],
                     itr.Value["exp"], itr.Value["coin"], itr.Value["owner"], true);
             }
-        } 
+        }
+
+    }
+
+    public void AcceptRefresh()
+    {
+        //Define InputMessage
+        inputMessage acceptMessage = new inputMessage();
+        acceptMessage.addWay("getAcceptedTsk");
+        acceptMessage.addArg("taker", playerIndicator.UserName);
+
+        if (playerIndicator.isPlayer)
+        {
+            netcore.ClientSendMsg(acceptMessage.getString());
+        }
+        else
+        {
+            SQLHandler sql = new SQLHandler();
+            string strOpt = sql.recvMsg(acceptMessage.getString());
+            UPDATEACCEPTED(strOpt);
+        }
     }
     #endregion
 

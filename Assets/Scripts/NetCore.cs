@@ -107,7 +107,7 @@ public class NetCore : MonoBehaviour
         }
         else if (tskOpt.getWay().Equals("getallTsk"))
         {
-
+            oLScene.UPDATETSK(msg);
         }
         else if (tskOpt.getWay().Equals("addTsk"))
         {
@@ -122,7 +122,7 @@ public class NetCore : MonoBehaviour
         }
         else if (tskOpt.getWay().Equals("getAcceptedTsk"))
         {
-            
+            oLScene.UPDATEACCEPTED(msg);
         }
         else if (tskOpt.getWay().Equals("getDetailsUsr"))
         {
