@@ -6,13 +6,13 @@ public class ModelTest : MonoBehaviour
 {
     public float movespeed = 5f;
 
+    
     public void MOVE()
     {
         if (Input.GetKey(KeyCode.W))
 
         {
             this.gameObject.transform.Translate(2*Vector3.forward * Time.deltaTime);
-            //this.GetComponent<Animator>().SetBool("forward", true);
             this.GetComponent<Animator>().SetTrigger("forward");
         }
 
@@ -20,7 +20,6 @@ public class ModelTest : MonoBehaviour
 
         {
             this.gameObject.transform.Translate(2*Vector3.back * Time.deltaTime);
-            //this.GetComponent<Animator>().SetBool("back", true);
             this.GetComponent<Animator>().SetTrigger("back");
         }
 
@@ -28,7 +27,6 @@ public class ModelTest : MonoBehaviour
 
         {
             this.gameObject.transform.Translate(2*Vector3.left * Time.deltaTime);
-            //this.GetComponent<Animator>().SetBool("left", true);
             this.GetComponent<Animator>().SetTrigger("left");
         }
 
@@ -36,7 +34,6 @@ public class ModelTest : MonoBehaviour
 
         {
             this.gameObject.transform.Translate(2*Vector3.right * Time.deltaTime);
-            //this.GetComponent<Animator>().SetBool("right", true);
             this.GetComponent<Animator>().SetTrigger("right");
         }
         /*

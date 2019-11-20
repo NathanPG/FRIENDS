@@ -98,35 +98,40 @@ public class NetCore : MonoBehaviour
         string msg = Msg.ReadMessage<StringMessage>().value;
         Debug.Log("CLIENT RECV FEEDBACK: " + msg);
         outputMessage tskOpt = new outputMessage(msg);
+        //USER INFO
         if (tskOpt.getWay().Equals("getDetailsUsr"))
         {
             oLScene.UPDATEINFO(msg);
-        }else if (tskOpt.getWay().Equals("addUsr"))
+        }
+        //REG USER
+        else if (tskOpt.getWay().Equals("addUsr"))
         {
             loginUI.REG_USER(msg);
         }
+        //LOBBY TASK LIST
         else if (tskOpt.getWay().Equals("getallTsk"))
         {
             oLScene.UPDATETSK(msg);
         }
+        //PUBLISH TASK
         else if (tskOpt.getWay().Equals("addTsk"))
         {
             oLScene.ADDTASK(msg);
         }
+        //FININSH TASK
         else if (tskOpt.getWay().Equals("finishTsk"))
         {
             profileSys.UpdateAccepted(tskOpt.getResult());
-        }else if (tskOpt.getWay().Equals("takeTsk"))
+        }
+        //ACCEPT TASK
+        else if (tskOpt.getWay().Equals("takeTsk"))
         {
             profileSys.UpdateAccepted(tskOpt.getResult());
         }
+        //PERSONAL TASK LIST
         else if (tskOpt.getWay().Equals("getAcceptedTsk"))
         {
             oLScene.UPDATEACCEPTED(msg);
-        }
-        else if (tskOpt.getWay().Equals("getDetailsUsr"))
-        {
-            
         }
         else
         {
