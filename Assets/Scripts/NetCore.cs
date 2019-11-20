@@ -92,30 +92,39 @@ public class NetCore : MonoBehaviour
         if (tskOpt.getWay().Equals("getDetailsUsr"))
         {
             oLScene.UPDATEINFO(msg);
-        }else if (true)
+        }else if (tskOpt.getWay().Equals("addUsr"))
         {
 
         }
-        else if (true)
+        else if (tskOpt.getWay().Equals("searchUsr"))
         {
 
         }
-        else if (true)
+        else if (tskOpt.getWay().Equals("getallTsk"))
         {
 
         }
-        else if (true)
+        else if (tskOpt.getWay().Equals("addTsk"))
         {
 
         }
-        else if (true)
+        else if (tskOpt.getWay().Equals("finishTsk"))
         {
 
         }
-        else if (true)
+        else if (tskOpt.getWay().Equals("getAcceptedTsk"))
         {
 
         }
+        else if (tskOpt.getWay().Equals("getDetailsUsr"))
+        {
+
+        }
+        else
+        {
+            Debug.Log("Unable to recognize the Way, Please check the database infomation");
+        }
+
     }
 
     #region old_transmission
