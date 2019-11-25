@@ -7,7 +7,6 @@ public class ModelTest : NetworkTransform
 {
     public float movespeed = 5f;
 
-    [Command]
     public void CmdMOVE()
     {
         rotation.y += Input.GetAxis("Mouse X");
@@ -17,27 +16,39 @@ public class ModelTest : NetworkTransform
 
         {
             transform.Translate(2*Vector3.forward * Time.deltaTime);
+            GetComponent<Animator>().SetBool("back", false);
+            GetComponent<Animator>().SetBool("left", false);
+            GetComponent<Animator>().SetBool("right", false);
             GetComponent<Animator>().SetTrigger("forward");
         }
 
-        if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
 
         {
             transform.Translate(2*Vector3.back * Time.deltaTime);
+            GetComponent<Animator>().SetBool("forward", false);
+            GetComponent<Animator>().SetBool("left", false);
+            GetComponent<Animator>().SetBool("right", false);
             GetComponent<Animator>().SetTrigger("back");
         }
 
-        if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.A))
 
         {
             transform.Translate(2*Vector3.left * Time.deltaTime);
+            GetComponent<Animator>().SetBool("forward", false);
+            GetComponent<Animator>().SetBool("back", false);
+            GetComponent<Animator>().SetBool("right", false);
             GetComponent<Animator>().SetTrigger("left");
         }
 
-        if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
 
         {
             transform.Translate(2*Vector3.right * Time.deltaTime);
+            GetComponent<Animator>().SetBool("forward", false);
+            GetComponent<Animator>().SetBool("back", false);
+            GetComponent<Animator>().SetBool("left", false);
             GetComponent<Animator>().SetTrigger("right");
         }
 
