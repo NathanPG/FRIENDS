@@ -320,8 +320,17 @@ MonoBehaviour:
   exp: 0
   coin: 0
   owner: 
+  current_user: 
+  playerIndicator: {fileID: 0}
   QuestTitle: {fileID: 0}
   QuestContent: {fileID: 0}
+  QuestCoin: {fileID: 0}
+  QuestExp: {fileID: 0}
+  profileSys: {fileID: 0}
+  acceptButton: {fileID: 0}
+  finishButton: {fileID: 0}
+  netCore: {fileID: 0}
+  oLScene: {fileID: 0}
 --- !u!114 &5794905431359911961
 MonoBehaviour:
   m_ObjectHideFlags: 0

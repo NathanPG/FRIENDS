@@ -1179,11 +1179,6 @@ public class SQLHandler : MonoBehaviour
     private void Start()
     {
         PlayerIndicator playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
-        //SERVER
-        
-        //OpenSql();
-        
-        //Debug.Log("CHECKING FOR THE OUTSIDE");
     }
     
 }

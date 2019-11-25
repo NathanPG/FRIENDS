@@ -31,16 +31,17 @@ public class LoginUI : MonoBehaviour
 
     bool isStart;
 
+    /// <summary>
+    /// Listener of login button
+    /// </summary>
     public void LoginOnClick()
     {
-        //Debug.Log("loginAccount:" + loginAccount.text);
-        //Debug.Log("loginPassword:" + loginPassword.text);
         //CLIENT
         if (playerIndicator.isPlayer)
         {
             if(loginAccount.text == "" || loginPassword.text == "")
             {
-                //TODO: EMPTY
+                SysMsg.text = "Empty login information";
             }
             else
             {
@@ -68,10 +69,7 @@ public class LoginUI : MonoBehaviour
             outputMessage outputFBMsg = new outputMessage(LogInOutPut);
 
             if (outputFBMsg.getSuccess())
-            {
-
-                //outputFBMsg.lst["result"]["name"];
-                //outputFBMsg.lst["result"]["pwd"];        
+            {  
                 Dictionary<string, Dictionary<string, string>> outDic = outputFBMsg.getResult();
                 profileSys.exp = Convert.ToInt32(outDic["0"]["exp"]);
                 profileSys.gold = Convert.ToInt32(outDic["0"]["coin"]);
@@ -98,14 +96,20 @@ public class LoginUI : MonoBehaviour
     
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="json"></param>
     public void REG_USER(string json)
     {
         outputMessage regOpt = new outputMessage(json);
+        //Registration compelete, hide login UI
         if (regOpt.getSuccess())
         {
             Debug.Log("REG SUCCESS");
             signup_box.SetActive(false);
         }
+        //Registration failed, report error
         else
         {
             Debug.Log(regOpt.getErrorMsg());
