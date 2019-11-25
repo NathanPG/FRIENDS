@@ -10,6 +10,9 @@ public class ModelTest : NetworkTransform
     [Command]
     public void CmdMOVE()
     {
+        rotation.y += Input.GetAxis("Mouse X");
+        //rotation.x += -Input.GetAxis("Mouse Y");
+        transform.eulerAngles = (Vector2)rotation * speed;
         if (Input.GetKey(KeyCode.W))
 
         {
@@ -89,10 +92,7 @@ public class ModelTest : NetworkTransform
     {
         if (isLocalPlayer)
         {
-            CmdMOVE();
-            rotation.y += Input.GetAxis("Mouse X");
-            //rotation.x += -Input.GetAxis("Mouse Y");
-            transform.eulerAngles = (Vector2)rotation * speed;
+            CmdMOVE(); 
         }
     }
 }
