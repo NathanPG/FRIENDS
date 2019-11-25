@@ -7,6 +7,10 @@ using UnityEngine.UI;
 using System;
 using System.Threading;
 
+/// <summary>
+/// OLScene: 
+/// UI and get the upload info from the information of server. 
+/// </summary>
 public class OLScene : MonoBehaviour
 {
     public NetCore netcore;
@@ -24,6 +28,9 @@ public class OLScene : MonoBehaviour
     public Button acceptButton;
     public Button finishButton;
 
+    /// <summary>
+    /// Get the player's information (usrname) and check it is player or host
+    /// </summary>
     private void Start()
     {
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
@@ -35,6 +42,10 @@ public class OLScene : MonoBehaviour
     public Text user_name;
     public GameObject infoWindow;
 
+    /// <summary>
+    /// Update the Information from the usr, coin, exp 
+    /// </summary>
+    /// <param name="json">the input info</param>
     public void UPDATEINFO(string json)
     {
         outputMessage tskOpt = new outputMessage(json);
@@ -46,6 +57,9 @@ public class OLScene : MonoBehaviour
         coin.text = "Coin: " + profileSys.gold.ToString();
         user_name.text = profileSys.username;
     }
+    /// <summary>
+    /// Update the UI from the tsk 
+    /// </summary>
     public void InfoOnClick() {
         //CLIENT
         if (playerIndicator.isPlayer)
@@ -77,6 +91,9 @@ public class OLScene : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Close the UI 
+    /// </summary>
     public void InfoClose() { infoWindow.SetActive(false); }
     #endregion
 
@@ -88,6 +105,9 @@ public class OLScene : MonoBehaviour
     public GameObject FinishButtoninDetail;
     public Text Coin;
     public Text Exp;
+    /// <summary>
+    /// Open the UI 
+    /// </summary>
     public void LobbyQuestOpen()
     {
         if (SingleQuest.activeInHierarchy)
@@ -102,6 +122,9 @@ public class OLScene : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Open the Personal UI 
+    /// </summary>
     public void PersonalQuestOpen()
     {
         if (SingleQuest.activeInHierarchy)
@@ -116,6 +139,9 @@ public class OLScene : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Close the UI 
+    /// </summary>
     public void SingleQuestClose() { SingleQuest.SetActive(false); AcceptButtoninDetail.SetActive(false); FinishButtoninDetail.SetActive(false); }
     #endregion
 
@@ -124,6 +150,9 @@ public class OLScene : MonoBehaviour
     public InputField questContent;
     public InputField questTitle;
     public Dropdown questCoin;
+    /// <summary>
+    /// Open the publish Window 
+    /// </summary>
     public void publishWindowOn() {
         if (publishWindow.activeInHierarchy)
         {
@@ -134,8 +163,15 @@ public class OLScene : MonoBehaviour
             publishWindow.SetActive(true);
         }
     }
+    /// <summary>
+    /// Close the publish Window 
+    /// </summary>
     public void publishWindowOff() { publishWindow.SetActive(false); }
 
+    /// <summary>
+    /// add the task [RECEIVING THE MAIN MSG FROM THE CONNECTION]
+    /// </summary>
+    /// <param name="json"></param>
     public void ADDTASK(string json)
     {
         outputMessage opt = new outputMessage(json);
@@ -149,6 +185,10 @@ public class OLScene : MonoBehaviour
             Debug.Log(json);
         }
     }
+
+    /// <summary>
+    /// Get the input from usr and send it to the SEVOR  
+    /// </summary>
     public void pulishOnClick()
     {
         //CLIENT
