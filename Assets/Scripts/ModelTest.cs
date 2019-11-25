@@ -7,8 +7,8 @@ public class ModelTest : NetworkTransform
 {
     public float movespeed = 5f;
 
-    
-    public void MOVE()
+    [Command]
+    public void CmdMOVE()
     {
         if (Input.GetKey(KeyCode.W))
 
@@ -89,8 +89,7 @@ public class ModelTest : NetworkTransform
     {
         if (isLocalPlayer)
         {
-            MOVE();
-
+            CmdMOVE();
             rotation.y += Input.GetAxis("Mouse X");
             //rotation.x += -Input.GetAxis("Mouse Y");
             transform.eulerAngles = (Vector2)rotation * speed;
