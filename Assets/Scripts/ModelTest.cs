@@ -7,7 +7,6 @@ public class ModelTest : NetworkTransform
 {
     public float movespeed = 5f;
 
-    [Command]
     public void CmdMOVE()
     {
         rotation.y += Input.GetAxis("Mouse X");
