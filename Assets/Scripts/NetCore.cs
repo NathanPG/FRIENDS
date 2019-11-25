@@ -7,6 +7,10 @@ using UnityEngine.Networking.NetworkSystem;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 
+/// <summary>
+/// NetCore: 
+/// This is the Core Package for server and clients to communiate,
+/// </summary>
 public class NetCore : MonoBehaviour
 {
     public GameObject player_pre;
@@ -64,7 +68,11 @@ public class NetCore : MonoBehaviour
     
 
     
-    //SEND 3333
+    
+    /// <summary>
+    /// function for Client to send message to the server
+    /// </summary>
+    /// <param name="Msg">Input Requirement</param>
     public void ClientSendMsg(string Msg)
     {
         //Client send Accound and Password to the server
@@ -72,7 +80,11 @@ public class NetCore : MonoBehaviour
         Debug.Log("CLIENT SENT REQUEST: " + Msg);
     }
 
-    //HANDLE 3333, SEND 4444
+    /// <summary>
+    /// function for Server to receive Message from the client.
+    /// HANDLE 3333, SEND 4444
+    /// </summary>
+    /// <param name="Msg"></param>
     public void ServerRecvMsg(NetworkMessage Msg)
     {
         SQLHandler sql = new SQLHandler();
@@ -83,16 +95,12 @@ public class NetCore : MonoBehaviour
         Debug.Log("SERVER SENT FEEDBACK: " + fb);
     }
 
-    //HANDLE, 4444
-    public void ACCEPT(string json)
-    {
-
-    }
-    public void FINISH(string json)
-    {
-
-    }
-
+    
+    /// <summary>
+    /// function for Client to recive Message from the server, and also the function
+    /// and also load the function form the server.
+    /// </summary>
+    /// <param name="Msg"></param>
     public void ClientRecvMsg(NetworkMessage Msg)
     {
         string msg = Msg.ReadMessage<StringMessage>().value;
@@ -191,14 +199,11 @@ public class NetCore : MonoBehaviour
     #endregion
 
 
-    private void Update()
-    {
-        if (NetworkServer.active)
-        {
-            //Debug.Log("Server Active!");
-        }
-    }
-    
+
+    /// <summary>
+    /// Indicate one client is connected. 
+    /// </summary>
+    /// <param name="netMsg"></param>    
     public void OnClientConnected(NetworkMessage netMsg)
     {
         Debug.Log("A CLIENT HAS CONNECTED");
@@ -206,6 +211,12 @@ public class NetCore : MonoBehaviour
     }
 
     const short NameChannelId = 8888;
+    /// <summary>
+    /// Start to connect 
+    /// Which is separated into two parts which means: 
+    /// Host:start to make up the base 
+    /// Client: Try to connect the base written in the base
+    /// </summary>
     private void Start()
     {
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
@@ -236,23 +247,11 @@ public class NetCore : MonoBehaviour
         //Host
         else
         {
-            //SetupServer();
-
-
             ///////////////////////////////////////////////////////////////////////////
             NetworkManager.singleton.networkPort = 8888;
             NetworkManager.singleton.networkAddress = "192.168.31.165";
             ///////////////////////////////////////////////////////////////////////////
-            ///
-
-
-            //var config = new ConnectionConfig();
-            // There are different types of channels you can use, check the official documentation
-            //config.AddChannel(QosType.ReliableFragmented);
-            //config.AddChannel(QosType.UnreliableFragmented);
-
-            //THIS START A NetworkServer
-
+        
             NetworkManager.singleton.StartHost();
 
             //HANDLERS
@@ -262,19 +261,6 @@ public class NetCore : MonoBehaviour
             NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         }
     }
-
-    /*
-    [Command]
-    public void CmdMoveClient()
-    {
-
-    }
-    [ClientRpc]
-    public void RpcSendInt()
-    {
-
-    }
-    */
 
     void OnApplicationQuit()
     {
