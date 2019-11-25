@@ -40,24 +40,6 @@ public class ModelTest : NetworkTransform
             transform.Translate(2*Vector3.right * Time.deltaTime);
             GetComponent<Animator>().SetTrigger("right");
         }
-        /*
-        if (Input.GetKeyUp(KeyCode.W))
-        {
-            this.GetComponent<Animator>().SetBool("forward", false);
-        }
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            this.GetComponent<Animator>().SetBool("back", false);
-        }
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-            this.GetComponent<Animator>().SetBool("left", false);
-        }
-        if (Input.GetKeyUp(KeyCode.D))
-        {
-            this.GetComponent<Animator>().SetBool("right", false);
-        }
-        */
 
         
         if (!Input.anyKey)
@@ -71,10 +53,6 @@ public class ModelTest : NetworkTransform
         
     }
 
-    private void FixedUpdate()
-    {
-        
-    }
 
     private void Start()
     {
