@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class ModelTest : MonoBehaviour
+public class ModelTest : NetworkTransform
 {
     public float movespeed = 5f;
 
@@ -12,29 +13,29 @@ public class ModelTest : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
 
         {
-            this.gameObject.transform.Translate(2*Vector3.forward * Time.deltaTime);
-            this.GetComponent<Animator>().SetTrigger("forward");
+            transform.Translate(2*Vector3.forward * Time.deltaTime);
+            GetComponent<Animator>().SetTrigger("forward");
         }
 
         if (Input.GetKey(KeyCode.S))
 
         {
-            this.gameObject.transform.Translate(2*Vector3.back * Time.deltaTime);
-            this.GetComponent<Animator>().SetTrigger("back");
+            transform.Translate(2*Vector3.back * Time.deltaTime);
+            GetComponent<Animator>().SetTrigger("back");
         }
 
         if (Input.GetKey(KeyCode.A))
 
         {
-            this.gameObject.transform.Translate(2*Vector3.left * Time.deltaTime);
-            this.GetComponent<Animator>().SetTrigger("left");
+            transform.Translate(2*Vector3.left * Time.deltaTime);
+            GetComponent<Animator>().SetTrigger("left");
         }
 
         if (Input.GetKey(KeyCode.D))
 
         {
-            this.gameObject.transform.Translate(2*Vector3.right * Time.deltaTime);
-            this.GetComponent<Animator>().SetTrigger("right");
+            transform.Translate(2*Vector3.right * Time.deltaTime);
+            GetComponent<Animator>().SetTrigger("right");
         }
         /*
         if (Input.GetKeyUp(KeyCode.W))
@@ -58,10 +59,10 @@ public class ModelTest : MonoBehaviour
         
         if (!Input.anyKey)
         {
-            this.GetComponent<Animator>().SetBool("forward", false);
-            this.GetComponent<Animator>().SetBool("back", false);
-            this.GetComponent<Animator>().SetBool("left", false);
-            this.GetComponent<Animator>().SetBool("right", false);
+            GetComponent<Animator>().SetBool("forward", false);
+            GetComponent<Animator>().SetBool("back", false);
+            GetComponent<Animator>().SetBool("left", false);
+            GetComponent<Animator>().SetBool("right", false);
             //this.GetComponent<Animator>().SetBool("idel", true);
         }
         
@@ -74,38 +75,25 @@ public class ModelTest : MonoBehaviour
 
     private void Start()
     {
-        this.GetComponent<Animator>().SetBool("forward", false);
-        this.GetComponent<Animator>().SetBool("back", false);
-        this.GetComponent<Animator>().SetBool("left", false);
-        this.GetComponent<Animator>().SetBool("right", false);
+        GetComponent<Animator>().SetBool("forward", false);
+        GetComponent<Animator>().SetBool("back", false);
+        GetComponent<Animator>().SetBool("left", false);
+        GetComponent<Animator>().SetBool("right", false);
         //this.GetComponent<Animator>().SetBool("idel", true);
     }
+
+    Vector2 rotation = new Vector2(0, 0);
+    public float speed = 3;
     // Update is called once per frame
     void Update()
     {
-        MOVE();
-
-    
-        RaycastHit hitInfo;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        // 0 is the groundlayerindex
-        if (Physics.Raycast(ray, out hitInfo, 200,0))
+        if (isLocalPlayer)
         {
-            Vector3 target = hitInfo.point;
-            target.y = transform.position.y;
-            transform.LookAt(target);
+            MOVE();
+
+            //rotation.y += Input.GetAxis("Mouse X");
+            rotation.x += -Input.GetAxis("Mouse Y");
+            transform.eulerAngles = (Vector2)rotation * speed;
         }
-
-        /*
-            // 获得鼠标当前位置的X和Y
-            float mouseX = Input.GetAxis("Mouse X") * movespeed;
-            float mouseY = Input.GetAxis("Mouse Y") * movespeed;
-
-            // 鼠标在Y轴上的移动号转为摄像机的上下运动，即是绕着X轴反向旋转
-            Camera.main.transform.localRotation = Camera.main.transform.localRotation * Quaternion.Euler(-mouseY, 0, 0);
-            // 鼠标在X轴上的移动转为主角左右的移动，同时带动其子物体摄像机的左右移动
-            transform.localRotation = transform.localRotation * Quaternion.Euler(0, mouseX, 0);
-            */
     }
-
 }
