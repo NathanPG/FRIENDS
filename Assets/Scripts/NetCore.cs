@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 
 public class NetCore : MonoBehaviour
 {
-    public GameObject player_pre;
     public OLScene oLScene;
     public LoginUI loginUI;
     GameObject spawned_player;
@@ -19,6 +18,8 @@ public class NetCore : MonoBehaviour
     public PlayerIndicator playerIndicator;
     public ProfileSys profileSys;
     public LoginUI loginui;
+    public GameObject host_c;
+    public GameObject client_c;
 
     public Text debugtext;
     public GameObject red;
@@ -215,7 +216,7 @@ public class NetCore : MonoBehaviour
         {
             Debug.Log("This is client");
 
-
+            NetworkManager.singleton.playerPrefab = client_c;
             NetworkClient netc = NetworkManager.singleton.StartClient();
             //CLIENT CONNECTION ID
             NetworkConnection netconnect = netc.connection;
@@ -243,38 +244,17 @@ public class NetCore : MonoBehaviour
             NetworkManager.singleton.networkPort = 8888;
             NetworkManager.singleton.networkAddress = "192.168.31.165";
             ///////////////////////////////////////////////////////////////////////////
-            ///
-
-
-            //var config = new ConnectionConfig();
-            // There are different types of channels you can use, check the official documentation
-            //config.AddChannel(QosType.ReliableFragmented);
-            //config.AddChannel(QosType.UnreliableFragmented);
-
             //THIS START A NetworkServer
-
+            NetworkManager.singleton.playerPrefab = host_c;
             NetworkManager.singleton.StartHost();
+            
 
             //HANDLERS
             NetworkServer.RegisterHandler(1111, ServerRecvLogin);
             NetworkServer.RegisterHandler(3333, ServerRecvMsg);
-            //NetworkServer.RegisterHandler(1234, TestServerReceive);
             NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         }
     }
-
-    /*
-    [Command]
-    public void CmdMoveClient()
-    {
-
-    }
-    [ClientRpc]
-    public void RpcSendInt()
-    {
-
-    }
-    */
 
     void OnApplicationQuit()
     {
