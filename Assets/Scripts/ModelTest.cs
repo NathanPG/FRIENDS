@@ -91,8 +91,8 @@ public class ModelTest : NetworkTransform
         {
             MOVE();
 
-            //rotation.y += Input.GetAxis("Mouse X");
-            rotation.x += -Input.GetAxis("Mouse Y");
+            rotation.y += Input.GetAxis("Mouse X");
+            //rotation.x += -Input.GetAxis("Mouse Y");
             transform.eulerAngles = (Vector2)rotation * speed;
         }
     }
