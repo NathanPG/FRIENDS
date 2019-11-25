@@ -162,6 +162,8 @@ public class OLScene : MonoBehaviour
             publishMsg.addArg("coin", questCoin.value.ToString());
             publishMsg.addArg("owner", owner);
             netcore.ClientSendMsg(publishMsg.getString());
+            publishWindow.SetActive(false);
+            questListWindow.SetActive(false);
         }
         //Host
         else
@@ -176,6 +178,8 @@ public class OLScene : MonoBehaviour
             SQLHandler sql = new SQLHandler();
             string strOpt = sql.recvMsg(publishMsg.getString());
             ADDTASK(strOpt);
+            publishWindow.SetActive(false);
+            questListWindow.SetActive(false);
         }
     }
     #endregion

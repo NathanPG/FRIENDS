@@ -8,6 +8,8 @@ TagManager:
   - qtitle
   - qcontent
   - NETCORE
+  - CANVAS
+  - QUEST
   layers:
   - Default
   - TransparentFX

@@ -22,11 +22,13 @@ public class questINFO : MonoBehaviour
     public Button acceptButton;
     public Button finishButton;
     public NetCore netCore;
+    public OLScene oLScene;
 
     private void Start()
     {
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
         netCore = GameObject.FindGameObjectWithTag("NETCORE").GetComponent<NetCore>();
+        oLScene = GameObject.FindGameObjectWithTag("CANVAS").GetComponent<OLScene>();
     }
 
     public void thisOnClick()
@@ -59,6 +61,9 @@ public class questINFO : MonoBehaviour
         if (playerIndicator.isPlayer)
         {
             netCore.ClientSendMsg(iptMsg.getString());
+            oLScene.infoWindow.SetActive(false);
+            oLScene.questListWindow.SetActive(false);
+            oLScene.SingleQuestClose();
         }
         //HOST
         else
@@ -66,6 +71,9 @@ public class questINFO : MonoBehaviour
             string strOpt = sql.recvMsg(iptMsg.getString());
             outputMessage tskOpt = new outputMessage(strOpt);
             profileSys.UpdateAccepted(tskOpt.getResult());
+            oLScene.infoWindow.SetActive(false);
+            oLScene.questListWindow.SetActive(false);
+            oLScene.SingleQuestClose();
         }
         
     }
@@ -82,6 +90,9 @@ public class questINFO : MonoBehaviour
         if (playerIndicator.isPlayer)
         {
             netCore.ClientSendMsg(iptMsg.getString());
+            oLScene.infoWindow.SetActive(false);
+            oLScene.acceptedWindow.SetActive(false);
+            oLScene.SingleQuestClose();
         }
         //HOST
         else
@@ -89,6 +100,9 @@ public class questINFO : MonoBehaviour
             string strOpt = sql.recvMsg(iptMsg.getString());
             outputMessage tskOpt = new outputMessage(strOpt);
             profileSys.UpdateAccepted(tskOpt.getResult());
+            oLScene.infoWindow.SetActive(false);
+            oLScene.acceptedWindow.SetActive(false);
+            oLScene.SingleQuestClose();
         }
         
     }

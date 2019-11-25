@@ -24,52 +24,8 @@ public class NetCore : MonoBehaviour
     public LoginUI loginui;
     public GameObject host_c;
     public GameObject client_c;
-
-    public Text debugtext;
     public GameObject red;
 
-    public Text testText;
-
-    /*
-    public class ProfileMsg : MessageBase
-    {
-        public string username;
-        public int exp;
-        public int gold;
-        public List<Task> accepted_task;
-    }
-    */
-
-    #region MsgTEST
-    public InputField Testinput;
-    public void TestServerReceive(NetworkMessage netMsg)
-    {
-        Debug.Log("SERVER RECEIVED THE MSG" + netMsg.ReadMessage<StringMessage>().value);
-    }
-    public void TestClientReceive(NetworkMessage netMsg)
-    {
-        Debug.Log("CLINET RECEIVED THE MSG" + netMsg.ReadMessage<StringMessage>().value);
-    }
-
-    public void SendStringOnClick()
-    {
-        //Client
-        if (playerIndicator.isPlayer)
-        {
-            NetworkManager.singleton.client.Send(1234, new StringMessage(Testinput.text));
-        }
-        //Servers
-        else
-        {
-            NetworkServer.SendToAll(4321, new StringMessage(Testinput.text));
-        }
-    }
-    #endregion
-
-    
-
-    
-    
     /// <summary>
     /// function for Client to send message to the server
     /// </summary>
@@ -110,6 +66,7 @@ public class NetCore : MonoBehaviour
         //USER INFO
         if (tskOpt.getWay().Equals("getDetailsUsr"))
         {
+            //TODO: MATCH NAME, else error
             oLScene.UPDATEINFO(msg);
         }
         //REG USER
@@ -170,8 +127,6 @@ public class NetCore : MonoBehaviour
     //CLIENT RECV 2222 FROM Server
     public void OnClientReceiveFB(NetworkMessage FBMsg)
     {
-
-
         //Deserialize message
         string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
         Debug.Log(Fbjson);
@@ -193,7 +148,6 @@ public class NetCore : MonoBehaviour
         {
             //REPORT ERROR
             Debug.Log("ERROR" + outputFBMsg.getErrorMsg());
-            testText.text = "ERROR" + outputFBMsg.getErrorMsg();
         }
 
     }

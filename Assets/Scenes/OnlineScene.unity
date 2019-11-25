@@ -470,6 +470,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2032665853599255285, guid: b075ca5374339ec4ab79011a32109ce3,
+        type: 3}
+      propertyPath: m_TagString
+      value: QUEST
+      objectReference: {fileID: 0}
     - target: {fileID: 6904375205687780629, guid: b075ca5374339ec4ab79011a32109ce3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8932,7 +8937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &371123410
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22739,7 +22744,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -211}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 1000, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1005054941
 MonoBehaviour:
@@ -23002,7 +23007,7 @@ GameObject:
   - component: {fileID: 1013408957}
   m_Layer: 0
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: CANVAS
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23119,6 +23124,7 @@ MonoBehaviour:
   signupAccount: {fileID: 1716684968}
   signupPassword: {fileID: 1966699284}
   loginUI: {fileID: 1678371667}
+  SysMsg: {fileID: 1005054941}
   netCore: {fileID: 1613899269}
   profileSys: {fileID: 664207469}
 --- !u!114 &1013408957
@@ -28430,7 +28436,7 @@ GameObject:
   - component: {fileID: 1299677435}
   m_Layer: 5
   m_Name: SingleQuest
-  m_TagString: Untagged
+  m_TagString: QUEST
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36148,8 +36154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1337d6aefeb35b242b0fcf44f572b22b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player_pre: {fileID: 8438458219294261470, guid: 119eb3ce68da86b4fa7780e562a7b48f,
-    type: 3}
   oLScene: {fileID: 1013408957}
   loginUI: {fileID: 1013408956}
   isPlayer: 0
@@ -36159,10 +36163,7 @@ MonoBehaviour:
   loginui: {fileID: 1013408956}
   host_c: {fileID: 1777870699331626, guid: ac2073ec8e965a9418374e28874818b4, type: 3}
   client_c: {fileID: 830847444837568848, guid: 5328f72d5dc575347ab716359a52cf0f, type: 3}
-  debugtext: {fileID: 1944772817}
   red: {fileID: 1604623077}
-  testText: {fileID: 0}
-  Testinput: {fileID: 1442066469}
 --- !u!1 &1615775798
 GameObject:
   m_ObjectHideFlags: 0
@@ -41785,7 +41786,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -84.55058}
+  m_AnchoredPosition: {x: 0, y: -124}
   m_SizeDelta: {x: 400, y: 80.3}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1885644673
@@ -42082,7 +42083,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1900974751
 Light:
   m_ObjectHideFlags: 0

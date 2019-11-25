@@ -22,6 +22,7 @@ public class LoginUI : MonoBehaviour
     public InputField signupAccount;
     public InputField signupPassword;
     public GameObject loginUI;
+    public Text SysMsg;
 
     public Dictionary<string, string> dbcheck;
     public NetCore netCore;
@@ -90,7 +91,8 @@ public class LoginUI : MonoBehaviour
             }
             else
             {
-                Debug.Log("SOME KIND OF LOG IN ERROR");
+                SysMsg.text = "MIAO, Invalid username or password";
+                SysMsg.color = Color.red;
             }
         }
     
@@ -103,14 +105,12 @@ public class LoginUI : MonoBehaviour
         {
             Debug.Log("REG SUCCESS");
             signup_box.SetActive(false);
-
-            //REG success
         }
         else
         {
-            Debug.Log("REG ERROR");
             Debug.Log(regOpt.getErrorMsg());
-            //REG FAIL
+            SysMsg.color = Color.red;
+            SysMsg.text = "MIAO, " + regOpt.getErrorMsg();
         }
     }
 
