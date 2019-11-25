@@ -8,9 +8,7 @@ using Newtonsoft.Json;
 
 public class LoginUI : MonoBehaviour
 {
-    
-    //public Text username;
-    public PlayerIndicator playerIndicator;
+        public PlayerIndicator playerIndicator;
 
     public string username;
     public string pwd;
@@ -29,6 +27,7 @@ public class LoginUI : MonoBehaviour
 
     public ProfileSys profileSys;
 
+    //Reserved for freezing UI
     bool isStart;
 
     /// <summary>
@@ -97,7 +96,7 @@ public class LoginUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Reaction 
     /// </summary>
     /// <param name="json"></param>
     public void REG_USER(string json)

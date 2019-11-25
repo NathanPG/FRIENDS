@@ -33,6 +33,7 @@ public class OLScene : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        //Get the reference of PlayerIndicator, which stores user information and whether this is a server or client
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
     }
 
