@@ -197,7 +197,7 @@ public class NetCore : MonoBehaviour
             //int connectionID = netconnect.connectionId;
 
             ///////////////////////////////////////////////////////////////////////////
-            NetworkManager.singleton.client.Connect("192.168.31.165", 8888);
+            NetworkManager.singleton.client.Connect("129.161.54.218", 8888);
             ///////////////////////////////////////////////////////////////////////////
             ///
             NetworkManager.singleton.client.RegisterHandler(2222 , OnClientReceiveFB);
@@ -210,7 +210,7 @@ public class NetCore : MonoBehaviour
         {
             ///////////////////////////////////////////////////////////////////////////
             NetworkManager.singleton.networkPort = 8888;
-            NetworkManager.singleton.networkAddress = "192.168.31.165";
+            NetworkManager.singleton.networkAddress = "129.161.54.218";
             ///////////////////////////////////////////////////////////////////////////
             //THIS START A NetworkServer
             NetworkManager.singleton.playerPrefab = host_c;
