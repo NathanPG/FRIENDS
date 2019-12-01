@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class ModelTest : NetworkTransform
+/// <summary>
+/// This scripts handles the animations and movement of player object
+/// </summary>
+public class ModelTest : NetworkTransform //NetworkBehaviour
 {
     public float movespeed = 5f;
-
+    //[Command]
     public void CmdMOVE()
     {
         rotation.y += Input.GetAxis("Mouse X");

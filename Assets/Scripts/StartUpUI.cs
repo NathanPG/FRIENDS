@@ -7,20 +7,20 @@ using UnityEngine.Networking;
 public class StartUpUI : MonoBehaviour
 {
     public PlayerIndicator playerIndicator;
+    /// <summary>
+    /// Run the game as a client. (Button listener)
+    /// </summary>
     public void ClientOnClick()
     {
         playerIndicator.isPlayer = true;
-        //NetworkManager.singleton.networkPort = 9999;
-
-        //NetworkManager.singleton.networkAddress = "129.161.55.47";
         SceneManager.LoadScene(1);
     }
+    /// <summary>
+    /// Run the game as a host. (Button listener)
+    /// </summary>
     public void HostOnClick()
     {
         playerIndicator.isPlayer = false;
-        //NetworkManager.singleton.networkPort = 9999;
-
-        //NetworkManager.singleton.networkAddress = "129.161.55.47";
         SceneManager.LoadScene(1);
     }
 }

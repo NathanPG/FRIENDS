@@ -97,7 +97,7 @@ public class LoginUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Give registration feedback to clients
     /// </summary>
     /// <param name="json"></param>
     public void REG_USER(string json)
@@ -108,6 +108,7 @@ public class LoginUI : MonoBehaviour
         {
             Debug.Log("REG SUCCESS");
             signup_box.SetActive(false);
+            SysMsg.text = "MIAO, registration compelete!";
         }
         //Registration failed, report error
         else
@@ -118,7 +119,9 @@ public class LoginUI : MonoBehaviour
         }
     }
 
-    //Register on click
+    /// <summary>
+    /// Listener of sign up button
+    /// </summary>
     public void UserRegister()
     {
         //CLIENT
@@ -145,11 +148,9 @@ public class LoginUI : MonoBehaviour
 
     }
 
-    public void warningClose()
-    {
-        warning.SetActive(false);
-    }
-
+    /// <summary>
+    /// Close or open sign up window
+    /// </summary>
     public void OpenSignUp()
     {
         signup_box.SetActive(true);

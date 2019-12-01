@@ -28,11 +28,9 @@ public class OLScene : MonoBehaviour
     public Button acceptButton;
     public Button finishButton;
 
-    /// <summary>
-    /// Get the player's information (usrname) and check it is player or host
-    /// </summary>
     private void Start()
     {
+        //Get reference of PlayerIndicator
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
     }
 
@@ -43,7 +41,7 @@ public class OLScene : MonoBehaviour
     public GameObject infoWindow;
 
     /// <summary>
-    /// Update the Information from the usr, coin, exp 
+    /// Update the Information of the usr, coin, exp 
     /// </summary>
     /// <param name="json">the input info</param>
     public void UPDATEINFO(string json)
@@ -58,7 +56,7 @@ public class OLScene : MonoBehaviour
         user_name.text = profileSys.username;
     }
     /// <summary>
-    /// Update the UI from the tsk 
+    /// Open the personal information window. (Button listener)
     /// </summary>
     public void InfoOnClick() {
         //CLIENT
@@ -80,7 +78,6 @@ public class OLScene : MonoBehaviour
             string strOpt = sql.recvMsg(pMsg.getString());
             UPDATEINFO(strOpt);
         }
-        
         if (infoWindow.activeInHierarchy)
         {
             infoWindow.SetActive(false);
@@ -98,15 +95,14 @@ public class OLScene : MonoBehaviour
     #endregion
 
     #region Quest_Detail
-    
-    
+
     public GameObject SingleQuest;
     public GameObject AcceptButtoninDetail;
     public GameObject FinishButtoninDetail;
     public Text Coin;
     public Text Exp;
     /// <summary>
-    /// Open the UI 
+    /// Open the quest detail window.(Button listener)
     /// </summary>
     public void LobbyQuestOpen()
     {
@@ -123,7 +119,7 @@ public class OLScene : MonoBehaviour
     }
 
     /// <summary>
-    /// Open the Personal UI 
+    /// Open the personal quest detail window.(Button listener)
     /// </summary>
     public void PersonalQuestOpen()
     {
@@ -140,7 +136,7 @@ public class OLScene : MonoBehaviour
     }
 
     /// <summary>
-    /// Close the UI 
+    /// Close the quest detail window.(Button listener)
     /// </summary>
     public void SingleQuestClose() { SingleQuest.SetActive(false); AcceptButtoninDetail.SetActive(false); FinishButtoninDetail.SetActive(false); }
     #endregion
@@ -151,7 +147,7 @@ public class OLScene : MonoBehaviour
     public InputField questTitle;
     public Dropdown questCoin;
     /// <summary>
-    /// Open the publish Window 
+    /// Open the publish Window .(Button listener)
     /// </summary>
     public void publishWindowOn() {
         if (publishWindow.activeInHierarchy)
@@ -164,7 +160,7 @@ public class OLScene : MonoBehaviour
         }
     }
     /// <summary>
-    /// Close the publish Window 
+    /// Close the publish Window .(Button listener)
     /// </summary>
     public void publishWindowOff() { publishWindow.SetActive(false); }
 
@@ -230,6 +226,9 @@ public class OLScene : MonoBehaviour
     public GameObject questListWindow;
     public GameObject questTitilePre;
 
+   /// <summary>
+   /// Open lobby quest window. (Button listener)
+   /// </summary>
     public void QuestListOn()
     {
         inputMessage tskMessage = new inputMessage();
@@ -258,6 +257,10 @@ public class OLScene : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Update lobby quest list
+    /// </summary>
+    /// <param name="json"></param>
     public void UPDATETSK(string json)
     {
 
@@ -276,6 +279,9 @@ public class OLScene : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Refresh quest list refresh. (Button listener,not implemented)
+    /// </summary>
     public void RefreshOnClick()
     {
         //UPDATE TASK
@@ -302,9 +308,22 @@ public class OLScene : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Close lobby quest list. (Button listener)
+    /// </summary>
     public void QuestListOff() { questListWindow.SetActive(false); }
 
-
+    /// <summary>
+    /// Helper funtion for updating quest details
+    /// </summary>
+    /// <param name="QID"></param>
+    /// <param name="content"></param>
+    /// <param name="title"></param>
+    /// <param name="exp"></param>
+    /// <param name="coin"></param>
+    /// <param name="owner"></param>
+    /// <param name="ispersonal"></param>
+    /// <returns></returns>
     public GameObject UpdateQuestList(string QID, string content, string title, 
         string exp, string coin, string owner, bool ispersonal)
     {
@@ -360,8 +379,6 @@ public class OLScene : MonoBehaviour
             LobbytRect.verticalNormalizedPosition = 0;
         }
 
-        
-
         return temp;
     }
     #endregion
@@ -369,8 +386,14 @@ public class OLScene : MonoBehaviour
     #region Accpeted_List
 
     public GameObject acceptedWindow;
+    /// <summary>
+    /// Close accepted quest list. (Button listener)
+    /// </summary>
     public void AcceptedListOff() { acceptedWindow.SetActive(false); }
 
+    /// <summary>
+    /// Open accepted quest list. (Button listener)
+    /// </summary>
     public void AcceptedListOn() {
         if (acceptedWindow.activeInHierarchy)
         {
@@ -383,6 +406,10 @@ public class OLScene : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Update accepted list
+    /// </summary>
+    /// <param name="strOpt"></param>
     public void UPDATEACCEPTED(string strOpt)
     {
 
@@ -405,6 +432,9 @@ public class OLScene : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Refresh accepted list. (Button listener)
+    /// </summary>
     public void AcceptRefresh()
     {
         //Define InputMessage

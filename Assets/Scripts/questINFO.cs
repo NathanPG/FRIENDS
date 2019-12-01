@@ -31,6 +31,9 @@ public class questINFO : MonoBehaviour
         oLScene = GameObject.FindGameObjectWithTag("CANVAS").GetComponent<OLScene>();
     }
 
+    /// <summary>
+    /// Update information and add listener to current object. (Button listener)
+    /// </summary>
     public void thisOnClick()
     {
         QuestTitle.text = title;
@@ -49,6 +52,9 @@ public class questINFO : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Accept the lobby quest. (Button listener)
+    /// </summary>
     public void AcceptOnClick()
     {
         SQLHandler sql = new SQLHandler();
@@ -78,6 +84,9 @@ public class questINFO : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Finish the accepted quest. (Button listener)
+    /// </summary>
     public void FinishOnClick()
     {
         SQLHandler sql = new SQLHandler();

@@ -15,6 +15,10 @@ public class ProfileSys : MonoBehaviour
     public Dictionary<string, Dictionary<string, string>> Accepted_List
         = new Dictionary<string, Dictionary<string, string>>();
 
+    /// <summary>
+    /// Update lobby quest list in the profile system.
+    /// </summary>
+    /// <param name="sourceDict"></param>
     public void UpdateResult(Dictionary<string, Dictionary<string, string>> sourceDict)
     {
         Task_List.Clear();
@@ -39,7 +43,6 @@ public class ProfileSys : MonoBehaviour
             {
 
             }
-
             this.Task_List[qid] = new Dictionary<string, string>();
             this.Task_List[qid]["QID"] = qid;
             this.Task_List[qid]["content"] = content;
@@ -50,7 +53,11 @@ public class ProfileSys : MonoBehaviour
 
         }
     }
-
+    
+    /// <summary>
+    /// Update accepted quest list in profile system
+    /// </summary>
+    /// <param name="sourceDict"></param>
     public void UpdateAccepted(Dictionary<string, Dictionary<string, string>> sourceDict)
     {
         Accepted_List.Clear();
@@ -76,7 +83,6 @@ public class ProfileSys : MonoBehaviour
             {
 
             }
-
             this.Accepted_List[qid] = new Dictionary<string, string>();
             this.Accepted_List[qid]["QID"] = qid;
             this.Accepted_List[qid]["content"] = content;

@@ -107,13 +107,20 @@ public class NetCore : MonoBehaviour
     }
 
     #region old_transmission
+    /// <summary>
+    /// Client send Accound and Password to the server
+    /// </summary>
+    /// <param name="loginMsg"></param>
     public void ClientSendLogIn(string loginMsg)
     {
-        //Client send Accound and Password to the server
         Debug.Log("Client sent login user name and pwd");
         NetworkManager.singleton.client.Send(1111, new StringMessage(loginMsg));
     }
-    //AFTER RECV 1111 FROM CLIENT
+
+    /// <summary>
+    /// RECV 1111 (Client login request) FROM CLIENT
+    /// </summary>
+    /// <param name="logInMsg"></param>
     public void ServerRecvLogin(NetworkMessage logInMsg)
     {
         Debug.Log("Server Received Login Info");
@@ -124,15 +131,17 @@ public class NetCore : MonoBehaviour
         Debug.Log(LogInOutPut);
         bool return_value = NetworkServer.SendToAll(2222, new StringMessage(LogInOutPut));      
     }
-    //CLIENT RECV 2222 FROM Server
+
+    /// <summary>
+    /// CLIENT RECV 2222 (Server feedback of login) FROM Server
+    /// </summary>
+    /// <param name="FBMsg"></param>
     public void OnClientReceiveFB(NetworkMessage FBMsg)
     {
         //Deserialize message
         string Fbjson = FBMsg.ReadMessage<StringMessage>().value;
         Debug.Log(Fbjson);
         outputMessage outputFBMsg = new outputMessage(Fbjson);
-
-
         if (outputFBMsg.getSuccess())
         {
 
@@ -184,7 +193,7 @@ public class NetCore : MonoBehaviour
             NetworkManager.singleton.playerPrefab = client_c;
             NetworkClient netc = NetworkManager.singleton.StartClient();
             //CLIENT CONNECTION ID
-            NetworkConnection netconnect = netc.connection;
+            //NetworkConnection netconnect = netc.connection;
             //int connectionID = netconnect.connectionId;
 
             ///////////////////////////////////////////////////////////////////////////
@@ -193,9 +202,6 @@ public class NetCore : MonoBehaviour
             ///
             NetworkManager.singleton.client.RegisterHandler(2222 , OnClientReceiveFB);
             NetworkManager.singleton.client.RegisterHandler(4444, ClientRecvMsg);
-
-            //SEND USERNAME TO SERVER
-            //NetworkManager.singleton.client.RegisterHandler(4321, TestClientReceive);
         }
 
         
