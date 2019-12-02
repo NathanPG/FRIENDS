@@ -262,7 +262,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 16, y: -18.5}
+  m_AnchoredPosition: {x: 0, y: -18.5}
   m_SizeDelta: {x: -27.55, y: -83.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4950395
@@ -460,6 +460,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1013408955}
     m_Modifications:
+    - target: {fileID: 9183230013553045307, guid: b075ca5374339ec4ab79011a32109ce3,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2032665853599255285, guid: b075ca5374339ec4ab79011a32109ce3,
         type: 3}
       propertyPath: m_Name
@@ -658,23 +663,22 @@ PrefabInstance:
     - target: {fileID: 3364187472691186649, guid: b075ca5374339ec4ab79011a32109ce3,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -152.5
+      value: -86.5
       objectReference: {fileID: 0}
     - target: {fileID: 3364187472691186649, guid: b075ca5374339ec4ab79011a32109ce3,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 433.45
+      value: 433.44998
       objectReference: {fileID: 0}
     - target: {fileID: 3364187472691186649, guid: b075ca5374339ec4ab79011a32109ce3,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 165
+      value: 33
       objectReference: {fileID: 0}
     - target: {fileID: 3861417841842871161, guid: b075ca5374339ec4ab79011a32109ce3,
         type: 3}
       propertyPath: m_Text
-      value: ' CYKA BLYAT! CYKA BLYAT! CYKA BLYAT!  CYKA BLYAT! CYKA BLYAT! CYKA BLYAT!  CYKA
-        BLYAT! CYKA BLYAT! CYKA BLYAT!  CYKA BLYAT! CYKA BLYAT! CYKA BLYAT!'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3861417841842871161, guid: b075ca5374339ec4ab79011a32109ce3,
         type: 3}
@@ -9210,8 +9214,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 239.72499, y: -152.5}
-  m_SizeDelta: {x: 433.45, y: 165}
+  m_AnchoredPosition: {x: 239.72499, y: -86.5}
+  m_SizeDelta: {x: 433.44998, y: 33}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &377780673
 MonoBehaviour:
@@ -9245,8 +9249,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' CYKA BLYAT! CYKA BLYAT! CYKA BLYAT!  CYKA BLYAT! CYKA BLYAT! CYKA BLYAT!  CYKA
-    BLYAT! CYKA BLYAT! CYKA BLYAT!  CYKA BLYAT! CYKA BLYAT! CYKA BLYAT!'
+  m_Text: 
 --- !u!222 &377780674
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -19497,8 +19500,6 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: 5
-      m_Image: {fileID: 0}
     - m_Text: 10
       m_Image: {fileID: 0}
     - m_Text: 20
@@ -19510,6 +19511,8 @@ MonoBehaviour:
     - m_Text: 50
       m_Image: {fileID: 0}
     - m_Text: 100
+      m_Image: {fileID: 0}
+    - m_Text: 150
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -34847,7 +34850,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 5
+  m_Text: 10
 --- !u!222 &1558359675
 CanvasRenderer:
   m_ObjectHideFlags: 0

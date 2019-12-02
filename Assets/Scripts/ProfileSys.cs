@@ -38,7 +38,7 @@ public class ProfileSys : MonoBehaviour
                 content = itr.Value["content"].ToString();
                 coin = itr.Value["coin"].ToString();
                 owner = itr.Value["owner"].ToString();
-                //exp = itr.Value["exp"].ToString();
+                exp = itr.Value["exp"].ToString();
             } catch (Exception ex)
             {
 
@@ -77,7 +77,7 @@ public class ProfileSys : MonoBehaviour
                 content = itr.Value["content"].ToString();
                 coin = itr.Value["coin"].ToString();
                 owner = itr.Value["owner"].ToString();
-                //exp = itr.Value["exp"].ToString();
+                exp = itr.Value["exp"].ToString();
             }
             catch (Exception ex)
             {

@@ -195,7 +195,7 @@ public class OLScene : MonoBehaviour
             publishMsg.addWay("addTsk");
             publishMsg.addArg("title", questTitle.text);
             publishMsg.addArg("content", questContent.text);
-            publishMsg.addArg("coin", questCoin.value.ToString());
+            publishMsg.addArg("coin", questCoin.options[questCoin.value].text.ToString());
             publishMsg.addArg("owner", owner);
             netcore.ClientSendMsg(publishMsg.getString());
             publishWindow.SetActive(false);
@@ -209,7 +209,7 @@ public class OLScene : MonoBehaviour
             publishMsg.addWay("addTsk");
             publishMsg.addArg("title", questTitle.text);
             publishMsg.addArg("content", questContent.text);
-            publishMsg.addArg("coin", questCoin.value.ToString());
+            publishMsg.addArg("coin", questCoin.options[questCoin.value].text.ToString());
             publishMsg.addArg("owner", owner);
             SQLHandler sql = new SQLHandler();
             string strOpt = sql.recvMsg(publishMsg.getString());
