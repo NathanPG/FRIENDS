@@ -412,15 +412,12 @@ public class OLScene : MonoBehaviour
     /// <param name="strOpt"></param>
     public void UPDATEACCEPTED(string strOpt)
     {
-
         outputMessage tskOpt = new outputMessage(strOpt);
         profileSys.UpdateAccepted(tskOpt.getResult());
-
         foreach (GameObject task in acceptedList)
         {
             Destroy(task);
         }
-        Debug.Log("ACCEPTED LENGTH" + profileSys.Accepted_List.Count);
         if (profileSys.Accepted_List.Count != 0)
         {
             foreach (KeyValuePair<string, Dictionary<string, string>> itr in profileSys.Accepted_List)
@@ -429,7 +426,6 @@ public class OLScene : MonoBehaviour
                     itr.Value["exp"], itr.Value["coin"], itr.Value["owner"], true);
             }
         }
-
     }
 
     /// <summary>
@@ -454,5 +450,4 @@ public class OLScene : MonoBehaviour
         }
     }
     #endregion
-
 }

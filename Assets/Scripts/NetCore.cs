@@ -162,7 +162,7 @@ public class NetCore : MonoBehaviour
     }
     #endregion
 
-
+    
 
     /// <summary>
     /// Indicate one client is connected. 
@@ -171,7 +171,6 @@ public class NetCore : MonoBehaviour
     public void OnClientConnected(NetworkMessage netMsg)
     {
         Debug.Log("A CLIENT HAS CONNECTED");
-
     }
 
     const short NameChannelId = 8888;
@@ -184,6 +183,7 @@ public class NetCore : MonoBehaviour
     private void Start()
     {
         playerIndicator = GameObject.FindGameObjectWithTag("NET").GetComponent<PlayerIndicator>();
+        Debug.Log(playerIndicator.IP);
         red.SetActive(false);
         //Client
         if (playerIndicator.isPlayer)
@@ -197,7 +197,7 @@ public class NetCore : MonoBehaviour
             //int connectionID = netconnect.connectionId;
 
             ///////////////////////////////////////////////////////////////////////////
-            NetworkManager.singleton.client.Connect("129.161.54.218", 8888);
+            NetworkManager.singleton.client.Connect(playerIndicator.IP, 8888);
             ///////////////////////////////////////////////////////////////////////////
             ///
             NetworkManager.singleton.client.RegisterHandler(2222 , OnClientReceiveFB);
@@ -210,7 +210,7 @@ public class NetCore : MonoBehaviour
         {
             ///////////////////////////////////////////////////////////////////////////
             NetworkManager.singleton.networkPort = 8888;
-            NetworkManager.singleton.networkAddress = "129.161.54.218";
+            NetworkManager.singleton.networkAddress = playerIndicator.IP;
             ///////////////////////////////////////////////////////////////////////////
             //THIS START A NetworkServer
             NetworkManager.singleton.playerPrefab = host_c;
